@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import SummaryCard from "./components/SummaryCard";
 import TabNavigation from "./components/TabNavigation";
+import TimeSeriesChart from "./components/TimeSeriesChart";
 import { allUsersData } from "./data/userData";
+import { getSummaryDescription } from "./utils/helpers";
 
 function App() {
   const [selectedUser, setSelectedUser] = useState("U022");
@@ -50,39 +52,45 @@ function App() {
                 title="Avg Productivity"
                 value={userData.summary.avg_productivity.toFixed(1)}
                 unit="/10"
-                description="Good range"
+                description={getSummaryDescription(
+                  "productivity",
+                  userData.summary.avg_productivity
+                )}
                 color="text-indigo-600"
               />
               <SummaryCard
                 title="Avg Mood"
                 value={userData.summary.avg_mood.toFixed(1)}
                 unit="/10"
-                description="Room to improve"
+                description={getSummaryDescription(
+                  "mood",
+                  userData.summary.avg_mood
+                )}
                 color="text-purple-600"
               />
               <SummaryCard
                 title="Avg Sleep"
                 value={userData.summary.avg_sleep.toFixed(1)}
                 unit="hrs"
-                description="Solid performance"
+                description={getSummaryDescription(
+                  "sleep",
+                  userData.summary.avg_sleep
+                )}
                 color="text-blue-600"
               />
               <SummaryCard
                 title="Avg Stress"
                 value={userData.summary.avg_stress.toFixed(1)}
                 unit="/10"
-                description="Good range"
+                description={getSummaryDescription(
+                  "stress",
+                  userData.summary.avg_stress
+                )}
                 color="text-red-600"
               />
             </div>
 
-            {/* Placeholder for charts - we'll add these in Phase 4 */}
-            <div className="bg-white rounded-lg shadow-md p-6">
-              <h2 className="text-xl font-bold text-gray-800 mb-4">
-                📈 Trends Over Time
-              </h2>
-              <p className="text-gray-600">Chart coming in Phase 4...</p>
-            </div>
+            <TimeSeriesChart data={userData.time_series} />
           </div>
         )}
 
