@@ -1,21 +1,50 @@
 import React from "react";
+import { allUsersData } from "./data/userData";
 
 function App() {
+  const [selectedUser, setSelectedUser] = useState("U022");
+
+  // Get current user's data
+  const userData = allUsersData[selectedUser];
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
       <header className="bg-white shadow-md">
         <div className="max-w-7xl mx-auto px-4 py-6">
-          <h1 className="text-3xl font-bold text-indigo-600">
-            MoodFlow Analytics
-          </h1>
-          <p className="text-gray-600 mt-1">
-            Discover your unique productivity drivers
-          </p>
+          <div className="flex justify-between items-center">
+            <div>
+              <h1 className="text-3xl font-bold text-indigo-600">
+                MoodFlow Analytics
+              </h1>
+              <p className="text-gray-600 mt-1">
+                Discover your unique productivity drivers
+              </p>
+            </div>
+            <div className="text-right">
+              <div className="text-sm text-gray-600">Days Logged</div>
+              <div className="text-2xl font-bold text-indigo-600">
+                {userData.days_logged}
+              </div>
+            </div>
+          </div>
         </div>
       </header>
 
       <main className="max-w-7xl mx-auto px-4 py-6">
-        <p className="text-gray-700">Dashboard coming soon...</p>
+        <div className="grid grid-cols-1 md: grid-cols-4 gap-4">
+          <SummaryCard
+            title="Avg Productivty"
+            value={userData.summary.avg_productivity.toFixed(1)}
+            unit="/10"
+            description="Solid performance"
+            color="text-indigo-600"
+          />
+
+          {/* TODO: Add the other 3 cards here */}
+          {/* - Avg Mood (use avg_mood, purple color) */}
+          {/* - Avg Sleep (use avg_sleep, blue color, "hrs" unit) */}
+          {/* - Avg Stress (use avg_stress, red color) */}
+        </div>
       </main>
     </div>
   );
