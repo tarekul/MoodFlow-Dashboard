@@ -30,3 +30,15 @@ export const getSummaryDescription = (type, value) => {
       return "Good range";
   }
 };
+
+export const getStrengthColor = (strength) => {
+  if (strength === "STRONG") return "text-red-600";
+  if (strength === "MODERATE") return "text-yellow-600";
+  return "text-gray-500";
+};
+
+export const getStrengthStars = (strength) => {
+  if (strength === "STRONG") return "⭐⭐⭐";
+  if (strength === "MODERATE") return "⭐⭐";
+  return "⭐";
+};

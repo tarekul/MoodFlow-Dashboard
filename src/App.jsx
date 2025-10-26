@@ -1,8 +1,11 @@
 import React, { useState } from "react";
+import BoosterCard from "./components/BoosterCard";
 import CorrelationChart from "./components/CorrelationChart";
+import DrainerCard from "./components/DrainerCard";
 import SummaryCard from "./components/SummaryCard";
 import TabNavigation from "./components/TabNavigation";
 import TimeSeriesChart from "./components/TimeSeriesChart";
+import TopRecommendation from "./components/TopRecommendation";
 import { allUsersData } from "./data/userData";
 import { getSummaryDescription } from "./utils/helpers";
 
@@ -98,13 +101,12 @@ function App() {
         )}
 
         {activeTab === "insights" && (
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <h2 className="text-xl font-bold text-gray-800 mb-4">
-              💡 Insights
-            </h2>
-            <p className="text-gray-600">
-              Insights content coming in Phase 6...
-            </p>
+          <div className="space-y-6">
+            <TopRecommendation
+              top_recommendation={userData.top_recommendation}
+            />
+            <BoosterCard boosters={userData.boosters} />
+            <DrainerCard drainers={userData.drainers} />
           </div>
         )}
 
