@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import SummaryCard from "./components/SummaryCard";
 import { allUsersData } from "./data/userData";
+import { getSummaryDescription } from "./utils/helpers";
 
 function App() {
   const [selectedUser, setSelectedUser] = useState("U022");
@@ -37,7 +38,10 @@ function App() {
             title="Avg Productivity"
             value={userData.summary.avg_productivity.toFixed(1)}
             unit="/10"
-            description="Solid performance"
+            description={getSummaryDescription(
+              "productivity",
+              userData.summary.avg_productivity
+            )}
             color="text-indigo-600"
           />
 
@@ -47,7 +51,10 @@ function App() {
             title="Avg Mood"
             value={userData.summary.avg_mood.toFixed(1)}
             unit="/10"
-            description="Solid performance"
+            description={getSummaryDescription(
+              "mood",
+              userData.summary.avg_mood
+            )}
             color="text-purple-600"
           />
           {/* - Avg Sleep (use avg_sleep, blue color, "hrs" unit) */}
@@ -55,7 +62,10 @@ function App() {
             title="Avg Sleep"
             value={userData.summary.avg_sleep.toFixed(1)}
             unit="hrs"
-            description="Solid performance"
+            description={getSummaryDescription(
+              "sleep",
+              userData.summary.avg_sleep
+            )}
             color="text-blue-600"
           />
           {/* - Avg Stress (use avg_stress, red color) */}
@@ -63,7 +73,10 @@ function App() {
             title="Avg Stress"
             value={userData.summary.avg_stress.toFixed(1)}
             unit="/10"
-            description="Solid performance"
+            description={getSummaryDescription(
+              "stress",
+              userData.summary.avg_stress
+            )}
             color="text-red-600"
           />
         </div>
