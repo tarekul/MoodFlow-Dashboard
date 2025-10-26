@@ -1,3 +1,4 @@
+[![Coverage Status](https://coveralls.io/repos/github/tarekul/MoodFlow-Dashboard/badge.svg?branch=main)](https://coveralls.io/github/tarekul/MoodFlow-Dashboard?branch=main)
 # MoodFlow Dashboard
 
 MoodFlow is a personalized analytics dashboard that helps users understand the relationship between their daily habits, mood, and productivity. By visualizing correlations and trends from logged data, it provides actionable insights and a tailored action plan to boost well-being and performance.
