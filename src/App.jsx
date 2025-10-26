@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
+import SummaryCard from "./components/SummaryCard";
 import { allUsersData } from "./data/userData";
 
 function App() {
@@ -31,9 +32,9 @@ function App() {
       </header>
 
       <main className="max-w-7xl mx-auto px-4 py-6">
-        <div className="grid grid-cols-1 md: grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <SummaryCard
-            title="Avg Productivty"
+            title="Avg Productivity"
             value={userData.summary.avg_productivity.toFixed(1)}
             unit="/10"
             description="Solid performance"
@@ -42,8 +43,29 @@ function App() {
 
           {/* TODO: Add the other 3 cards here */}
           {/* - Avg Mood (use avg_mood, purple color) */}
+          <SummaryCard
+            title="Avg Mood"
+            value={userData.summary.avg_mood.toFixed(1)}
+            unit="/10"
+            description="Solid performance"
+            color="text-purple-600"
+          />
           {/* - Avg Sleep (use avg_sleep, blue color, "hrs" unit) */}
+          <SummaryCard
+            title="Avg Sleep"
+            value={userData.summary.avg_sleep.toFixed(1)}
+            unit="hrs"
+            description="Solid performance"
+            color="text-blue-600"
+          />
           {/* - Avg Stress (use avg_stress, red color) */}
+          <SummaryCard
+            title="Avg Stress"
+            value={userData.summary.avg_stress.toFixed(1)}
+            unit="/10"
+            description="Solid performance"
+            color="text-red-600"
+          />
         </div>
       </main>
     </div>
