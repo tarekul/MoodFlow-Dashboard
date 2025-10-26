@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import CorrelationChart from "./components/CorrelationChart";
 import SummaryCard from "./components/SummaryCard";
 import TabNavigation from "./components/TabNavigation";
 import TimeSeriesChart from "./components/TimeSeriesChart";
@@ -91,6 +92,8 @@ function App() {
             </div>
 
             <TimeSeriesChart data={userData.time_series} />
+
+            <CorrelationChart correlations={userData.correlations} />
           </div>
         )}
 
