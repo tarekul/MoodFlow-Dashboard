@@ -32,10 +32,32 @@ function App() {
                 Discover your unique productivity drivers
               </p>
             </div>
-            <div className="text-right">
-              <div className="text-sm text-gray-600">Days Logged</div>
-              <div className="text-2xl font-bold text-indigo-600">
-                {userData.days_logged}
+            <div className="flex items-center gap-4">
+              {/* User Selector */}
+              <div>
+                <label className="text-sm text-gray-600 block mb-1">
+                  User:
+                </label>
+                <select
+                  value={selectedUser}
+                  onChange={(e) => setSelectedUser(e.target.value)}
+                  className="border-2 border-gray-300 rounded-lg px-4 py-2 
+                 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500
+                 bg-white text-gray-700 font-medium cursor-pointer
+                 transition-all duration-200 hover:border-indigo-400"
+                >
+                  <option value="U022">U022 - Mood-Driven</option>
+                  <option value="U007">U007 - High Performer</option>
+                  <option value="U001">U001 - Screen-Sensitive</option>
+                </select>
+              </div>
+
+              {/* Days Logged */}
+              <div className="text-right">
+                <div className="text-sm text-gray-600">Days Logged</div>
+                <div className="text-2xl font-bold text-indigo-600">
+                  {userData.days_logged}
+                </div>
               </div>
             </div>
           </div>
