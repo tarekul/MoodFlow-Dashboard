@@ -1,7 +1,9 @@
 import React, { useState } from "react";
+import ActionPlanCard from "./components/ActionPlanCard";
 import BoosterCard from "./components/BoosterCard";
 import CorrelationChart from "./components/CorrelationChart";
 import DrainerCard from "./components/DrainerCard";
+import Footer from "./components/Footer";
 import SummaryCard from "./components/SummaryCard";
 import TabNavigation from "./components/TabNavigation";
 import TimeSeriesChart from "./components/TimeSeriesChart";
@@ -112,14 +114,11 @@ function App() {
         )}
 
         {activeTab === "action-plan" && (
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <h2 className="text-xl font-bold text-gray-800 mb-4">
-              🎯 Action Plan
-            </h2>
-            <p className="text-gray-600">Action plan coming in Phase 7...</p>
-          </div>
+          <ActionPlanCard action_plan={userData.action_plan} />
         )}
       </main>
+
+      <Footer userData={userData} />
     </div>
   );
 }
