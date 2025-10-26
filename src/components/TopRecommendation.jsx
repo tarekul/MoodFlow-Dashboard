@@ -1,4 +1,4 @@
-function TopRecommendation({ top_recommendation }) {
+function TopRecommendation({ top_recommendation, summary }) {
   return (
     <div className="space-y-6">
       <div className="bg-gradient-to-r from-indigo-500 to-purple-600 rounded-lg shadow-lg p-8 text-white">
@@ -23,8 +23,7 @@ function TopRecommendation({ top_recommendation }) {
             </strong>
             (
             {(
-              (top_recommendation.potential_gain /
-                top_recommendation.avg_productivity) *
+              (top_recommendation.potential_gain / summary.avg_productivity) *
               100
             ).toFixed(0)}
             % improvement)

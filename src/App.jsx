@@ -104,6 +104,7 @@ function App() {
           <div className="space-y-6">
             <TopRecommendation
               top_recommendation={userData.top_recommendation}
+              summary={userData.summary}
             />
             <BoosterCard boosters={userData.boosters} />
             <DrainerCard drainers={userData.drainers} />
