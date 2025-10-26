@@ -1,0 +1,269 @@
+{
+  "user_id": "U001",
+  "days_logged": 7,
+  "date_range": {
+    "start": "2023-06-02",
+    "end": "2023-06-27"
+  },
+  "correlations": [
+    {
+      "factor": "Mood",
+      "correlation": 0.9,
+      "is_booster": true,
+      "strength": "STRONG"
+    },
+    {
+      "factor": "Stress",
+      "correlation": -0.9,
+      "is_booster": false,
+      "strength": "STRONG"
+    },
+    {
+      "factor": "Screen Time",
+      "correlation": -0.77,
+      "is_booster": false,
+      "strength": "STRONG"
+    },
+    {
+      "factor": "Social Interaction",
+      "correlation": -0.73,
+      "is_booster": false,
+      "strength": "STRONG"
+    },
+    {
+      "factor": "Physical Activity",
+      "correlation": 0.41,
+      "is_booster": true,
+      "strength": "MODERATE"
+    },
+    {
+      "factor": "Sleep Quality",
+      "correlation": -0.4,
+      "is_booster": false,
+      "strength": "WEAK"
+    },
+    {
+      "factor": "Sleep Duration",
+      "correlation": -0.11,
+      "is_booster": false,
+      "strength": "WEAK"
+    },
+    {
+      "factor": "Sleep Deficit",
+      "correlation": 0.11,
+      "is_booster": true,
+      "strength": "WEAK"
+    }
+  ],
+  "boosters": [
+    {
+      "factor": "Mood",
+      "correlation": 0.9,
+      "is_booster": true,
+      "strength": "STRONG"
+    },
+    {
+      "factor": "Physical Activity",
+      "correlation": 0.41,
+      "is_booster": true,
+      "strength": "MODERATE"
+    },
+    {
+      "factor": "Sleep Deficit",
+      "correlation": 0.11,
+      "is_booster": true,
+      "strength": "WEAK"
+    }
+  ],
+  "drainers": [
+    {
+      "factor": "Stress",
+      "correlation": -0.9,
+      "is_booster": false,
+      "strength": "STRONG"
+    },
+    {
+      "factor": "Screen Time",
+      "correlation": -0.77,
+      "is_booster": false,
+      "strength": "STRONG"
+    },
+    {
+      "factor": "Social Interaction",
+      "correlation": -0.73,
+      "is_booster": false,
+      "strength": "STRONG"
+    }
+  ],
+  "summary": {
+    "avg_productivity": 7.14,
+    "avg_mood": 5.71,
+    "avg_sleep": 8.11,
+    "avg_stress": 4.43
+  },
+  "top_recommendation": {
+    "factor": "Mood",
+    "correlation": 0.9,
+    "potential_gain": 1.8
+  },
+  "time_series": [
+    {
+      "date": "2023-06-02",
+      "mood": 6.0,
+      "productivity": 6.0,
+      "sleep": 8.0,
+      "stress": 4.0,
+      "physical_activity": 0.0
+    },
+    {
+      "date": "2023-06-09",
+      "mood": 4.0,
+      "productivity": 7.0,
+      "sleep": 10.0,
+      "stress": 6.0,
+      "physical_activity": 39.0
+    },
+    {
+      "date": "2023-06-14",
+      "mood": 8.0,
+      "productivity": 9.0,
+      "sleep": 6.5,
+      "stress": 1.0,
+      "physical_activity": 34.0
+    },
+    {
+      "date": "2023-06-15",
+      "mood": 10.0,
+      "productivity": 10.0,
+      "sleep": 8.0,
+      "stress": 1.0,
+      "physical_activity": 62.0
+    },
+    {
+      "date": "2023-06-21",
+      "mood": 6.0,
+      "productivity": 7.0,
+      "sleep": 7.2,
+      "stress": 4.0,
+      "physical_activity": 14.0
+    },
+    {
+      "date": "2023-06-22",
+      "mood": 2.0,
+      "productivity": 4.0,
+      "sleep": 7.5,
+      "stress": 9.0,
+      "physical_activity": 40.0
+    },
+    {
+      "date": "2023-06-27",
+      "mood": 4.0,
+      "productivity": 7.0,
+      "sleep": 9.6,
+      "stress": 6.0,
+      "physical_activity": 48.0
+    }
+  ],
+  "population_comparison": [
+    {
+      "factor": "Mood",
+      "user_correlation": 0.9,
+      "population_avg": 0.92,
+      "difference": -0.02,
+      "comparison": "typical"
+    },
+    {
+      "factor": "Sleep Duration",
+      "user_correlation": -0.11,
+      "population_avg": 0.47,
+      "difference": -0.58,
+      "comparison": "lower"
+    },
+    {
+      "factor": "Sleep Quality",
+      "user_correlation": -0.4,
+      "population_avg": 0.12,
+      "difference": -0.52,
+      "comparison": "lower"
+    },
+    {
+      "factor": "Physical Activity",
+      "user_correlation": 0.41,
+      "population_avg": 0.25,
+      "difference": 0.16,
+      "comparison": "typical"
+    },
+    {
+      "factor": "Screen Time",
+      "user_correlation": -0.77,
+      "population_avg": -0.14,
+      "difference": -0.63,
+      "comparison": "lower"
+    },
+    {
+      "factor": "Social Interaction",
+      "user_correlation": -0.73,
+      "population_avg": -0.06,
+      "difference": -0.67,
+      "comparison": "lower"
+    },
+    {
+      "factor": "Stress",
+      "user_correlation": -0.9,
+      "population_avg": -0.82,
+      "difference": -0.08,
+      "comparison": "typical"
+    },
+    {
+      "factor": "Sleep Deficit",
+      "user_correlation": 0.11,
+      "population_avg": -0.47,
+      "difference": 0.58,
+      "comparison": "higher"
+    }
+  ],
+  "action_plan": [
+    {
+      "priority": 1,
+      "factor": "Mood",
+      "emoji": "\ud83d\ude0a",
+      "correlation": 0.9,
+      "strength": "STRONG",
+      "daily_actions": [
+        "Morning: Write 3 gratitudes",
+        "Midday: 30-min mood-boost activity",
+        "Evening: Connect with 1 person"
+      ],
+      "success_metric": "Mood score \u2265 7 on at least 5 days",
+      "potential_impact": 1.8
+    },
+    {
+      "priority": 2,
+      "factor": "Stress",
+      "emoji": "\ud83d\ude30",
+      "correlation": -0.9,
+      "strength": "STRONG",
+      "daily_actions": [
+        "Morning: 5-min breathing exercise",
+        "Afternoon: Take 3 mini-breaks",
+        "Evening: Stress journal"
+      ],
+      "success_metric": "Stress score < 5 on at least 4 days",
+      "potential_impact": 1.8
+    },
+    {
+      "priority": 3,
+      "factor": "Screen Time",
+      "emoji": "\ud83d\udcf1",
+      "correlation": -0.77,
+      "strength": "STRONG",
+      "daily_actions": [
+        "Morning: No phone first 30 min",
+        "Workday: Use app blockers",
+        "Evening: No screens 1hr before bed"
+      ],
+      "success_metric": "Keep screen time under 5 hours on 4+ days",
+      "potential_impact": 1.54
+    }
+  ]
+}

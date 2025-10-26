@@ -1,0 +1,293 @@
+{
+  "user_id": "U007",
+  "days_logged": 10,
+  "date_range": {
+    "start": "2023-06-07",
+    "end": "2023-06-28"
+  },
+  "correlations": [
+    {
+      "factor": "Mood",
+      "correlation": 0.97,
+      "is_booster": true,
+      "strength": "STRONG"
+    },
+    {
+      "factor": "Stress",
+      "correlation": -0.94,
+      "is_booster": false,
+      "strength": "STRONG"
+    },
+    {
+      "factor": "Sleep Duration",
+      "correlation": 0.7,
+      "is_booster": true,
+      "strength": "MODERATE"
+    },
+    {
+      "factor": "Sleep Deficit",
+      "correlation": -0.7,
+      "is_booster": false,
+      "strength": "MODERATE"
+    },
+    {
+      "factor": "Social Interaction",
+      "correlation": -0.33,
+      "is_booster": false,
+      "strength": "WEAK"
+    },
+    {
+      "factor": "Sleep Quality",
+      "correlation": 0.21,
+      "is_booster": true,
+      "strength": "WEAK"
+    },
+    {
+      "factor": "Screen Time",
+      "correlation": -0.13,
+      "is_booster": false,
+      "strength": "WEAK"
+    },
+    {
+      "factor": "Physical Activity",
+      "correlation": -0.11,
+      "is_booster": false,
+      "strength": "WEAK"
+    }
+  ],
+  "boosters": [
+    {
+      "factor": "Mood",
+      "correlation": 0.97,
+      "is_booster": true,
+      "strength": "STRONG"
+    },
+    {
+      "factor": "Sleep Duration",
+      "correlation": 0.7,
+      "is_booster": true,
+      "strength": "MODERATE"
+    },
+    {
+      "factor": "Sleep Quality",
+      "correlation": 0.21,
+      "is_booster": true,
+      "strength": "WEAK"
+    }
+  ],
+  "drainers": [
+    {
+      "factor": "Stress",
+      "correlation": -0.94,
+      "is_booster": false,
+      "strength": "STRONG"
+    },
+    {
+      "factor": "Sleep Deficit",
+      "correlation": -0.7,
+      "is_booster": false,
+      "strength": "MODERATE"
+    },
+    {
+      "factor": "Social Interaction",
+      "correlation": -0.33,
+      "is_booster": false,
+      "strength": "WEAK"
+    }
+  ],
+  "summary": {
+    "avg_productivity": 7.4,
+    "avg_mood": 6.7,
+    "avg_sleep": 7.45,
+    "avg_stress": 3.9
+  },
+  "top_recommendation": {
+    "factor": "Mood",
+    "correlation": 0.97,
+    "potential_gain": 1.94
+  },
+  "time_series": [
+    {
+      "date": "2023-06-07",
+      "mood": 8.0,
+      "productivity": 9.0,
+      "sleep": 8.0,
+      "stress": 3.0,
+      "physical_activity": 20.0
+    },
+    {
+      "date": "2023-06-08",
+      "mood": 10.0,
+      "productivity": 10.0,
+      "sleep": 9.7,
+      "stress": 1.0,
+      "physical_activity": 34.0
+    },
+    {
+      "date": "2023-06-10",
+      "mood": 7.0,
+      "productivity": 9.0,
+      "sleep": 8.0,
+      "stress": 4.0,
+      "physical_activity": 35.0
+    },
+    {
+      "date": "2023-06-18",
+      "mood": 10.0,
+      "productivity": 10.0,
+      "sleep": 6.3,
+      "stress": 1.0,
+      "physical_activity": 7.0
+    },
+    {
+      "date": "2023-06-21",
+      "mood": 5.0,
+      "productivity": 6.0,
+      "sleep": 5.5,
+      "stress": 4.0,
+      "physical_activity": 40.0
+    },
+    {
+      "date": "2023-06-22",
+      "mood": 5.0,
+      "productivity": 5.0,
+      "sleep": 6.0,
+      "stress": 6.0,
+      "physical_activity": 21.0
+    },
+    {
+      "date": "2023-06-23",
+      "mood": 9.0,
+      "productivity": 10.0,
+      "sleep": 9.9,
+      "stress": 2.0,
+      "physical_activity": 33.0
+    },
+    {
+      "date": "2023-06-26",
+      "mood": 6.0,
+      "productivity": 7.0,
+      "sleep": 7.4,
+      "stress": 3.0,
+      "physical_activity": 22.0
+    },
+    {
+      "date": "2023-06-27",
+      "mood": 2.0,
+      "productivity": 2.0,
+      "sleep": 5.0,
+      "stress": 9.0,
+      "physical_activity": 33.0
+    },
+    {
+      "date": "2023-06-28",
+      "mood": 5.0,
+      "productivity": 6.0,
+      "sleep": 8.7,
+      "stress": 6.0,
+      "physical_activity": 12.0
+    }
+  ],
+  "population_comparison": [
+    {
+      "factor": "Mood",
+      "user_correlation": 0.97,
+      "population_avg": 0.92,
+      "difference": 0.05,
+      "comparison": "typical"
+    },
+    {
+      "factor": "Sleep Duration",
+      "user_correlation": 0.7,
+      "population_avg": 0.47,
+      "difference": 0.23,
+      "comparison": "higher"
+    },
+    {
+      "factor": "Sleep Quality",
+      "user_correlation": 0.21,
+      "population_avg": 0.12,
+      "difference": 0.09,
+      "comparison": "typical"
+    },
+    {
+      "factor": "Physical Activity",
+      "user_correlation": -0.11,
+      "population_avg": 0.25,
+      "difference": -0.36,
+      "comparison": "lower"
+    },
+    {
+      "factor": "Screen Time",
+      "user_correlation": -0.13,
+      "population_avg": -0.14,
+      "difference": 0.01,
+      "comparison": "typical"
+    },
+    {
+      "factor": "Social Interaction",
+      "user_correlation": -0.33,
+      "population_avg": -0.06,
+      "difference": -0.27,
+      "comparison": "lower"
+    },
+    {
+      "factor": "Stress",
+      "user_correlation": -0.94,
+      "population_avg": -0.82,
+      "difference": -0.12,
+      "comparison": "typical"
+    },
+    {
+      "factor": "Sleep Deficit",
+      "user_correlation": -0.7,
+      "population_avg": -0.47,
+      "difference": -0.23,
+      "comparison": "lower"
+    }
+  ],
+  "action_plan": [
+    {
+      "priority": 1,
+      "factor": "Mood",
+      "emoji": "\ud83d\ude0a",
+      "correlation": 0.97,
+      "strength": "STRONG",
+      "daily_actions": [
+        "Morning: Write 3 gratitudes",
+        "Midday: 30-min mood-boost activity",
+        "Evening: Connect with 1 person"
+      ],
+      "success_metric": "Mood score \u2265 7 on at least 5 days",
+      "potential_impact": 1.94
+    },
+    {
+      "priority": 2,
+      "factor": "Stress",
+      "emoji": "\ud83d\ude30",
+      "correlation": -0.94,
+      "strength": "STRONG",
+      "daily_actions": [
+        "Morning: 5-min breathing exercise",
+        "Afternoon: Take 3 mini-breaks",
+        "Evening: Stress journal"
+      ],
+      "success_metric": "Stress score < 5 on at least 4 days",
+      "potential_impact": 1.88
+    },
+    {
+      "priority": 3,
+      "factor": "Sleep Duration",
+      "emoji": "\ud83d\ude34",
+      "correlation": 0.7,
+      "strength": "MODERATE",
+      "daily_actions": [
+        "Morning: Wake at same time daily",
+        "Afternoon: No caffeine after 2pm",
+        "Evening: Bedtime alarm at 10pm"
+      ],
+      "success_metric": "Sleep 7-8 hours at least 5 nights",
+      "potential_impact": 1.4
+    }
+  ]
+}
