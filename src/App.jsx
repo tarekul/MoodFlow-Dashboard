@@ -17,6 +17,7 @@ function App() {
 
   // Get current user's data
   const userData = allUsersData[selectedUser];
+  const keyFactor = userData.correlations[0].factor; // Top correlation
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
@@ -85,6 +86,7 @@ function App() {
                   userData.summary.avg_productivity
                 )}
                 color="text-indigo-600"
+                isKeyFactor={false}
               />
               <SummaryCard
                 title="Avg Mood"
@@ -95,6 +97,7 @@ function App() {
                   userData.summary.avg_mood
                 )}
                 color="text-purple-600"
+                isKeyFactor={keyFactor === "Mood"}
               />
               <SummaryCard
                 title="Avg Sleep"
@@ -105,6 +108,7 @@ function App() {
                   userData.summary.avg_sleep
                 )}
                 color="text-blue-600"
+                isKeyFactor={keyFactor === "Sleep"}
               />
               <SummaryCard
                 title="Avg Stress"
@@ -115,6 +119,7 @@ function App() {
                   userData.summary.avg_stress
                 )}
                 color="text-red-600"
+                isKeyFactor={keyFactor === "Stress"}
               />
             </div>
 
