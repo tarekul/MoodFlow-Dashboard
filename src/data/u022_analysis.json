@@ -202,6 +202,7 @@
       "user_correlation": 0.96,
       "population_avg": 0.92,
       "difference": 0.04,
+      "absolute_difference": 0.04,
       "comparison": "typical"
     },
     {
@@ -209,6 +210,7 @@
       "user_correlation": 0.59,
       "population_avg": 0.47,
       "difference": 0.12,
+      "absolute_difference": 0.12,
       "comparison": "typical"
     },
     {
@@ -216,6 +218,7 @@
       "user_correlation": 0.16,
       "population_avg": 0.12,
       "difference": 0.04,
+      "absolute_difference": 0.04,
       "comparison": "typical"
     },
     {
@@ -223,20 +226,23 @@
       "user_correlation": -0.07,
       "population_avg": 0.25,
       "difference": -0.32,
-      "comparison": "lower"
+      "absolute_difference": -0.18,
+      "comparison": "typical"
     },
     {
       "factor": "Screen Time",
       "user_correlation": -0.38,
       "population_avg": -0.14,
       "difference": -0.24,
-      "comparison": "lower"
+      "absolute_difference": 0.24,
+      "comparison": "higher"
     },
     {
       "factor": "Social Interaction",
       "user_correlation": 0.1,
       "population_avg": -0.06,
       "difference": 0.16,
+      "absolute_difference": 0.04,
       "comparison": "typical"
     },
     {
@@ -244,6 +250,7 @@
       "user_correlation": -0.7,
       "population_avg": -0.82,
       "difference": 0.12,
+      "absolute_difference": -0.12,
       "comparison": "typical"
     },
     {
@@ -251,6 +258,7 @@
       "user_correlation": -0.59,
       "population_avg": -0.47,
       "difference": -0.12,
+      "absolute_difference": 0.12,
       "comparison": "typical"
     }
   ],

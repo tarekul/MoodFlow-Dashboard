@@ -194,6 +194,7 @@
       "user_correlation": 0.97,
       "population_avg": 0.92,
       "difference": 0.05,
+      "absolute_difference": 0.05,
       "comparison": "typical"
     },
     {
@@ -201,6 +202,7 @@
       "user_correlation": 0.7,
       "population_avg": 0.47,
       "difference": 0.23,
+      "absolute_difference": 0.23,
       "comparison": "higher"
     },
     {
@@ -208,6 +210,7 @@
       "user_correlation": 0.21,
       "population_avg": 0.12,
       "difference": 0.09,
+      "absolute_difference": 0.09,
       "comparison": "typical"
     },
     {
@@ -215,13 +218,15 @@
       "user_correlation": -0.11,
       "population_avg": 0.25,
       "difference": -0.36,
-      "comparison": "lower"
+      "absolute_difference": -0.14,
+      "comparison": "typical"
     },
     {
       "factor": "Screen Time",
       "user_correlation": -0.13,
       "population_avg": -0.14,
       "difference": 0.01,
+      "absolute_difference": -0.01,
       "comparison": "typical"
     },
     {
@@ -229,13 +234,15 @@
       "user_correlation": -0.33,
       "population_avg": -0.06,
       "difference": -0.27,
-      "comparison": "lower"
+      "absolute_difference": 0.27,
+      "comparison": "higher"
     },
     {
       "factor": "Stress",
       "user_correlation": -0.94,
       "population_avg": -0.82,
       "difference": -0.12,
+      "absolute_difference": 0.12,
       "comparison": "typical"
     },
     {
@@ -243,7 +250,8 @@
       "user_correlation": -0.7,
       "population_avg": -0.47,
       "difference": -0.23,
-      "comparison": "lower"
+      "absolute_difference": 0.23,
+      "comparison": "higher"
     }
   ],
   "action_plan": [

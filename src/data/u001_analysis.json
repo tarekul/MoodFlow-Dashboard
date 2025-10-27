@@ -170,6 +170,7 @@
       "user_correlation": 0.9,
       "population_avg": 0.92,
       "difference": -0.02,
+      "absolute_difference": -0.02,
       "comparison": "typical"
     },
     {
@@ -177,6 +178,7 @@
       "user_correlation": -0.11,
       "population_avg": 0.47,
       "difference": -0.58,
+      "absolute_difference": -0.36,
       "comparison": "lower"
     },
     {
@@ -184,13 +186,15 @@
       "user_correlation": -0.4,
       "population_avg": 0.12,
       "difference": -0.52,
-      "comparison": "lower"
+      "absolute_difference": 0.28,
+      "comparison": "higher"
     },
     {
       "factor": "Physical Activity",
       "user_correlation": 0.41,
       "population_avg": 0.25,
       "difference": 0.16,
+      "absolute_difference": 0.16,
       "comparison": "typical"
     },
     {
@@ -198,20 +202,23 @@
       "user_correlation": -0.77,
       "population_avg": -0.14,
       "difference": -0.63,
-      "comparison": "lower"
+      "absolute_difference": 0.63,
+      "comparison": "higher"
     },
     {
       "factor": "Social Interaction",
       "user_correlation": -0.73,
       "population_avg": -0.06,
       "difference": -0.67,
-      "comparison": "lower"
+      "absolute_difference": 0.67,
+      "comparison": "higher"
     },
     {
       "factor": "Stress",
       "user_correlation": -0.9,
       "population_avg": -0.82,
       "difference": -0.08,
+      "absolute_difference": 0.08,
       "comparison": "typical"
     },
     {
@@ -219,7 +226,8 @@
       "user_correlation": 0.11,
       "population_avg": -0.47,
       "difference": 0.58,
-      "comparison": "higher"
+      "absolute_difference": -0.36,
+      "comparison": "lower"
     }
   ],
   "action_plan": [

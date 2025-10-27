@@ -4,6 +4,7 @@ import BoosterCard from "./components/BoosterCard";
 import CorrelationChart from "./components/CorrelationChart";
 import DrainerCard from "./components/DrainerCard";
 import Footer from "./components/Footer";
+import PopulationComparison from "./components/PopulationComparison";
 import SummaryCard from "./components/SummaryCard";
 import TabNavigation from "./components/TabNavigation";
 import TimeSeriesChart from "./components/TimeSeriesChart";
@@ -134,6 +135,9 @@ function App() {
             <TopRecommendation
               top_recommendation={userData.top_recommendation}
               summary={userData.summary}
+            />
+            <PopulationComparison
+              comparisons={userData.population_comparison}
             />
             <BoosterCard boosters={userData.boosters} />
             <DrainerCard drainers={userData.drainers} />
