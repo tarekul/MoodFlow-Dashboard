@@ -76,10 +76,10 @@ function PopulationComparison({ comparisons }) {
           return (
             <div
               key={idx}
-              className="flex items-start gap-3 p-4 rounded-lg border border-gray-200 
+              className="flex flex-col sm:flex-row items-start gap-3 p-4 rounded-lg border border-gray-200 
                          hover:shadow-md transition-shadow"
             >
-              <div className="text-2xl">{icon}</div>
+              <div className="text-2xl mt-1 sm:mt-0">{icon}</div>
 
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-1">

@@ -25,16 +25,16 @@ function App() {
       {/* Header */}
       <header className="bg-white shadow-md">
         <div className="max-w-7xl mx-auto px-4 py-6">
-          <div className="flex justify-between items-center">
-            <div>
-              <h1 className="text-3xl font-bold text-indigo-600">
-                MoodFlow Analytics
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
+            <div className="mb-4 md:mb-0">
+              <h1 className="text-3xl font-bold text-gray-900">
+                MoodFlow Dashboard
               </h1>
-              <p className="text-gray-600 mt-1">
+              <p className="text-lg text-gray-600 mt-1">
                 Discover your unique productivity drivers
               </p>
             </div>
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-4 self-start md:self-auto">
               {/* User Selector */}
               <div>
                 <label className="text-sm text-gray-600 block mb-1">

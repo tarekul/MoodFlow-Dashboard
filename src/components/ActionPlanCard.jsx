@@ -15,8 +15,8 @@ function ActionPlanCard({ action_plan }) {
             key={item.priority}
             className="mb-6 border-b border-gray-200 pb-6 last:border-0"
           >
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-3">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4">
+              <div className="flex items-center gap-3 mb-3 sm:mb-0">
                 <span className="text-3xl">{item.emoji}</span>
                 <div>
                   <h3 className="text-lg font-bold text-gray-800">
@@ -37,7 +37,7 @@ function ActionPlanCard({ action_plan }) {
                   </div>
                 </div>
               </div>
-              <div className="text-right">
+              <div className="text-right sm:text-right">
                 <div className="text-sm text-gray-600">Potential Impact</div>
                 <div className="text-2xl font-bold text-indigo-600">
                   +{item.potential_impact.toFixed(1)} pts
