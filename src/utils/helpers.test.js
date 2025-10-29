@@ -1,5 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
+  formatImpact,
+  getCorrelation,
   getStrengthColor,
   getStrengthStars,
   getSummaryDescription,
@@ -107,5 +109,30 @@ describe("getStrengthStars", () => {
     expect(getStrengthStars("WEAK")).toBe("⭐");
     expect(getStrengthStars(undefined)).toBe("⭐");
     expect(getStrengthStars(null)).toBe("⭐");
+  });
+});
+
+// --- Test Suite for getCorrelation ---
+describe("getCorrelation", () => {
+  it("should return the correlation for a given factor", () => {
+    const correlations = [
+      { factor: "Mood", correlation: 0.8 },
+      { factor: "Stress", correlation: -0.6 },
+      { factor: "Sleep Duration", correlation: 0.7 },
+    ];
+    expect(getCorrelation(correlations, "Mood")).toBe(0.8);
+    expect(getCorrelation(correlations, "Stress")).toBe(-0.6);
+    expect(getCorrelation(correlations, "Sleep Duration")).toBe(0.7);
+    expect(getCorrelation(correlations, "Physical Activity")).toBe(0);
+  });
+});
+
+// --- Test Suite for formatImpact ---
+describe("formatImpact", () => {
+  it("should format the impact number for display", () => {
+    expect(formatImpact(0.8)).toBe("+0.8");
+    expect(formatImpact(-0.6)).toBe("-0.6");
+    expect(formatImpact(0.7)).toBe("+0.7");
+    expect(formatImpact(0)).toBe("0.0");
   });
 });
