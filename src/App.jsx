@@ -5,6 +5,7 @@ import CorrelationChart from "./components/CorrelationChart";
 import DrainerCard from "./components/DrainerCard";
 import Footer from "./components/Footer";
 import PopulationComparison from "./components/PopulationComparison";
+import ProductivityPredictor from "./components/ProductivityPredictor";
 import SummaryCard from "./components/SummaryCard";
 import TabNavigation from "./components/TabNavigation";
 import TimeSeriesChart from "./components/TimeSeriesChart";
@@ -66,7 +67,7 @@ function App() {
         </div>
       </header>
 
-      {/* Tab Navigation - NEW */}
+      {/* Tab Navigation */}
       <div className="max-w-7xl mx-auto px-4 mt-6">
         <TabNavigation activeTab={activeTab} setActiveTab={setActiveTab} />
       </div>
@@ -142,6 +143,10 @@ function App() {
             <BoosterCard boosters={userData.boosters} />
             <DrainerCard drainers={userData.drainers} />
           </div>
+        )}
+
+        {activeTab === "forecast" && (
+          <ProductivityPredictor userData={userData} />
         )}
 
         {activeTab === "action-plan" && (

@@ -42,3 +42,16 @@ export const getStrengthStars = (strength) => {
   if (strength === "MODERATE") return "⭐⭐";
   return "⭐";
 };
+
+// Helper to find correlation or return 0 if not found
+export const getCorrelation = (correlations, factor) => {
+  const corr = correlations.find((c) => c.factor === factor);
+  return corr ? corr.correlation : 0;
+};
+
+// Helper to format the impact number for display
+export const formatImpact = (impact) => {
+  if (impact > 0.01) return `+${impact.toFixed(1)}`;
+  if (impact < -0.01) return `${impact.toFixed(1)}`;
+  return `0.0`;
+};
