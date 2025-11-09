@@ -15,6 +15,7 @@ const formatImpact = (impact) => {
 
 function ProductivityPredictor({ userData }) {
   const { summary, correlations } = userData;
+  console.log(summary);
 
   // Set initial state of sliders to user's average
   const [todayMood, setTodayMood] = useState(summary.avg_mood);
