@@ -58,7 +58,10 @@ MoodFlow is a personalized analytics dashboard that helps users understand the r
 /src
 ├── assets/         # Static assets (images, svgs)
 ├── components/     # Reusable React components
+├── contexts/       # Create context
 ├── data/           # User data in JSON format
+├── pages/          # Page Navigations
+├── providers/      # Context Provider
 ├── utils/          # Helper functions
 ├── App.jsx         # Main application component
 ├── index.css       # Global styles
