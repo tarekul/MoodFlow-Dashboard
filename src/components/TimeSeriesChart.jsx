@@ -12,6 +12,7 @@ import {
 } from "recharts";
 
 function TimeSeriesChart({ data }) {
+  console.log(data);
   return (
     <div className="bg-white rounded-lg shadow-md p-6">
       <h2 className="text-xl font-bold text-gray-800 mb-4">
@@ -20,7 +21,11 @@ function TimeSeriesChart({ data }) {
       <ResponsiveContainer width="100%" height={300}>
         <LineChart data={data}>
           <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-          <XAxis dataKey="date" stroke="#6b7280" style={{ fontSize: "12px" }} />
+          <XAxis
+            dataKey="log_date"
+            stroke="#6b7280"
+            style={{ fontSize: "12px" }}
+          />
           <YAxis
             domain={[0, 10]}
             stroke="#6b7280"
