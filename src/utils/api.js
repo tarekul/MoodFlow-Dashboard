@@ -1,7 +1,9 @@
 import axios from "axios";
 
-// API base URL - change when deploying
-const API_BASE_URL = "http://localhost:8000";
+// API base URL
+const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
+
+console.log("Current API URL:", API_BASE_URL); // Check your browser console to verify!
 
 // Create axios instance
 const api = axios.create({
