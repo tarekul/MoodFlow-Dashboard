@@ -12,7 +12,6 @@ import {
 } from "recharts";
 
 function TimeSeriesChart({ data }) {
-  console.log(data);
   return (
     <div className="bg-white rounded-lg shadow-md p-6">
       <h2 className="text-xl font-bold text-gray-800 mb-4">
