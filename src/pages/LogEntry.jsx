@@ -6,6 +6,7 @@ import PhysicalActivityIllustration from "../components/PhysicalActivityIllustra
 import ProductivityIllustration from "../components/ProductivityIllustration";
 import ProgressBar from "../components/ProgressBar";
 import QuestionScreen from "../components/QuestionScreen";
+import ScreenTimeSlider from "../components/ScreenTimeSlider";
 import SleepScreen from "../components/SleepScreen";
 import {
   MOOD_OPTIONS,
@@ -105,6 +106,8 @@ const LogEntry = () => {
           onSelect={handlePhysicalActivitySelect}
         />
       )}
+
+      {currentStep === 6 && <ScreenTimeSlider />}
     </div>
   );
 };
