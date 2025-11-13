@@ -55,3 +55,42 @@ export const formatImpact = (impact) => {
   if (impact < -0.01) return `${impact.toFixed(1)}`;
   return `0.0`;
 };
+
+export const MOOD_OPTIONS = [
+  { value: 10, label: "Awesome" },
+  { value: 8, label: "Good" },
+  { value: 6, label: "Neutral" },
+  { value: 4, label: "Bad" },
+  { value: 2, label: "Terrible" },
+];
+
+export const PRODUCTIVITY_OPTIONS = [
+  { value: 10, label: "Crushed it" },
+  { value: 8, label: "Productive" },
+  { value: 6, label: "Average" },
+  { value: 4, label: "Struggled" },
+  { value: 2, label: "Unproductive" },
+];
+
+export const QUALITY_OPTIONS = [
+  { value: "Poor" },
+  { value: "Fair" },
+  { value: "Good" },
+  { value: "Excellent" },
+];
+
+export const STRESS_OPTIONS = [
+  { value: 10, label: "Burned Out", color: "bg-red-500" },
+  { value: 8, label: "Strained", color: "bg-orange-500" },
+  { value: 6, label: "Elevated", color: "bg-yellow-500" },
+  { value: 4, label: "Moderate", color: "bg-blue-400" },
+  { value: 2, label: "Low", color: "bg-emerald-400" },
+];
+
+export const PHYSICAL_ACTIVITY_OPTIONS = [
+  { value: 100, label: "Ultra (90+ mins)" },
+  { value: 75, label: "Long (60-90 mins)" },
+  { value: 45, label: "Medium (30-60 mins)" },
+  { value: 22, label: "Short (15-30 mins)" },
+  { value: 0, label: "None (0-15 mins)" },
+];
