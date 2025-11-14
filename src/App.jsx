@@ -22,10 +22,16 @@ function App() {
             path="/dashboard"
             element={
               <ProtectedRoute>
-                  <Routes>
-                   <Route path="/dashboard" element={<Dashboard />} />
-                   <Route path="/log-entry" element={<LogEntry />} />
-                </Routes>
+                   <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route 
+            path="/log-entry" 
+            element={
+              <ProtectedRoute>
+                <LogEntry />
               </ProtectedRoute>
             }
           />
