@@ -22,7 +22,7 @@ function App() {
             path="/dashboard"
             element={
               <ProtectedRoute>
-                <Dashboard />
+                <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/log-entry" element={<LogEntry />} />
               </ProtectedRoute>
             }
