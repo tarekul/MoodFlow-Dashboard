@@ -16,7 +16,6 @@ function App() {
           {/* Public routes */}
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
-          <Route path="/log-entry" element={<LogEntry />} />
 
           {/* Protected dashboard */}
           <Route
@@ -24,6 +23,7 @@ function App() {
             element={
               <ProtectedRoute>
                 <Dashboard />
+                <Route path="/log-entry" element={<LogEntry />} />
               </ProtectedRoute>
             }
           />
