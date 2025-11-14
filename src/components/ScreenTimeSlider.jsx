@@ -22,7 +22,7 @@ const ScreenTimeSlider = () => {
           Track the amount of screen time you had today.
         </p>
       </div>
-      <ScreenTimeIllustration />
+      <ScreenTimeIllustration hours={hours} />
       <div className="w-full max-w-md space-y-12">
         <div className="flex flex-wrap justify-center gap-3 mb-3">
           <label className="text-slate-500 font-medium">Screen Time</label>

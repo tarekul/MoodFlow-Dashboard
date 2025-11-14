@@ -2,7 +2,7 @@ const MoonIllustration = () => {
   return (
     <div className="my-12">
       {/* TODO: Add illustration or use CSS to create something similar */}
-      <div className="w-64 h-64 relative">
+      <div className="w-40 h-40 relative">
         {/* Moon circle */}
         <div className="absolute inset-0 bg-indigo-300 rounded-full opacity-50" />
         {/* Wave pattern - simplified */}
