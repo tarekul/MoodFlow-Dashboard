@@ -111,8 +111,8 @@ const LogEntry = () => {
       
       {currentStep === 7 && (
         <QuestionScreen
-          title="did you eat like a pig today or a normal human?"
-          subtitle="was yo ahh lazy today or was you an active productive member of society"
+          title=""
+          subtitle=""
           options={PHYSICAL_ACTIVITY_OPTIONS}
           illustration={<PhysicalActivityIllustration />}
           onSelect={handlePhysicalActivitySelect}
