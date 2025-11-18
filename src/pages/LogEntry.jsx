@@ -111,8 +111,8 @@ const LogEntry = () => {
       
       {currentStep === 7 && (
         <QuestionScreen
-          title=""
-          subtitle=""
+          title="How would you rate your diet today?"
+          subtitle="Rate the overall quality of your meals and snacks — think about balance, portion sizes, and nutrients."
           options={PHYSICAL_ACTIVITY_OPTIONS}
           illustration={<PhysicalActivityIllustration />}
           onSelect={handlePhysicalActivitySelect}
