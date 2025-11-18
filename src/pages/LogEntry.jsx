@@ -63,11 +63,18 @@ const LogEntry = () => {
     setCurrentStep(6);
   };
 
-  const handleDietQualitySelect = (diet_quality) => {
-    setFormData({ ...formData, diet_quality });
+  const handleScreenTimeSelect = (screen_time) => {
+    setFormData({ ...formData, screen_time });
     setCurrentStep(7);
   }
 
+
+  const handleDietQualitySelect = (diet_quality) => {
+    setFormData({ ...formData, diet_quality });
+    setCurrentStep(8);
+  }
+
+ 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex flex-col items-center justify-between p-8">
       <ProgressBar currentStep={currentStep} />
@@ -113,7 +120,7 @@ const LogEntry = () => {
         />
       )}
 
-      {currentStep === 6 && <ScreenTimeSlider  />}
+      {currentStep === 6 && <ScreenTimeSlider onComplete={handleScreenTimeSelect} />}
       
       {currentStep === 7 && (
         <QuestionScreen

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import ScreenTimeIllustration from "./ScreenTimeIllustration";
 
-const ScreenTimeSlider = () => {
+const ScreenTimeSlider = ({ onComplete }) => {
   const [hours, setHours] = useState(4.5);
 
   // Dynamic color based on usage
@@ -47,6 +47,12 @@ const ScreenTimeSlider = () => {
           <span>6h</span>
           <span>12h+</span>
         </div>
+        <button
+          onClick={() => onComplete(hours)}
+     className="w-full py-4 bg-indigo-600 text-white rounded-full font-semibold text-lg hover:bg-indigo-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          Continue →
+        </button>
       </div>
     </div>
   );
