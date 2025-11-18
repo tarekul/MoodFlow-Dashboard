@@ -13,6 +13,7 @@ import {
   PHYSICAL_ACTIVITY_OPTIONS,
   PRODUCTIVITY_OPTIONS,
   STRESS_OPTIONS,
+  DIET_QUALITY_OPTIONS
 } from "../utils/helpers";
 
 const LogEntry = () => {
@@ -61,6 +62,11 @@ const LogEntry = () => {
     setFormData({ ...formData, physical_activity });
     setCurrentStep(6);
   };
+
+  const handleDietQualitySelect = (diet_quality) => {
+    setFormData({ ...formData, diet_quality });
+    setCurrentStep(7);
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex flex-col items-center justify-between p-8">
@@ -113,9 +119,9 @@ const LogEntry = () => {
         <QuestionScreen
           title="How would you rate your diet today?"
           subtitle="Rate the overall quality of your meals and snacks — think about balance, portion sizes, and nutrients."
-          options={PHYSICAL_ACTIVITY_OPTIONS}
+          options={DIET_QUALITY_OPTIONS}
           illustration={<PhysicalActivityIllustration />}
-          onSelect={handlePhysicalActivitySelect}
+          onSelect={handleDietQualitySelect}
         />
       )}
     </div>
