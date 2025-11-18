@@ -94,3 +94,9 @@ export const PHYSICAL_ACTIVITY_OPTIONS = [
   { value: 22, label: "Short (15-30 mins)" },
   { value: 0, label: "None (0-15 mins)" },
 ];
+
+export const DIET_QUALITY_OPTIONS = [
+  { value: "Good" },
+  { value: "Average" },
+  { value: "Poor" }
+]
