@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import CalmVsChaoticIllustration from "../components/CalmVsChaoticIllustration";
 import DietQualityIllustration from "../components/DietQualityIllustration";
 import MoonIllustration from "../components/MoonIllustration";
+import Notes from "../components/Notes";
 import PhysicalActivityIllustration from "../components/PhysicalActivityIllustration";
 import ProductivityIllustration from "../components/ProductivityIllustration";
 import ProgressBar from "../components/ProgressBar";
@@ -87,6 +88,11 @@ const LogEntry = () => {
     setCurrentStep(10);
   };
 
+  const handleNotesSelect = (notes) => {
+    setFormData({ ...formData, notes });
+    setCurrentStep(11);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex flex-col items-center justify-between p-8">
       <ProgressBar currentStep={currentStep} />
@@ -159,6 +165,8 @@ const LogEntry = () => {
           onSelect={handleWeatherSelect}
         />
       )}
+
+      {currentStep === 10 && <Notes onComplete={handleNotesSelect} />}
     </div>
   );
 };
