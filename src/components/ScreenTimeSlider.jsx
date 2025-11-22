@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import ScreenTimeIllustration from "./ScreenTimeIllustration";
 
-const ScreenTimeSlider = ({ onComplete }) => {
+const ScreenTimeSlider = ({ onComplete, onSkip }) => {
   const [hours, setHours] = useState(4.5);
 
   // Dynamic color based on usage
@@ -53,6 +53,16 @@ const ScreenTimeSlider = ({ onComplete }) => {
         >
           Continue →
         </button>
+
+        {/* Skip link - only show if onSkip is provided */}
+        {onSkip && (
+          <button
+            onClick={onSkip}
+            className="mt-6 text-gray-500 hover:text-gray-700 text-sm underline"
+          >
+            Skip this question
+          </button>
+        )}
       </div>
     </div>
   );

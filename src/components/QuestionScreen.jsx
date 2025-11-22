@@ -4,9 +4,13 @@ const QuestionScreen = ({
   options,
   illustration,
   onSelect,
+  onSkip,
 }) => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex flex-col items-center justify-between p-8 animate-fade-in">
+    // CHANGED:
+    // 1. Removed 'min-h-screen', 'bg-gradient...', and 'p-8'
+    // 2. Added 'w-full' and 'flex-1' so it fills the available space in LogEntry
+    <div className="w-full flex-1 flex flex-col items-center justify-between animate-fade-in">
       {/* Header */}
       <div className="text-center mt-12">
         <h1 className="text-4xl font-serif mb-4 text-gray-900">{title}</h1>
@@ -47,6 +51,16 @@ const QuestionScreen = ({
               </button>
             ))}
           </div>
+        )}
+
+        {/* Skip link - only show if onSkip is provided */}
+        {onSkip && (
+          <button
+            onClick={onSkip}
+            className="mt-6 text-gray-500 hover:text-gray-700 text-sm underline"
+          >
+            Skip this question
+          </button>
         )}
       </div>
     </div>

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import SocialInteractionIllustration from "./SocialInteractionIllustration";
 
-const SocialInteractionsSlider = ({ onComplete }) => {
+const SocialInteractionsSlider = ({ onComplete, onSkip }) => {
   const [hours, setHours] = useState(2);
 
   const getColor = (val) => {
@@ -54,6 +54,16 @@ const SocialInteractionsSlider = ({ onComplete }) => {
         >
           Continue →
         </button>
+
+        {/* Skip link - only show if onSkip is provided */}
+        {onSkip && (
+          <button
+            onClick={onSkip}
+            className="mt-6 text-gray-500 hover:text-gray-700 text-sm underline"
+          >
+            Skip this question
+          </button>
+        )}
       </div>
     </div>
   );

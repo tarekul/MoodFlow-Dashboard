@@ -28,11 +28,11 @@ const WeatherIllustration = () => {
   `;
 
   return (
-    <div className="my-12 flex items-center justify-center">
+    <div className="my-2 flex items-center justify-center">
       <style>{customStyles}</style>
 
       {/* Main Container */}
-      <div className="w-96 h-40 bg-white rounded-3xl border-4 border-gray-100 shadow-xl flex overflow-hidden relative">
+      <div className="w-64 h-40 bg-white rounded-3xl border-4 border-gray-100 shadow-xl flex overflow-hidden relative">
         {/* ===========================
             ZONE 1: SUNNY (Left) - Unchanged
            =========================== */}

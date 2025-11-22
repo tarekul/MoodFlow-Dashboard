@@ -1,7 +1,7 @@
 const CalmVsChaoticIllustration = () => {
   return (
-    <div className="my-12 flex items-center justify-center">
-      <div className="w-64 h-64 relative">
+    <div className="my-2 flex items-center justify-center">
+      <div className="w-44 h-44 relative">
         {/* Calm Side - Smooth, parallel lines */}
         <div className="absolute w-1/2 h-1 bg-blue-300 top-1/4 left-0 rotate-[15deg] rounded-full opacity-80"></div>
         <div className="absolute w-1/2 h-1 bg-green-300 top-1/2 left-0 rotate-[15deg] rounded-full opacity-80"></div>

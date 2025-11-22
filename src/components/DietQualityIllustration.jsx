@@ -2,9 +2,9 @@ import React from "react";
 
 const DietQualityIllustration = () => {
   return (
-    <div className="my-12 flex items-center justify-center">
+    <div className="my-2 flex items-center justify-center">
       {/* Main Container with subtle gradient background */}
-      <div className="w-64 h-64 relative bg-gradient-to-tr from-orange-50 via-stone-50 to-green-50 rounded-2xl overflow-hidden shadow-sm">
+      <div className="w-54 h-54 relative bg-gradient-to-tr from-orange-50 via-stone-50 to-green-50 rounded-2xl overflow-hidden shadow-sm">
         {/* --- THE SPECTRUM PATH (Curved Line) --- */}
         {/* Created using a large border radius to form an arc */}
         <div className="absolute bottom-12 left-0 w-full h-32 overflow-hidden opacity-30">

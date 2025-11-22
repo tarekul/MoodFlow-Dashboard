@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import ActionPlanCard from "../components/ActionPlanCard";
 import BoosterCard from "../components/BoosterCard";
 import CorrelationChart from "../components/CorrelationChart";
@@ -15,6 +16,7 @@ import { analysisAPI } from "../utils/api";
 import { getSummaryDescription } from "../utils/helpers";
 
 function Dashboard() {
+  const navigate = useNavigate();
   const { user, logout } = useAuth();
   const [activeTab, setActiveTab] = useState("overview");
   const [userData, setUserData] = useState(null);
@@ -134,6 +136,12 @@ function Dashboard() {
             </div>
           </div>
         </div>
+        <button
+          onClick={() => navigate("/my-logs")}
+          className="px-4 py-2 text-indigo-600 hover:text-indigo-800 font-medium"
+        >
+          📋 My Logs
+        </button>
       </header>
 
       {/* Tab Navigation */}

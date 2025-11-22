@@ -4,9 +4,9 @@ const ScreenTimeIllustration = ({ hours }) => {
   const intensity = Math.max(0, Math.min((hours - 2) / 10, 1));
 
   return (
-    <div className="my-8 flex items-center justify-center">
+    <div className="my-2 flex items-center justify-center">
       {/* Increased size slightly for detail */}
-      <div className="w-64 h-32 relative">
+      <div className="w-54 h-32 relative">
         {/* 1. Outer eye shape & Base White */}
         <div className="w-full h-full bg-white rounded-[50%] border-4 border-gray-800 overflow-hidden relative shadow-lg">
           {/* 2. General Redness (Sclera inflammation) */}

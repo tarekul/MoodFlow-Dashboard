@@ -7,6 +7,10 @@ const Notes = ({ onComplete }) => {
     onComplete(notes);
   };
 
+  const handleSkip = () => {
+    onComplete(null);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex flex-col items-center justify-between p-8">
       <div className="w-full max-w-2xl">
@@ -25,13 +29,19 @@ const Notes = ({ onComplete }) => {
             className="w-full h-64 p-4 border border-gray-200 rounded-xl resize-none"
           />
 
-          <div className="flex justify-end mt-6">
+          <div className="flex flex-col justify-end mt-6 gap-4">
             <button
               onClick={handleSave}
               disabled={!notes.trim()}
               className="px-8 py-3 bg-indigo-600 text-white rounded-full font-semibold hover:bg-indigo-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Save Notes
+            </button>
+            <button
+              onClick={handleSkip}
+              className="px-8 py-3 bg-indigo-600 text-white rounded-full font-semibold hover:bg-indigo-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Skip
             </button>
           </div>
         </div>

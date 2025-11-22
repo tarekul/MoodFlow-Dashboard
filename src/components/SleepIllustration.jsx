@@ -1,10 +1,10 @@
 const SleepIllustration = () => {
   return (
     <div className="my-12">
-      <div className="w-64 h-64 relative">
+      <div className="w-25 h-25 relative">
         {/* Crescent Moon: Created by overlapping two circles */}
-        <div className="w-40 h-40 bg-yellow-200 rounded-full absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 shadow-lg"></div>
-        <div className="w-32 h-32 bg-blue-50 rounded-full absolute top-1/2 left-1/2 -translate-x-[40%] -translate-y-[60%]"></div>
+        <div className="w-30 h-30 bg-yellow-200 rounded-full absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 shadow-lg"></div>
+        <div className="w-22 h-22 bg-blue-50 rounded-full absolute top-1/2 left-1/2 -translate-x-[40%] -translate-y-[60%]"></div>
 
         {/* Stars with Twinkle Effect*/}
         {/* Star 1: Standard Pulse */}

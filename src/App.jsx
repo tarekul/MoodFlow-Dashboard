@@ -4,6 +4,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import Dashboard from "./pages/Dashboard";
 import LogEntry from "./pages/LogEntry";
 import Login from "./pages/Login";
+import MyLogs from "./pages/MyLogs";
 import Signup from "./pages/Signup";
 import { AuthProvider } from "./providers/AuthProvider";
 
@@ -22,16 +23,25 @@ function App() {
             path="/dashboard"
             element={
               <ProtectedRoute>
-                   <Dashboard />
+                <Dashboard />
               </ProtectedRoute>
             }
           />
 
-          <Route 
-            path="/log-entry" 
+          <Route
+            path="/log-entry"
             element={
               <ProtectedRoute>
                 <LogEntry />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/my-logs"
+            element={
+              <ProtectedRoute>
+                <MyLogs />
               </ProtectedRoute>
             }
           />
