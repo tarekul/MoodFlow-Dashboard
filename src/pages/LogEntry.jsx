@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import CalmVsChaoticIllustration from "../components/CalmVsChaoticIllustration";
+import DietQualityIllustration from "../components/DietQualityIllustration";
 import MoonIllustration from "../components/MoonIllustration";
 import PhysicalActivityIllustration from "../components/PhysicalActivityIllustration";
 import ProductivityIllustration from "../components/ProductivityIllustration";
@@ -8,12 +9,13 @@ import ProgressBar from "../components/ProgressBar";
 import QuestionScreen from "../components/QuestionScreen";
 import ScreenTimeSlider from "../components/ScreenTimeSlider";
 import SleepScreen from "../components/SleepScreen";
+import SocialInteractionsSlider from "../components/SocialInteractionsSlider";
 import {
+  DIET_QUALITY_OPTIONS,
   MOOD_OPTIONS,
   PHYSICAL_ACTIVITY_OPTIONS,
   PRODUCTIVITY_OPTIONS,
   STRESS_OPTIONS,
-  DIET_QUALITY_OPTIONS
 } from "../utils/helpers";
 
 const LogEntry = () => {
@@ -66,15 +68,18 @@ const LogEntry = () => {
   const handleScreenTimeSelect = (screen_time) => {
     setFormData({ ...formData, screen_time });
     setCurrentStep(7);
-  }
-
+  };
 
   const handleDietQualitySelect = (diet_quality) => {
     setFormData({ ...formData, diet_quality });
     setCurrentStep(8);
-  }
+  };
 
- 
+  const handleSocialInteractionSelect = (social_interaction) => {
+    setFormData({ ...formData, social_interaction });
+    setCurrentStep(9);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex flex-col items-center justify-between p-8">
       <ProgressBar currentStep={currentStep} />
@@ -120,16 +125,22 @@ const LogEntry = () => {
         />
       )}
 
-      {currentStep === 6 && <ScreenTimeSlider onComplete={handleScreenTimeSelect} />}
-      
+      {currentStep === 6 && (
+        <ScreenTimeSlider onComplete={handleScreenTimeSelect} />
+      )}
+
       {currentStep === 7 && (
         <QuestionScreen
           title="How would you rate your diet today?"
           subtitle="Rate the overall quality of your meals and snacks — think about balance, portion sizes, and nutrients."
           options={DIET_QUALITY_OPTIONS}
-          illustration={<PhysicalActivityIllustration />}
+          illustration={<DietQualityIllustration />}
           onSelect={handleDietQualitySelect}
         />
+      )}
+
+      {currentStep === 8 && (
+        <SocialInteractionsSlider onComplete={handleSocialInteractionSelect} />
       )}
     </div>
   );

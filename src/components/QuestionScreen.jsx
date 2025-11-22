@@ -10,7 +10,7 @@ const QuestionScreen = ({
       {/* Header */}
       <div className="text-center mt-12">
         <h1 className="text-4xl font-serif mb-4 text-gray-900">{title}</h1>
-        <p className="text-gray-600 text-lg max-w-md">{subtitle}</p>
+        <p className="text-gray-600 text-lg max-w-md mx-auto">{subtitle}</p>
       </div>
 
       {/* Illustration */}

@@ -1,14 +1,13 @@
 import React, { useState } from "react";
-import ScreenTimeIllustration from "./ScreenTimeIllustration";
+import SocialInteractionIllustration from "./SocialInteractionIllustration";
 
-const ScreenTimeSlider = ({ onComplete }) => {
-  const [hours, setHours] = useState(4.5);
+const SocialInteractionsSlider = ({ onComplete }) => {
+  const [hours, setHours] = useState(2);
 
-  // Dynamic color based on usage
   const getColor = (val) => {
-    if (val <= 3) return "text-green-500";
-    if (val <= 6) return "text-yellow-500";
-    if (val <= 9) return "text-orange-500";
+    if (val <= 3.5) return "text-blue-500";
+    if (val <= 6.5) return "text-yellow-500";
+    if (val <= 8) return "text-orange-500";
     return "text-red-500";
   };
 
@@ -16,16 +15,18 @@ const ScreenTimeSlider = ({ onComplete }) => {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex flex-col items-center justify-between p-8 animate-fade-in">
       <div className="text-center mt-12">
         <h1 className="text-4xl font-serif mb-4 text-gray-900">
-          How much screen time did you have?
+          How much social interaction did you have?
         </h1>
         <p className="text-gray-600 text-lg max-w-md mx-auto">
-          Track the amount of screen time you had today.
+          Think about how much time you spent socializing today.
         </p>
       </div>
-      <ScreenTimeIllustration hours={hours} />
+      <SocialInteractionIllustration hours={hours} />
       <div className="w-full max-w-md space-y-12">
         <div className="flex flex-wrap justify-center gap-3 mb-3">
-          <label className="text-slate-500 font-medium">Screen Time</label>
+          <label className="text-slate-500 font-medium">
+            Social Interaction
+          </label>
           <div className={`text-3xl font-bold ${getColor(hours)}`}>
             {hours}{" "}
             <span className="text-sm text-slate-400 font-normal">hours</span>
@@ -35,7 +36,7 @@ const ScreenTimeSlider = ({ onComplete }) => {
         <input
           type="range"
           min="0"
-          max="12"
+          max="8"
           step="0.5"
           value={hours}
           onChange={(e) => setHours(parseFloat(e.target.value))}
@@ -44,8 +45,8 @@ const ScreenTimeSlider = ({ onComplete }) => {
 
         <div className="flex justify-between mt-2 text-xs text-slate-400">
           <span>0h</span>
-          <span>6h</span>
-          <span>12h+</span>
+          <span>4h</span>
+          <span>8h+</span>
         </div>
         <button
           onClick={() => onComplete(hours)}
@@ -58,4 +59,4 @@ const ScreenTimeSlider = ({ onComplete }) => {
   );
 };
 
-export default ScreenTimeSlider;
+export default SocialInteractionsSlider;

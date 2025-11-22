@@ -100,3 +100,10 @@ export const DIET_QUALITY_OPTIONS = [
   { value: "Average", label: "Average" },
   { value: "Poor", label: "Poor" },
 ]
+
+export const SOCIAL_INTERACTION_OPTIONS = [
+  { value: 10, label: "Good" },
+  { value: 8, label: "Average" },
+  { value: 6, label: "Poor" },
+]
+
