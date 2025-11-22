@@ -99,11 +99,16 @@ export const DIET_QUALITY_OPTIONS = [
   { value: "Good", label: "Good" },
   { value: "Average", label: "Average" },
   { value: "Poor", label: "Poor" },
-]
+];
 
 export const SOCIAL_INTERACTION_OPTIONS = [
   { value: 10, label: "Good" },
   { value: 8, label: "Average" },
   { value: 6, label: "Poor" },
-]
+];
 
+export const WEATHER_OPTIONS = [
+  { value: "Sunny", label: "Sunny" },
+  { value: "Cloudy", label: "Cloudy" },
+  { value: "Rainy", label: "Rainy" },
+];

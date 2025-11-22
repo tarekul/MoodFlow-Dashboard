@@ -10,12 +10,14 @@ import QuestionScreen from "../components/QuestionScreen";
 import ScreenTimeSlider from "../components/ScreenTimeSlider";
 import SleepScreen from "../components/SleepScreen";
 import SocialInteractionsSlider from "../components/SocialInteractionsSlider";
+import WeatherIllustration from "../components/WeatherIllustration";
 import {
   DIET_QUALITY_OPTIONS,
   MOOD_OPTIONS,
   PHYSICAL_ACTIVITY_OPTIONS,
   PRODUCTIVITY_OPTIONS,
   STRESS_OPTIONS,
+  WEATHER_OPTIONS,
 } from "../utils/helpers";
 
 const LogEntry = () => {
@@ -80,6 +82,11 @@ const LogEntry = () => {
     setCurrentStep(9);
   };
 
+  const handleWeatherSelect = (weather) => {
+    setFormData({ ...formData, weather });
+    setCurrentStep(10);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex flex-col items-center justify-between p-8">
       <ProgressBar currentStep={currentStep} />
@@ -141,6 +148,16 @@ const LogEntry = () => {
 
       {currentStep === 8 && (
         <SocialInteractionsSlider onComplete={handleSocialInteractionSelect} />
+      )}
+
+      {currentStep === 9 && (
+        <QuestionScreen
+          title="How was the weather?"
+          subtitle="Look at the weather outside"
+          options={WEATHER_OPTIONS}
+          illustration={<WeatherIllustration />}
+          onSelect={handleWeatherSelect}
+        />
       )}
     </div>
   );
