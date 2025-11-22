@@ -96,7 +96,7 @@ export const PHYSICAL_ACTIVITY_OPTIONS = [
 ];
 
 export const DIET_QUALITY_OPTIONS = [
-  { value: "Good" },
-  { value: "Average" },
-  { value: "Poor" }
+  { value: "Good", label: "Good" },
+  { value: "Average", label: "Average" },
+  { value: "Poor", label: "Poor" },
 ]
