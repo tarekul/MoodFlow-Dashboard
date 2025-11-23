@@ -5,6 +5,7 @@ import BoosterCard from "../components/BoosterCard";
 import CorrelationChart from "../components/CorrelationChart";
 import DrainerCard from "../components/DrainerCard";
 import Footer from "../components/Footer";
+import StreakMilestone from "../components/StreakMilestone";
 import SummaryCard from "../components/SummaryCard";
 import TabNavigation from "../components/TabNavigation";
 import TimeSeriesChart from "../components/TimeSeriesChart";
@@ -21,68 +22,72 @@ function Dashboard() {
   const [userData, setUserData] = useState(null);
   const [logs, setLogs] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [logsLoading, setLogsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [streak, setStreak] = useState(0);
+  const [showMilestone, setShowMilestone] = useState(true);
+  const [previousStreak, setPreviousStreak] = useState(null);
 
   // Fetch analysis from API
-  useEffect(() => {
-    const fetchAnalysis = async () => {
-      try {
-        setLoading(true);
-        const data = await analysisAPI.getAnalysis();
-        setUserData(data);
-        setError(null);
-      } catch (err) {
-        console.error("Analysis error:", err);
-        if (err.response?.status === 400) {
-          setError(err.response.data.detail || "Need at least 7 days of data");
-        } else {
-          setError("Failed to load analysis");
-        }
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchAnalysis();
-  }, []);
-
-  useEffect(() => {
-    fetchLogs();
-  }, []);
-
-  const fetchLogs = async () => {
+  const fetchAnalysis = async () => {
     try {
       setLoading(true);
-      const data = await logsAPI.getMyLogs();
-      setLogs(data);
+      const data = await analysisAPI.getAnalysis();
+      setUserData(data);
       setError(null);
     } catch (err) {
-      setError("Failed to load logs");
-      console.error(err);
+      // Expected error when user has < 7 days of data - don't log to console
+      if (err.response?.status === 400) {
+        setError(err.response.data.detail || "Need at least 7 days of data");
+      } else {
+        // Unexpected errors should still be logged
+        console.error("Analysis error:", err);
+        setError("Failed to load analysis");
+      }
     } finally {
       setLoading(false);
     }
   };
 
-  // Fetch logs for streak calculation
-  useEffect(() => {
-    const fetchStreak = async () => {
-      try {
-        const logs = await logsAPI.getMyLogs();
-        setStreak(calculateStreak(logs));
-      } catch (err) {
-        console.error("Failed to fetch streak:", err);
-      }
-    };
-
-    if (userData) {
-      fetchStreak();
+  const fetchLogs = async () => {
+    try {
+      setLogsLoading(true);
+      const data = await logsAPI.getMyLogs();
+      setLogs(data);
+    } catch (err) {
+      console.error("Failed to load logs:", err);
+    } finally {
+      setLogsLoading(false);
     }
-  }, [userData]);
+  };
 
-  // Loading state
-  if (loading) {
+  // Fetch both in parallel on mount
+  useEffect(() => {
+    Promise.all([fetchAnalysis(), fetchLogs()]);
+  }, []);
+
+  // Calculate streak whenever logs change
+  useEffect(() => {
+    if (logs.length > 0) {
+      const newStreak = calculateStreak(logs);
+
+      // Check if we hit a milestone
+      const milestones = [7, 14, 30, 60, 90, 100];
+      if (
+        previousStreak !== null &&
+        milestones.includes(newStreak) &&
+        newStreak > previousStreak
+      ) {
+        setShowMilestone(true);
+      }
+
+      setPreviousStreak(newStreak);
+      setStreak(newStreak);
+    }
+  }, [logs, previousStreak]);
+
+  // Loading state - wait for both to finish
+  if (loading || logsLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
         <div className="text-center">
@@ -100,31 +105,95 @@ function Dashboard() {
 
   // Error state - need more data
   if (error) {
+    // Calculate progress if we have logs
+    const daysLogged = logs.length;
+    const daysNeeded = 7;
+    const progress = Math.min((daysLogged / daysNeeded) * 100, 100);
+
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
         <div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-6 sm:p-8">
           <div className="text-center">
             <div className="text-5xl sm:text-6xl mb-4">📊</div>
             <h2 className="text-2xl sm:text-3xl font-bold mb-4 text-gray-900">
-              Need More Data
+              {daysLogged > 0 ? "Almost There!" : "Need More Data"}
             </h2>
             <p className="text-sm sm:text-base text-gray-600 mb-2">
               Logged in as: <span className="font-semibold">{user?.email}</span>
             </p>
-            <p className="text-sm sm:text-base text-gray-600 mb-6">{error}</p>
-            <div className="bg-indigo-50 border border-indigo-200 rounded-lg p-4 mb-6">
-              <p className="text-xs sm:text-sm text-indigo-800">
-                💡 <strong>Tip:</strong> Log at least 7 days of mood,
-                productivity, sleep, and stress data to get your personalized
-                analysis!
-              </p>
+
+            {daysLogged > 0 ? (
+              <>
+                {/* Progress Bar */}
+                <div className="my-6">
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="text-sm font-medium text-gray-700">
+                      {daysLogged} / {daysNeeded} days logged
+                    </span>
+                    <span className="text-sm font-bold text-indigo-600">
+                      {Math.round(progress)}%
+                    </span>
+                  </div>
+                  <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
+                    <div
+                      className="bg-gradient-to-r from-indigo-500 to-purple-600 h-3 rounded-full transition-all duration-500 ease-out"
+                      style={{ width: `${progress}%` }}
+                    ></div>
+                  </div>
+                  <p className="text-sm text-indigo-600 font-semibold mt-2">
+                    {daysNeeded - daysLogged} more{" "}
+                    {daysNeeded - daysLogged === 1 ? "day" : "days"} to unlock
+                    analysis! 🎯
+                  </p>
+                </div>
+
+                <div className="bg-indigo-50 border border-indigo-200 rounded-lg p-4 mb-6">
+                  <p className="text-xs sm:text-sm text-indigo-800">
+                    🌟 <strong>Keep going!</strong> Log{" "}
+                    {daysNeeded - daysLogged} more{" "}
+                    {daysNeeded - daysLogged === 1 ? "day" : "days"} to get your
+                    personalized productivity insights with correlation
+                    analysis!
+                  </p>
+                </div>
+
+                <button
+                  onClick={() => navigate("/log-entry")}
+                  className="w-full sm:w-auto px-6 py-3 bg-indigo-600 text-white rounded-lg font-semibold hover:bg-indigo-700 transition-all mb-3"
+                >
+                  + Log Today
+                </button>
+              </>
+            ) : (
+              <>
+                <p className="text-sm sm:text-base text-gray-600 mb-6">
+                  {error}
+                </p>
+                <div className="bg-indigo-50 border border-indigo-200 rounded-lg p-4 mb-6">
+                  <p className="text-xs sm:text-sm text-indigo-800">
+                    💡 <strong>Tip:</strong> Log at least 7 days of mood,
+                    productivity, sleep, and stress data to get your
+                    personalized analysis!
+                  </p>
+                </div>
+
+                <button
+                  onClick={() => navigate("/log-entry")}
+                  className="w-full sm:w-auto px-6 py-3 bg-indigo-600 text-white rounded-lg font-semibold hover:bg-indigo-700 transition-all mb-3"
+                >
+                  Start Logging
+                </button>
+              </>
+            )}
+
+            <div className="mt-4">
+              <button
+                onClick={logout}
+                className="w-full sm:w-auto px-6 py-2 text-gray-600 hover:text-gray-900 font-medium border-2 border-gray-300 rounded-lg hover:border-gray-400 transition-all"
+              >
+                Logout
+              </button>
             </div>
-            <button
-              onClick={logout}
-              className="w-full sm:w-auto px-6 py-2 text-gray-600 hover:text-gray-900 font-medium border-2 border-gray-300 rounded-lg hover:border-gray-400 transition-all"
-            >
-              Logout
-            </button>
           </div>
         </div>
       </div>
@@ -153,6 +222,14 @@ function Dashboard() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+      {/* Streak Milestone Modal */}
+      {showMilestone && (
+        <StreakMilestone
+          streak={streak}
+          onClose={() => setShowMilestone(false)}
+        />
+      )}
+
       {/* Header - Responsive Layout */}
       <header className="bg-white shadow-md">
         <div className="max-w-7xl mx-auto px-3 sm:px-4 py-4 sm:py-6">

@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import ScreenTimeIllustration from "./ScreenTimeIllustration";
 
 const ScreenTimeSlider = ({ onComplete, onSkip, initialValue }) => {
-  console.log(initialValue);
   const [hours, setHours] = useState(initialValue ?? 4.5);
 
   // Dynamic color based on usage
