@@ -19,7 +19,7 @@ function BoosterCard({ boosters, comparisons = [] }) {
       return (
         <div className="mt-2 flex items-center gap-2 text-xs">
           <span className="px-2 py-1 rounded-full bg-gray-100 text-gray-700 border border-gray-300">
-            ➡️ TYPICAL
+            TYPICAL
           </span>
           <span className="text-gray-600">
             Your response is about average (avg:{" "}
