@@ -78,35 +78,48 @@ const MyLogs = () => {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6">
       {/* Header */}
       <div className="max-w-2xl mx-auto mb-8">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900">My Logs</h1>
-            <p className="text-gray-600">{logs.length} entries</p>
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div className="flex justify-between items-center md:block">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900">My Logs</h1>
+              <p className="text-gray-600">{logs.length} entries</p>
+            </div>
+
+            <button
+              onClick={() => navigate("/dashboard")}
+              className="md:hidden px-3 py-1 text-gray-500 hover:text-gray-900 text-sm bg-white rounded-lg border border-gray-200"
+            >
+              Dashboard
+            </button>
           </div>
-          <div className="flex gap-4">
-            {/* Streak Counter */}
-            <div className="bg-gradient-to-r from-orange-400 to-red-500 text-white px-4 py-2 rounded-xl text-center">
-              <div className="text-2xl font-bold">{streak}🔥</div>
-              <div className="text-xs opacity-90">day streak</div>
+
+          <div className="flex items-center gap-3 w-full md:w-auto">
+            <div className="shrink-0 bg-gradient-to-r from-orange-400 to-red-500 text-white px-4 py-2 rounded-xl text-center">
+              <div className="text-2xl font-bold leading-none">{streak}🔥</div>
+              <div className="text-[10px] uppercase font-bold opacity-90 tracking-wide">
+                streak
+              </div>
             </div>
 
             {hasLoggedToday && (
-              <div className="bg-gradient-to-r from-green-400 to-emerald-500 text-white px-4 py-3 rounded-xl text-center shadow-md">
-                <div className="text-xl font-bold">✓</div>
-                <div className="text-xs opacity-90">logged today</div>
+              <div className="flex-1 md:flex-none bg-gradient-to-r from-green-400 to-emerald-500 text-white px-4 py-2 rounded-xl text-center shadow-md flex items-center justify-center gap-2">
+                <span className="text-xl font-bold">✓</span>
+                <span className="text-sm font-medium">Logged</span>
               </div>
             )}
+
             {!hasLoggedToday && (
               <button
                 onClick={() => navigate("/log-entry")}
-                className="px-6 py-2 bg-indigo-600 text-white rounded-full font-semibold hover:bg-indigo-700 transition-all"
+                className="flex-1 md:flex-none px-6 py-3 md:py-2 bg-indigo-600 text-white rounded-xl md:rounded-full font-semibold hover:bg-indigo-700 transition-all shadow-sm text-sm md:text-base"
               >
                 + New Log
               </button>
             )}
+
             <button
               onClick={() => navigate("/dashboard")}
-              className="px-4 py-2 text-gray-600 hover:text-gray-900"
+              className="hidden md:block px-4 py-2 text-gray-600 hover:text-gray-900"
             >
               ← Dashboard
             </button>
@@ -151,7 +164,6 @@ const MyLogs = () => {
             className="bg-white rounded-xl shadow-sm p-6 hover:shadow-md transition-shadow"
           >
             <div className="flex items-start justify-between">
-              {/* Left side - Date and mood */}
               <div className="flex items-center gap-4">
                 <div>
                   <div className="font-semibold text-gray-900">
@@ -163,7 +175,6 @@ const MyLogs = () => {
                 </div>
               </div>
 
-              {/* Right side - Actions */}
               <div className="flex gap-2">
                 <button
                   onClick={() => navigate(`/log-entry/${log.id}`)}
@@ -208,7 +219,6 @@ const MyLogs = () => {
               )}
             </div>
 
-            {/* Notes if present */}
             {log.notes && (
               <div className="mt-4 pt-4 border-t border-gray-100">
                 <p className="text-gray-600 text-sm italic">"{log.notes}"</p>
