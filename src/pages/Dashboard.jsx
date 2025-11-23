@@ -104,7 +104,7 @@ function Dashboard() {
       {/* Header - Updated without user selector */}
       <header className="bg-white shadow-md">
         <div className="max-w-7xl mx-auto px-4 py-6">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between">
             <div className="mb-4 md:mb-0">
               <h1 className="text-3xl font-bold text-gray-900">
                 MoodFlow Dashboard
@@ -114,8 +114,23 @@ function Dashboard() {
               </p>
             </div>
 
-            <div className="flex items-center gap-6 self-start md:self-auto">
-              <div className="text-right">
+            <div className="flex items-center gap-4">
+              {/* Navigation buttons */}
+              <button
+                onClick={() => navigate("/log-entry")}
+                className="px-5 py-2 bg-indigo-600 text-white rounded-full font-semibold hover:bg-indigo-700 transition-all"
+              >
+                + Log Today
+              </button>
+
+              <button
+                onClick={() => navigate("/my-logs")}
+                className="px-4 py-2 text-indigo-600 hover:text-indigo-800 font-medium"
+              >
+                📋 My Logs
+              </button>
+
+              <div className="text-right border-l pl-4 ml-2">
                 <div className="text-sm text-gray-600">Logged in as:</div>
                 <div className="font-semibold text-gray-900">{user?.email}</div>
               </div>
@@ -136,12 +151,6 @@ function Dashboard() {
             </div>
           </div>
         </div>
-        <button
-          onClick={() => navigate("/my-logs")}
-          className="px-4 py-2 text-indigo-600 hover:text-indigo-800 font-medium"
-        >
-          📋 My Logs
-        </button>
       </header>
 
       {/* Tab Navigation */}

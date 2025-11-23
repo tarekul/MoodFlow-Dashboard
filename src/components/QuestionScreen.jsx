@@ -5,11 +5,9 @@ const QuestionScreen = ({
   illustration,
   onSelect,
   onSkip,
+  selectedValue,
 }) => {
   return (
-    // CHANGED:
-    // 1. Removed 'min-h-screen', 'bg-gradient...', and 'p-8'
-    // 2. Added 'w-full' and 'flex-1' so it fills the available space in LogEntry
     <div className="w-full flex-1 flex flex-col items-center justify-between animate-fade-in">
       {/* Header */}
       <div className="text-center mt-12">
@@ -27,9 +25,13 @@ const QuestionScreen = ({
             <button
               key={option.label}
               onClick={() => onSelect(option.value)}
-              className={`px-8 py-3 rounded-full border-2 border-indigo-300 hover:border-indigo-500 ${
-                option.color ? option.color : "bg-white"
-              } hover:bg-indigo-50 transition-all text-gray-900 font-medium`}
+              className={`px-8 py-3 rounded-full border-2 transition-all font-medium ${
+                selectedValue === option.value
+                  ? "border-indigo-500 bg-indigo-100 text-indigo-900"
+                  : `border-indigo-300 hover:border-indigo-500 ${
+                      option.color ? option.color : "bg-white"
+                    } hover:bg-indigo-50 text-gray-900`
+              }`}
             >
               {option.emoji && <span className="mr-2">{option.emoji}</span>}
               {option.label}
@@ -42,9 +44,13 @@ const QuestionScreen = ({
               <button
                 key={option.label}
                 onClick={() => onSelect(option.value)}
-                className={`px-8 py-3 rounded-full border-2 border-indigo-300 hover:border-indigo-500 ${
-                  option.color ? option.color : "bg-white"
-                } hover:bg-indigo-50 transition-all text-gray-900 font-medium`}
+                className={`px-8 py-3 rounded-full border-2 transition-all font-medium ${
+                  selectedValue === option.value
+                    ? "border-indigo-500 bg-indigo-100 text-indigo-900"
+                    : `border-indigo-300 hover:border-indigo-500 ${
+                        option.color ? option.color : "bg-white"
+                      } hover:bg-indigo-50 text-gray-900`
+                }`}
               >
                 {option.emoji && <span className="mr-2">{option.emoji}</span>}
                 {option.label}

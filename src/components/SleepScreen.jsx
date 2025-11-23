@@ -2,9 +2,9 @@ import { useState } from "react";
 import { QUALITY_OPTIONS } from "../utils/helpers";
 import SleepIllustration from "./SleepIllustration";
 
-const SleepScreen = ({ onComplete }) => {
-  const [hours, setHours] = useState(7);
-  const [quality, setQuality] = useState(null);
+const SleepScreen = ({ onComplete, initialHours, initialQuality }) => {
+  const [hours, setHours] = useState(initialHours ?? 7);
+  const [quality, setQuality] = useState(initialQuality ?? null);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex flex-col items-center justify-between p-8 animate-fade-in">

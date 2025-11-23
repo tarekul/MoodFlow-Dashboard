@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import CalmVsChaoticIllustration from "../components/CalmVsChaoticIllustration";
 import DietQualityIllustration from "../components/DietQualityIllustration";
 import MoonIllustration from "../components/MoonIllustration";
@@ -25,10 +25,14 @@ import { logsAPI } from "../utils/api";
 
 const LogEntry = () => {
   const navigate = useNavigate();
+  const { logId } = useParams();
+
+  const isEditMode = Boolean(logId);
 
   const [currentStep, setCurrentStep] = useState(1);
   const [showSuccess, setShowSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [initialLoading, setInitialLoading] = useState(isEditMode);
   const [error, setError] = useState(null);
   const [formData, setFormData] = useState({
     log_date: new Date().toISOString().split("T")[0],
@@ -44,6 +48,45 @@ const LogEntry = () => {
     weather: null,
     notes: null,
   });
+
+  useEffect(() => {
+    if (isEditMode) {
+      fetchLogData();
+    }
+  }, [logId]);
+
+  const fetchLogData = async () => {
+    try {
+      setInitialLoading(true);
+      const logs = await logsAPI.getMyLogs();
+      const existingLog = logs.find((log) => log.id === parseInt(logId));
+      console.log(existingLog);
+
+      if (existingLog) {
+        setFormData({
+          log_date: existingLog.log_date,
+          mood: existingLog.mood,
+          productivity: existingLog.productivity,
+          sleep_hours: existingLog.sleep_hours,
+          sleep_quality: existingLog.sleep_quality,
+          stress: existingLog.stress,
+          physical_activity: existingLog.physical_activity_min,
+          screen_time: existingLog.screen_time_hours,
+          diet_quality: existingLog.diet_quality,
+          social_interaction: existingLog.social_interaction_hours,
+          weather: existingLog.weather,
+          notes: existingLog.notes,
+        });
+      } else {
+        setError("Log not found");
+      }
+    } catch (err) {
+      setError("Failed to load log data");
+      console.error(err);
+    } finally {
+      setInitialLoading(false);
+    }
+  };
 
   const handleMoodSelect = (mood) => {
     setFormData({
@@ -101,7 +144,7 @@ const LogEntry = () => {
     setError(null);
 
     try {
-      await logsAPI.createLog({
+      const payload = {
         log_date: finalData.log_date,
         mood: finalData.mood,
         productivity: finalData.productivity,
@@ -114,19 +157,36 @@ const LogEntry = () => {
         social_interaction_hours: finalData.social_interaction,
         weather: finalData.weather,
         notes: finalData.notes,
-      });
+      };
+
+      if (isEditMode) {
+        await logsAPI.updateLog(logId, payload);
+      } else {
+        await logsAPI.createLog(payload);
+      }
 
       setLoading(false);
       setShowSuccess(true);
 
       setTimeout(() => {
-        navigate("/dashboard");
+        navigate(isEditMode ? "/my-logs" : "/dashboard");
       }, 2000);
     } catch (err) {
       setError(err.response?.data?.detail || "Failed to save log");
       setLoading(false);
     }
   };
+
+  if (initialLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-indigo-600 mx-auto mb-4"></div>
+          <div className="text-xl text-gray-600">Loading log data...</div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex flex-col items-center justify-between p-8">
@@ -160,9 +220,22 @@ const LogEntry = () => {
               <span>Back</span>
             </button>
           )}
-
+          {/* Cancel button for edit mode */}
+          {isEditMode && (
+            <button
+              onClick={() => navigate("/my-logs")}
+              className="fixed top-6 right-6 px-4 py-2 text-gray-600 hover:text-gray-900 z-50"
+            >
+              Cancel
+            </button>
+          )}
+          {/* Edit mode indicator */}
+          {isEditMode && (
+            <div className="fixed top-6 left-1/2 transform -translate-x-1/2 bg-indigo-100 text-indigo-800 px-4 py-2 rounded-full text-sm font-medium z-50">
+              Editing: {formData.log_date}
+            </div>
+          )}
           <ProgressBar currentStep={currentStep} />
-
           {currentStep === 1 && (
             <QuestionScreen
               title="It's a new day to track!"
@@ -170,9 +243,9 @@ const LogEntry = () => {
               options={MOOD_OPTIONS}
               illustration={<MoonIllustration />}
               onSelect={handleMoodSelect}
+              selectedValue={formData.mood}
             />
           )}
-
           {currentStep === 2 && (
             <QuestionScreen
               title="How productive were you?"
@@ -180,11 +253,16 @@ const LogEntry = () => {
               options={PRODUCTIVITY_OPTIONS}
               illustration={<ProductivityIllustration />}
               onSelect={handleProductivitySelect}
+              selectedValue={formData.productivity}
             />
           )}
-
-          {currentStep === 3 && <SleepScreen onComplete={handleSleepSelect} />}
-
+          {currentStep === 3 && (
+            <SleepScreen
+              onComplete={handleSleepSelect}
+              initialHours={formData.sleep_hours}
+              initialQuality={formData.sleep_quality}
+            />
+          )}
           {currentStep === 4 && (
             <QuestionScreen
               title="How did you feel?"
@@ -192,9 +270,9 @@ const LogEntry = () => {
               options={STRESS_OPTIONS}
               illustration={<CalmVsChaoticIllustration />}
               onSelect={handleStressSelect}
+              selectedValue={formData.stress}
             />
           )}
-
           {currentStep === 5 && (
             <QuestionScreen
               title="How active were you?"
@@ -202,6 +280,7 @@ const LogEntry = () => {
               options={PHYSICAL_ACTIVITY_OPTIONS}
               illustration={<PhysicalActivityIllustration />}
               onSelect={handlePhysicalActivitySelect}
+              selectedValue={formData.physical_activity}
               onSkip={() => {
                 setFormData({ ...formData, physical_activity: null });
                 setCurrentStep(6);
@@ -216,9 +295,9 @@ const LogEntry = () => {
                 setFormData({ ...formData, screen_time: null });
                 setCurrentStep(7);
               }}
+              initialValue={formData.screen_time}
             />
           )}
-
           {currentStep === 7 && (
             <QuestionScreen
               title="How would you rate your diet today?"
@@ -226,13 +305,13 @@ const LogEntry = () => {
               options={DIET_QUALITY_OPTIONS}
               illustration={<DietQualityIllustration />}
               onSelect={handleDietQualitySelect}
+              selectedValue={formData.diet_quality}
               onSkip={() => {
                 setFormData({ ...formData, diet_quality: null });
                 setCurrentStep(8);
               }}
             />
           )}
-
           {currentStep === 8 && (
             <SocialInteractionsSlider
               onComplete={handleSocialInteractionSelect}
@@ -240,9 +319,9 @@ const LogEntry = () => {
                 setFormData({ ...formData, social_interaction: null });
                 setCurrentStep(9);
               }}
+              initialValue={formData.social_interaction}
             />
           )}
-
           {currentStep === 9 && (
             <QuestionScreen
               title="How was the weather?"
@@ -250,14 +329,19 @@ const LogEntry = () => {
               options={WEATHER_OPTIONS}
               illustration={<WeatherIllustration />}
               onSelect={handleWeatherSelect}
+              selectedValue={formData.weather}
               onSkip={() => {
                 setFormData({ ...formData, weather: null });
                 setCurrentStep(10);
               }}
             />
           )}
-
-          {currentStep === 10 && <Notes onComplete={handleNotesSelect} />}
+          {currentStep === 10 && (
+            <Notes
+              onComplete={handleNotesSelect}
+              initialValue={formData.notes}
+            />
+          )}
         </>
       )}
 

@@ -143,6 +143,12 @@ const MyLogs = () => {
               {/* Right side - Actions */}
               <div className="flex gap-2">
                 <button
+                  onClick={() => navigate(`/log-entry/${log.id}`)}
+                  className="px-3 py-1 text-indigo-600 hover:bg-indigo-50 rounded-lg text-sm"
+                >
+                  Edit
+                </button>
+                <button
                   onClick={() => setDeleteConfirm(log.id)}
                   className="px-3 py-1 text-red-600 hover:bg-red-50 rounded-lg text-sm"
                 >

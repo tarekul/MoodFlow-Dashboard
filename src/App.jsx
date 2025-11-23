@@ -46,6 +46,15 @@ function App() {
             }
           />
 
+          <Route
+            path="/log-entry/:logId?"
+            element={
+              <ProtectedRoute>
+                <LogEntry />
+              </ProtectedRoute>
+            }
+          />
+
           {/* Redirect root to dashboard */}
           <Route path="/" element={<Navigate to="/dashboard" replace />} />
         </Routes>

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
-const Notes = ({ onComplete }) => {
-  const [notes, setNotes] = useState("");
+const Notes = ({ onComplete, initialValue }) => {
+  const [notes, setNotes] = useState(initialValue ?? "");
 
   const handleSave = () => {
     onComplete(notes);

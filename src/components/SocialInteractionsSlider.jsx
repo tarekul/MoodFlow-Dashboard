@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import SocialInteractionIllustration from "./SocialInteractionIllustration";
 
-const SocialInteractionsSlider = ({ onComplete, onSkip }) => {
-  const [hours, setHours] = useState(2);
+const SocialInteractionsSlider = ({ onComplete, onSkip, initialValue }) => {
+  const [hours, setHours] = useState(initialValue ?? 2);
 
   const getColor = (val) => {
     if (val <= 3.5) return "text-blue-500";
