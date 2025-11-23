@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { logsAPI } from "../utils/api";
+import calculateStreak from "../utils/calculateStreak";
 
 const MyLogs = () => {
   const navigate = useNavigate();
@@ -65,6 +66,11 @@ const MyLogs = () => {
     );
   }
 
+  const streak = calculateStreak(logs);
+  const hasLoggedToday = logs.some(
+    (log) => log.log_date === new Date().toISOString().split("T")[0]
+  );
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6">
       {/* Header */}
@@ -74,18 +80,32 @@ const MyLogs = () => {
             <h1 className="text-3xl font-bold text-gray-900">My Logs</h1>
             <p className="text-gray-600">{logs.length} entries</p>
           </div>
-          <div className="flex gap-3">
+          <div className="flex gap-4">
+            {/* Streak Counter */}
+            <div className="bg-gradient-to-r from-orange-400 to-red-500 text-white px-4 py-2 rounded-xl text-center">
+              <div className="text-2xl font-bold">{streak}🔥</div>
+              <div className="text-xs opacity-90">day streak</div>
+            </div>
+
+            {hasLoggedToday && (
+              <div className="bg-gradient-to-r from-green-400 to-emerald-500 text-white px-4 py-3 rounded-xl text-center shadow-md">
+                <div className="text-xl font-bold">✓</div>
+                <div className="text-xs opacity-90">logged today</div>
+              </div>
+            )}
+            {!hasLoggedToday && (
+              <button
+                onClick={() => navigate("/log-entry")}
+                className="px-6 py-2 bg-indigo-600 text-white rounded-full font-semibold hover:bg-indigo-700 transition-all"
+              >
+                + New Log
+              </button>
+            )}
             <button
               onClick={() => navigate("/dashboard")}
               className="px-4 py-2 text-gray-600 hover:text-gray-900"
             >
               ← Dashboard
-            </button>
-            <button
-              onClick={() => navigate("/log-entry")}
-              className="px-6 py-2 bg-indigo-600 text-white rounded-full font-semibold hover:bg-indigo-700 transition-all"
-            >
-              + New Log
             </button>
           </div>
         </div>

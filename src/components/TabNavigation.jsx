@@ -4,7 +4,6 @@ function TabNavigation({ activeTab, setActiveTab }) {
   const tabs = [
     { id: "overview", label: "📊 Overview" },
     { id: "insights", label: "💡 Insights" },
-    { id: "forecast", label: "🔮 Forecast" },
     { id: "action-plan", label: "🎯 Action Plan" },
   ];
 
