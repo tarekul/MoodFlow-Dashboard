@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useToast } from "../contexts/ToastContext";
 import { logsAPI } from "../utils/api";
 import calculateStreak from "../utils/calculateStreak";
 
@@ -9,6 +10,7 @@ const MyLogs = () => {
   const [logs, setLogs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const { showToast } = useToast();
   const [deleteConfirm, setDeleteConfirm] = useState(null);
 
   // Fetch logs on mount
@@ -33,12 +35,13 @@ const MyLogs = () => {
   const handleDelete = async (logId) => {
     try {
       await logsAPI.deleteLog(logId);
-      // Remove from local state
       setLogs(logs.filter((log) => log.id !== logId));
       setDeleteConfirm(null);
+      showToast("Log deleted successfully", "success");
     } catch (err) {
       setError("Failed to delete log");
       console.error(err);
+      showToast("Failed to delete log", "error");
     }
   };
 
