@@ -2,7 +2,7 @@ const ProgressBar = ({ currentStep }) => {
   return (
     <div className="w-full max-w-md">
       <div className="flex gap-2">
-        {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((step) => (
+        {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((step) => (
           <div
             key={step}
             className={`h-2 flex-1 rounded-full transition-all duration-300 ${
