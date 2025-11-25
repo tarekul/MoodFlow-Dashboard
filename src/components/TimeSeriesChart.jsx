@@ -1,5 +1,4 @@
-import React from "react";
-
+import React, { useState } from "react";
 import {
   CartesianGrid,
   Legend,
@@ -9,68 +8,149 @@ import {
   Tooltip,
   XAxis,
   YAxis,
+  ReferenceLine,
 } from "recharts";
 
 function TimeSeriesChart({ data }) {
+  const isMobile = typeof window !== "undefined" && window.innerWidth < 480;
+
+  // 🔵 Mobile tap highlight
+  const [focusedLine, setFocusedLine] = useState(null);
+
+  const toggleFocus = (line) => {
+    if (!isMobile) return; // only allow tap highlight on mobile
+    setFocusedLine((prev) => (prev === line ? null : line));
+  };
+
+  // 🗓 Weekly ticks (Sundays)
+  const weeklyTicks = data
+    .filter((d) => new Date(d.log_date).getDay() === 0)
+    .map((d) => d.log_date);
+
+  // 📅 Today marker
+  const today = new Date().toISOString().split("T")[0];
+  const hasToday = data.some((d) => d.log_date === today);
+
+  const formatShortDate = (value) =>
+    new Date(value).toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+    });
+
   return (
     <div className="bg-white rounded-lg shadow-md p-6">
       <h2 className="text-xl font-bold text-gray-800 mb-4">
         📈 Trends Over Time
       </h2>
-      <ResponsiveContainer width="100%" height={300}>
-        <LineChart data={data}>
-          <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-          <XAxis
-            dataKey="log_date"
-            stroke="#6b7280"
-            style={{ fontSize: "12px" }}
-          />
-          <YAxis
-            domain={[0, 10]}
-            stroke="#6b7280"
-            style={{ fontSize: "12px" }}
-          />
-          <Tooltip
-            contentStyle={{
-              backgroundColor: "#ffffff",
-              border: "1px solid #e5e7eb",
-              borderRadius: "8px",
-            }}
-          />
-          <Legend />
-          <Line
-            type="monotone"
-            dataKey="mood"
-            stroke="#8b5cf6"
-            strokeWidth={2}
-            name="Mood"
-            dot={{ fill: "#8b5cf6", r: 4 }}
-            activeDot={{ r: 6 }}
-          />
-          <Line
-            type="monotone"
-            dataKey="productivity"
-            stroke="#3b82f6"
-            strokeWidth={2}
-            name="Productivity"
-            dot={{ fill: "#3b82f6", r: 4 }}
-            activeDot={{ r: 6 }}
-          />
-          <Line
-            type="monotone"
-            dataKey="stress"
-            stroke="#ef4444"
-            strokeWidth={2}
-            name="Stress"
-            dot={{ fill: "#ef4444", r: 4 }}
-            activeDot={{ r: 6 }}
-          />
-        </LineChart>
-      </ResponsiveContainer>
+
+      {/* 🔁 Scrollable container for long datasets */}
+      <div className="overflow-x-auto" style={{ paddingBottom: 10 }}>
+        <div
+          style={{
+            width: data.length > 15 ? data.length * 45 : "100%", // dynamic width
+            minWidth: "100%",
+            height: 300,
+          }}
+        >
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart data={data}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+
+              <XAxis
+                dataKey="log_date"
+                stroke="#6b7280"
+                style={{ fontSize: "12px" }}
+                ticks={weeklyTicks}
+                hide={isMobile}
+                tickFormatter={(value) =>
+                  isMobile ? "" : formatShortDate(value)
+                }
+              />
+
+              <YAxis
+                domain={[0, 10]}
+                stroke="#6b7280"
+                style={{ fontSize: "12px" }}
+              />
+
+              {/* 🟩 Today marker */}
+              {hasToday && (
+                <ReferenceLine
+                  x={today}
+                  stroke="#22c55e"
+                  strokeDasharray="4 4"
+                  label={{
+                    value: "Today",
+                    position: "top",
+                    fill: "#22c55e",
+                    fontSize: 12,
+                  }}
+                />
+              )}
+
+              <Tooltip
+                labelFormatter={(value) =>
+                  new Date(value).toLocaleDateString("en-US", {
+                    month: "long",
+                    day: "numeric",
+                    year: "numeric",
+                  })
+                }
+                contentStyle={{
+                  backgroundColor: "#ffffff",
+                  border: "1px solid #e5e7eb",
+                  borderRadius: "8px",
+                }}
+              />
+
+              <Legend />
+
+              
+              <Line
+                type="monotone"
+                dataKey="mood"
+                stroke="#8b5cf6"
+                strokeWidth={focusedLine && focusedLine !== "mood" ? 1 : 3}
+                opacity={focusedLine && focusedLine !== "mood" ? 0.2 : 1}
+                name="Mood"
+                dot={{ fill: "#8b5cf6", r: 4 }}
+                activeDot={{ r: 7 }}
+                onClick={() => toggleFocus("mood")}
+              />
+
+              <Line
+                type="monotone"
+                dataKey="productivity"
+                stroke="#3b82f6"
+                strokeWidth={
+                  focusedLine && focusedLine !== "productivity" ? 1 : 3
+                }
+                opacity={focusedLine && focusedLine !== "productivity" ? 0.2 : 1}
+                name="Productivity"
+                dot={{ fill: "#3b82f6", r: 4 }}
+                activeDot={{ r: 7 }}
+                onClick={() => toggleFocus("productivity")}
+              />
+
+              <Line
+                type="monotone"
+                dataKey="stress"
+                stroke="#ef4444"
+                strokeWidth={focusedLine && focusedLine !== "stress" ? 1 : 3}
+                opacity={focusedLine && focusedLine !== "stress" ? 0.2 : 1}
+                name="Stress"
+                dot={{ fill: "#ef4444", r: 4 }}
+                activeDot={{ r: 7 }}
+                onClick={() => toggleFocus("stress")}
+              />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
 
       <p className="text-sm text-gray-600 mt-4">
-        💡 Notice how mood and productivity move together? That's your key
-        pattern!
+        💡 Tap any line on mobile to highlight it. Scroll horizontally to explore
+        long trends!
       </p>
     </div>
   );
