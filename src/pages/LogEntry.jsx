@@ -292,15 +292,18 @@ const LogEntry = () => {
         // Regular flow - all your steps
         <>
           {/* Back Button */}
-          {currentStep > 1 && currentStep <= 10 && !loading && (
-            <button
-              onClick={() => setCurrentStep(currentStep - 1)}
-              className="fixed top-6 left-6 flex items-center gap-2 px-4 py-2 bg-white rounded-full shadow-md hover:shadow-lg transition-all text-gray-600 hover:text-gray-900 z-50"
-            >
-              <span>←</span>
-              <span>Back</span>
-            </button>
-          )}
+          {!isMorningCheckIn &&
+            currentStep > 1 &&
+            currentStep <= 10 &&
+            !loading && (
+              <button
+                onClick={() => setCurrentStep(currentStep - 1)}
+                className="fixed top-6 left-6 flex items-center gap-2 px-4 py-2 bg-white rounded-full shadow-md hover:shadow-lg transition-all text-gray-600 hover:text-gray-900 z-50"
+              >
+                <span>←</span>
+                <span>Back</span>
+              </button>
+            )}
           {/* Cancel button for edit mode */}
           {isEditMode && (
             <button

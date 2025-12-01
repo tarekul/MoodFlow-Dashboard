@@ -128,7 +128,6 @@ export const analysisAPI = {
   // Get analysis
   getAnalysis: async () => {
     const response = await api.get("/analysis");
-    console.log(response.data);
     return response.data;
   },
 };

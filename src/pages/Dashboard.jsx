@@ -24,7 +24,6 @@ function Dashboard() {
   const [logs, setLogs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [logsLoading, setLogsLoading] = useState(true);
-  // Removed unused 'error' state variable
   const [streak, setStreak] = useState(0);
   const [showMilestone, setShowMilestone] = useState(true);
   const [previousStreak, setPreviousStreak] = useState(null);
@@ -38,11 +37,8 @@ function Dashboard() {
     } catch (err) {
       // Expected error when user has < 7 days of data - don't log to console
       if (err.response?.status === 400) {
-        // We don't set an error state here because we handle the lack of data
-        // by showing the temporary dashboard.
         console.log("Analysis not ready yet (expected for new users)");
       } else {
-        // Unexpected errors should still be logged
         console.error("Analysis error:", err);
       }
     } finally {
@@ -62,7 +58,6 @@ function Dashboard() {
     }
   };
 
-  // Fetch both in parallel on mount
   useEffect(() => {
     Promise.all([fetchAnalysis(), fetchLogs()]);
   }, []);
@@ -115,12 +110,11 @@ function Dashboard() {
           stress: log.stress,
         }))
         .reverse(),
-      correlations: [], // Empty for now
+      correlations: [],
       boosters: [],
       drainers: [],
       action_plan: [],
       population_comparison: [],
-      // Dummy top recommendation to prevent crashes
       top_recommendation: {
         factor: "Consistency",
         correlation: 0,

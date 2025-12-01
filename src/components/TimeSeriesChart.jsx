@@ -4,17 +4,16 @@ import {
   Legend,
   Line,
   LineChart,
+  ReferenceLine,
   ResponsiveContainer,
   Tooltip,
   XAxis,
   YAxis,
-  ReferenceLine,
 } from "recharts";
 
 function TimeSeriesChart({ data }) {
   const isMobile = typeof window !== "undefined" && window.innerWidth < 480;
 
-  // 🔵 Mobile tap highlight
   const [focusedLine, setFocusedLine] = useState(null);
 
   const toggleFocus = (line) => {
@@ -22,12 +21,10 @@ function TimeSeriesChart({ data }) {
     setFocusedLine((prev) => (prev === line ? null : line));
   };
 
-  // 🗓 Weekly ticks (Sundays)
   const weeklyTicks = data
     .filter((d) => new Date(d.log_date).getDay() === 0)
     .map((d) => d.log_date);
 
-  // 📅 Today marker
   const today = new Date().toISOString().split("T")[0];
   const hasToday = data.some((d) => d.log_date === today);
 
@@ -43,16 +40,21 @@ function TimeSeriesChart({ data }) {
         📈 Trends Over Time
       </h2>
 
-      {/* 🔁 Scrollable container for long datasets */}
       <div className="overflow-x-auto" style={{ paddingBottom: 10 }}>
         <div
           style={{
-            width: data.length > 15 ? data.length * 45 : "100%", // dynamic width
+            width: data.length > 15 ? data.length * 45 : "100%",
             minWidth: "100%",
             height: 300,
+            position: "relative",
           }}
         >
-          <ResponsiveContainer width="100%" height="100%">
+          <ResponsiveContainer
+            width="100%"
+            height="100%"
+            minWidth={0}
+            debounce={50}
+          >
             <LineChart data={data}>
               <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
 
@@ -105,7 +107,6 @@ function TimeSeriesChart({ data }) {
 
               <Legend />
 
-              
               <Line
                 type="monotone"
                 dataKey="mood"
@@ -125,7 +126,9 @@ function TimeSeriesChart({ data }) {
                 strokeWidth={
                   focusedLine && focusedLine !== "productivity" ? 1 : 3
                 }
-                opacity={focusedLine && focusedLine !== "productivity" ? 0.2 : 1}
+                opacity={
+                  focusedLine && focusedLine !== "productivity" ? 0.2 : 1
+                }
                 name="Productivity"
                 dot={{ fill: "#3b82f6", r: 4 }}
                 activeDot={{ r: 7 }}
@@ -149,8 +152,8 @@ function TimeSeriesChart({ data }) {
       </div>
 
       <p className="text-sm text-gray-600 mt-4">
-        💡 Tap any line on mobile to highlight it. Scroll horizontally to explore
-        long trends!
+        💡 Tap any line on mobile to highlight it. Scroll horizontally to
+        explore long trends!
       </p>
     </div>
   );
