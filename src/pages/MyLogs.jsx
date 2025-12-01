@@ -70,9 +70,10 @@ const MyLogs = () => {
   }
 
   const streak = calculateStreak(logs);
-  const hasLoggedToday = logs.some(
-    (log) => log.log_date === new Date().toISOString().split("T")[0]
-  );
+  const todayStr = new Date().toISOString().split("T")[0];
+  const todayLog = logs.find((log) => log.log_date === todayStr);
+  const isFullyLogged = todayLog && todayLog.mood !== null;
+  const isPartiallyLogged = todayLog && todayLog.mood === null;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6">
@@ -101,19 +102,30 @@ const MyLogs = () => {
               </div>
             </div>
 
-            {hasLoggedToday && (
-              <div className="flex-1 md:flex-none bg-gradient-to-r from-green-400 to-emerald-500 text-white px-4 py-2 rounded-xl text-center shadow-md flex items-center justify-center gap-2">
-                <span className="text-xl font-bold">✓</span>
-                <span className="text-sm font-medium">Logged</span>
+            {/* CASE 1: FULLY COMPLETE */}
+            {isFullyLogged ? (
+              <div className="bg-gradient-to-r from-green-400 to-emerald-500 text-white px-4 py-3 rounded-xl text-center shadow-md">
+                <div className="text-xl font-bold">✓</div>
+                <div className="text-xs opacity-90 whitespace-nowrap">
+                  logged today
+                </div>
               </div>
-            )}
-
-            {!hasLoggedToday && (
+            ) : isPartiallyLogged ? (
+              /* CASE 2: MORNING DONE, EVENING PENDING */
+              <button
+                /* Navigate to EDIT mode using the existing log ID */
+                onClick={() => navigate(`/log-entry/${todayLog.id}`)}
+                className="px-5 py-2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-full font-semibold hover:shadow-lg transition-all whitespace-nowrap animate-pulse"
+              >
+                ✏️ Finish Day
+              </button>
+            ) : (
+              /* CASE 3: NOTHING LOGGED */
               <button
                 onClick={() => navigate("/log-entry")}
-                className="flex-1 md:flex-none px-6 py-3 md:py-2 bg-indigo-600 text-white rounded-xl md:rounded-full font-semibold hover:bg-indigo-700 transition-all shadow-sm text-sm md:text-base"
+                className="px-5 py-2 bg-indigo-600 text-white rounded-full font-semibold hover:bg-indigo-700 transition-all whitespace-nowrap"
               >
-                + New Log
+                + Log Today
               </button>
             )}
 

@@ -21,7 +21,7 @@ import {
   WEATHER_OPTIONS,
 } from "../utils/helpers";
 
-import { logsAPI } from "../utils/api";
+import { analysisAPI, logsAPI } from "../utils/api";
 
 const LogEntry = () => {
   const navigate = useNavigate();
@@ -48,6 +48,21 @@ const LogEntry = () => {
     weather: null,
     notes: null,
   });
+  const [isMorningCheckIn, setIsMorningCheckIn] = useState(false);
+  const [prediction, setPrediction] = useState(null);
+
+  useEffect(() => {
+    // Determine if this is a morning check-in (e.g., 5 AM - 12 PM)
+    const hour = new Date().getHours();
+    const isMorning = hour >= 5 && hour < 12;
+
+    // Only trigger morning flow if NOT editing and creating a NEW log
+    if (isMorning && !isEditMode) {
+      setIsMorningCheckIn(true);
+      // Skip Mood/Productivity screens, start at Sleep (Step 3)
+      setCurrentStep(3);
+    }
+  }, [isEditMode]);
 
   useEffect(() => {
     if (isEditMode) {
@@ -88,6 +103,39 @@ const LogEntry = () => {
     }
   };
 
+  const submitMorningLog = async (data) => {
+    setLoading(true);
+    try {
+      // Send minimal data (Date + Sleep)
+      const payload = {
+        log_date: data.log_date,
+        sleep_hours: data.sleep_hours,
+        sleep_quality: data.sleep_quality,
+      };
+
+      await logsAPI.createLog(payload);
+
+      // Fetch the prediction immediately after saving!
+      const analysis = await analysisAPI.getAnalysis();
+      // Find the forecast in smart_insights
+      const forecast = analysis.smart_insights.find(
+        (i) => i.type === "prediction"
+      );
+
+      if (forecast) {
+        setPrediction(forecast.message);
+        setShowSuccess(true); // Re-use success screen or create a custom one
+      } else {
+        // Fallback if no prediction (e.g. not enough data)
+        navigate("/dashboard");
+      }
+    } catch (err) {
+      setError("Failed to save morning log", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleMoodSelect = (mood) => {
     setFormData({
       ...formData,
@@ -102,8 +150,17 @@ const LogEntry = () => {
   };
 
   const handleSleepSelect = (hours, quality) => {
-    setFormData({ ...formData, sleep_hours: hours, sleep_quality: quality });
-    setCurrentStep(4);
+    const updatedData = {
+      ...formData,
+      sleep_hours: hours,
+      sleep_quality: quality,
+    };
+    setFormData(updatedData);
+    if (isMorningCheckIn) {
+      submitMorningLog(updatedData);
+    } else {
+      setCurrentStep(currentStep + 1);
+    }
   };
 
   const handleStressSelect = (stress) => {
@@ -188,6 +245,30 @@ const LogEntry = () => {
     );
   }
 
+  // Custom "Prediction Success" Screen
+  if (showSuccess && prediction) {
+    return (
+      <div className="flex-1 flex flex-col items-center justify-center animate-fade-in p-8 text-center">
+        <div className="text-6xl mb-4">🔮</div>
+        <h1 className="text-3xl font-bold text-gray-900 mb-2">
+          Forecast Ready
+        </h1>
+        <div className="bg-indigo-50 border border-indigo-200 p-6 rounded-xl my-6">
+          <p className="text-lg text-indigo-900 font-medium">{prediction}</p>
+        </div>
+        <p className="text-gray-500 mb-8">
+          Come back tonight to log your actual day!
+        </p>
+        <button
+          onClick={() => navigate("/dashboard")}
+          className="px-8 py-3 bg-indigo-600 text-white rounded-full"
+        >
+          Go to Dashboard
+        </button>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex flex-col items-center justify-between p-8">
       {/* Show success screen OR the regular flow */}
@@ -236,7 +317,7 @@ const LogEntry = () => {
             </div>
           )}
           <ProgressBar currentStep={currentStep} />
-          {currentStep === 1 && (
+          {currentStep === 1 && !isMorningCheckIn && (
             <QuestionScreen
               title="It's a new day to track!"
               subtitle="Select the mood that best reflects how you feel at this moment."
@@ -246,7 +327,7 @@ const LogEntry = () => {
               selectedValue={formData.mood}
             />
           )}
-          {currentStep === 2 && (
+          {currentStep === 2 && !isMorningCheckIn && (
             <QuestionScreen
               title="How productive were you?"
               subtitle="Think about what you accomplished today."
@@ -263,7 +344,7 @@ const LogEntry = () => {
               initialQuality={formData.sleep_quality}
             />
           )}
-          {currentStep === 4 && (
+          {currentStep === 4 && !isMorningCheckIn && (
             <QuestionScreen
               title="How did you feel?"
               subtitle="Think about how stressful your day was."
@@ -273,7 +354,7 @@ const LogEntry = () => {
               selectedValue={formData.stress}
             />
           )}
-          {currentStep === 5 && (
+          {currentStep === 5 && !isMorningCheckIn && (
             <QuestionScreen
               title="How active were you?"
               subtitle="Think about how active you were today."
@@ -288,7 +369,7 @@ const LogEntry = () => {
             />
           )}
 
-          {currentStep === 6 && (
+          {currentStep === 6 && !isMorningCheckIn && (
             <ScreenTimeSlider
               onComplete={handleScreenTimeSelect}
               onSkip={() => {
@@ -298,7 +379,7 @@ const LogEntry = () => {
               initialValue={formData.screen_time}
             />
           )}
-          {currentStep === 7 && (
+          {currentStep === 7 && !isMorningCheckIn && (
             <QuestionScreen
               title="How would you rate your diet today?"
               subtitle="Rate the overall quality of your meals and snacks — think about balance, portion sizes, and nutrients."
@@ -312,7 +393,7 @@ const LogEntry = () => {
               }}
             />
           )}
-          {currentStep === 8 && (
+          {currentStep === 8 && !isMorningCheckIn && (
             <SocialInteractionsSlider
               onComplete={handleSocialInteractionSelect}
               onSkip={() => {
@@ -322,7 +403,7 @@ const LogEntry = () => {
               initialValue={formData.social_interaction}
             />
           )}
-          {currentStep === 9 && (
+          {currentStep === 9 && !isMorningCheckIn && (
             <QuestionScreen
               title="How was the weather?"
               subtitle="Look at the weather outside"
@@ -336,7 +417,7 @@ const LogEntry = () => {
               }}
             />
           )}
-          {currentStep === 10 && (
+          {currentStep === 10 && !isMorningCheckIn && (
             <Notes
               onComplete={handleNotesSelect}
               initialValue={formData.notes}

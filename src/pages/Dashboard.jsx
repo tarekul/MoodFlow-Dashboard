@@ -5,6 +5,7 @@ import BoosterCard from "../components/BoosterCard.jsx";
 import CorrelationChart from "../components/CorrelationChart.jsx";
 import DrainerCard from "../components/DrainerCard.jsx";
 import Footer from "../components/Footer.jsx";
+import SmartInsightsCard from "../components/SmartInsightsCard.jsx";
 import StreakMilestone from "../components/StreakMilestone.jsx";
 import SummaryCard from "../components/SummaryCard.jsx";
 import TabNavigation from "../components/TabNavigation.jsx";
@@ -206,9 +207,10 @@ function Dashboard() {
   // Get key factor for badges (only if real analysis exists)
   const keyFactor = userData?.correlations?.[0]?.factor;
 
-  const hasLoggedToday = logs.some(
-    (log) => log.log_date === new Date().toISOString().split("T")[0]
-  );
+  const todayStr = new Date().toISOString().split("T")[0];
+  const todayLog = logs.find((log) => log.log_date === todayStr);
+  const isFullyLogged = todayLog && todayLog.mood !== null;
+  const isPartiallyLogged = todayLog && todayLog.mood === null;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
@@ -238,14 +240,25 @@ function Dashboard() {
             {/* Right: All Actions & Stats */}
             <div className="flex items-center gap-3">
               {/* Status Badge */}
-              {hasLoggedToday ? (
+              {/* CASE 1: FULLY COMPLETE */}
+              {isFullyLogged ? (
                 <div className="bg-gradient-to-r from-green-400 to-emerald-500 text-white px-4 py-3 rounded-xl text-center shadow-md">
                   <div className="text-xl font-bold">✓</div>
                   <div className="text-xs opacity-90 whitespace-nowrap">
                     logged today
                   </div>
                 </div>
+              ) : isPartiallyLogged ? (
+                /* CASE 2: MORNING DONE, EVENING PENDING */
+                <button
+                  /* Navigate to EDIT mode using the existing log ID */
+                  onClick={() => navigate(`/log-entry/${todayLog.id}`)}
+                  className="px-5 py-2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-full font-semibold hover:shadow-lg transition-all whitespace-nowrap animate-pulse"
+                >
+                  ✏️ Finish Day
+                </button>
               ) : (
+                /* CASE 3: NOTHING LOGGED */
                 <button
                   onClick={() => navigate("/log-entry")}
                   className="px-5 py-2 bg-indigo-600 text-white rounded-full font-semibold hover:bg-indigo-700 transition-all whitespace-nowrap"
@@ -312,17 +325,28 @@ function Dashboard() {
             <div className="space-y-3">
               {/* Row 1: Status Badge + Action Buttons + Streak */}
               <div className="flex flex-wrap items-center gap-2 sm:gap-3">
-                {hasLoggedToday ? (
-                  <div className="bg-gradient-to-r from-green-400 to-emerald-500 text-white px-3 sm:px-4 py-2 sm:py-3 rounded-xl text-center shadow-md">
-                    <div className="text-lg sm:text-xl font-bold">✓</div>
+                {/* CASE 1: FULLY COMPLETE */}
+                {isFullyLogged ? (
+                  <div className="bg-gradient-to-r from-green-400 to-emerald-500 text-white px-4 py-3 rounded-xl text-center shadow-md">
+                    <div className="text-xl font-bold">✓</div>
                     <div className="text-xs opacity-90 whitespace-nowrap">
                       logged today
                     </div>
                   </div>
+                ) : isPartiallyLogged ? (
+                  /* CASE 2: MORNING DONE, EVENING PENDING */
+                  <button
+                    /* Navigate to EDIT mode using the existing log ID */
+                    onClick={() => navigate(`/log-entry/${todayLog.id}`)}
+                    className="px-5 py-2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-full font-semibold hover:shadow-lg transition-all whitespace-nowrap animate-pulse"
+                  >
+                    ✏️ Finish Day
+                  </button>
                 ) : (
+                  /* CASE 3: NOTHING LOGGED */
                   <button
                     onClick={() => navigate("/log-entry")}
-                    className="px-4 sm:px-5 py-2 bg-indigo-600 text-white rounded-full text-sm sm:text-base font-semibold hover:bg-indigo-700 transition-all whitespace-nowrap"
+                    className="px-5 py-2 bg-indigo-600 text-white rounded-full font-semibold hover:bg-indigo-700 transition-all whitespace-nowrap"
                   >
                     + Log Today
                   </button>
@@ -485,6 +509,7 @@ function Dashboard() {
         {activeTab === "insights" &&
           (displayData.boosters.length > 0 ? (
             <div className="space-y-4 sm:space-y-6">
+              <SmartInsightsCard insights={displayData.smart_insights} />
               <TopRecommendation
                 top_recommendation={displayData.top_recommendation}
                 summary={displayData.summary}
