@@ -7,17 +7,19 @@ const SleepScreen = ({ onComplete, initialHours, initialQuality }) => {
   const [quality, setQuality] = useState(initialQuality ?? null);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex flex-col items-center justify-between p-8 animate-fade-in">
-      <div className="text-center mt-12">
+    <div className="h-full bg-gradient-to-br from-blue-50 to-indigo-100 flex flex-col items-center justify-between p-8 animate-fade-in">
+      <div className="text-center mt-8 sm:mt-12 shrink-0">
         <h1 className="text-4xl font-serif mb-4 text-gray-900">
           How did you sleep?
         </h1>
-        <p className="text-gray-600 text-lg max-w-md">
+        <p className="text-gray-600 text-base sm:text-lg max-w-md mx-auto px-4">
           Track both quantity and quality of sleep.
         </p>
       </div>
-      <SleepIllustration />
-      <div className="w-full max-w-md space-y-8">
+      <div className="shrink-1 flex items-center justify-center my-4 sm:my-8 scale-90 sm:scale-100">
+        <SleepIllustration />
+      </div>
+      <div className="w-full max-w-md space-y-8 sm:space-y-12 shrink-0 pb-8">
         {/* Hours selector */}
         <div className="bg-white rounded-2xl p-6 shadow-lg">
           <div className="text-center mb-4">

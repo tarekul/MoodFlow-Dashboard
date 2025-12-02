@@ -270,7 +270,7 @@ const LogEntry = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex flex-col items-center justify-between p-8">
+    <div className="h-screen overflow-hidden bg-gradient-to-br from-blue-50 to-indigo-100 flex flex-col items-center justify-between p-8">
       {/* Show success screen OR the regular flow */}
       {showSuccess ? (
         // Success Screen - takes over the whole page
