@@ -7,24 +7,33 @@ const SleepScreen = ({ onComplete, initialHours, initialQuality }) => {
   const [quality, setQuality] = useState(initialQuality ?? null);
 
   return (
-    <div className="h-full bg-gradient-to-br from-blue-50 to-indigo-100 flex flex-col items-center justify-between p-8 animate-fade-in">
-      <div className="text-center mt-8 sm:mt-12 shrink-0">
-        <h1 className="text-4xl font-serif mb-4 text-gray-900">
+    <div className="h-full w-full flex flex-col items-center animate-fade-in relative">
+      {/* 1. HEADER */}
+      <div className="text-center mt-2 relative z-10">
+        <h1 className="text-3xl sm:text-4xl font-serif mb-1 text-gray-900">
           How did you sleep?
         </h1>
-        <p className="text-gray-600 text-base sm:text-lg max-w-md mx-auto px-4">
-          Track both quantity and quality of sleep.
+        <p className="text-gray-600 text-sm sm:text-base">
+          Track both quantity and quality.
         </p>
       </div>
-      <div className="shrink-1 flex items-center justify-center my-4 sm:my-8 scale-90 sm:scale-100">
+
+      {/* 2. ILLUSTRATION */}
+      <div className="flex-1 min-h-0 flex items-center justify-center w-full py-4 relative z-0">
         <SleepIllustration />
       </div>
-      <div className="w-full max-w-md space-y-8 sm:space-y-12 shrink-0 pb-8">
+
+      {/* 3. CONTROLS */}
+      <div className="w-full max-w-md space-y-4 shrink-0 mb-4 relative z-10">
         {/* Hours selector */}
-        <div className="bg-white rounded-2xl p-6 shadow-lg">
+        <div className="bg-white rounded-2xl p-5 shadow-xl border border-white/50 backdrop-blur-sm">
           <div className="text-center mb-4">
-            <div className="text-5xl font-bold text-indigo-600">{hours}hrs</div>
-            <div className="text-gray-600 mt-2">Hours slept</div>
+            <div className="text-5xl font-bold text-indigo-600 tracking-tight">
+              {hours}
+              <span className="text-2xl ml-1 font-medium text-indigo-400">
+                hrs
+              </span>
+            </div>
           </div>
           <input
             type="range"
@@ -33,9 +42,9 @@ const SleepScreen = ({ onComplete, initialHours, initialQuality }) => {
             step="0.5"
             value={hours}
             onChange={(e) => setHours(parseFloat(e.target.value))}
-            className="w-full"
+            className="w-full h-2 bg-indigo-100 rounded-lg appearance-none cursor-pointer accent-indigo-600"
           />
-          <div className="flex justify-between text-xs text-gray-500 mt-2">
+          <div className="flex justify-between text-xs text-gray-400 mt-2 font-medium px-1">
             <span>4hrs</span>
             <span>12hrs</span>
           </div>
@@ -43,22 +52,26 @@ const SleepScreen = ({ onComplete, initialHours, initialQuality }) => {
 
         {/* Quality selector */}
         <div>
-          <div className="text-gray-900 font-semibold mb-3 text-center">
+          <div className="text-gray-900 font-semibold mb-3 text-center text-sm uppercase tracking-wide opacity-80">
             Quality
           </div>
-          <div className="flex gap-3 justify-center">
+          <div className="flex gap-2 justify-center">
             {QUALITY_OPTIONS.map((option) => (
               <button
                 key={option.value}
                 onClick={() => setQuality(option.value)}
-                className={`flex-1 py-4 rounded-xl border-2 transition-all ${
+                className={`flex-1 py-3 rounded-xl border transition-all duration-200 ${
                   quality === option.value
-                    ? "border-indigo-500 bg-indigo-50"
-                    : "border-indigo-200 bg-white hover:border-indigo-400"
+                    ? "border-indigo-500 bg-indigo-600 text-white shadow-lg scale-105"
+                    : "border-gray-200 bg-white text-gray-600 hover:border-indigo-300 hover:bg-indigo-50"
                 }`}
               >
-                <div className="text-3xl mb-1">{option.emoji}</div>
-                <div className="text-sm font-medium text-gray-900">
+                <div className="text-2xl mb-1">{option.emoji}</div>
+                <div
+                  className={`text-xs font-bold ${
+                    quality === option.value ? "text-white" : "text-gray-600"
+                  }`}
+                >
                   {option.value}
                 </div>
               </button>
@@ -70,12 +83,11 @@ const SleepScreen = ({ onComplete, initialHours, initialQuality }) => {
         <button
           onClick={() => onComplete(hours, quality)}
           disabled={!quality}
-          className="w-full py-4 bg-indigo-600 text-white rounded-full font-semibold text-lg hover:bg-indigo-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full py-4 bg-indigo-600 text-white rounded-2xl font-bold text-lg shadow-lg shadow-indigo-200 hover:shadow-xl hover:bg-indigo-700 hover:-translate-y-0.5 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none disabled:translate-y-0"
         >
-          Continue →
+          Continue
         </button>
       </div>
-      <div></div> {/* Spacer */}
     </div>
   );
 };

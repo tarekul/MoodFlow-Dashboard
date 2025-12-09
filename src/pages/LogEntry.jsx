@@ -52,14 +52,11 @@ const LogEntry = () => {
   const [prediction, setPrediction] = useState(null);
 
   useEffect(() => {
-    // Determine if this is a morning check-in (e.g., 5 AM - 12 PM)
     const hour = new Date().getHours();
     const isMorning = hour >= 5 && hour < 12;
 
-    // Only trigger morning flow if NOT editing and creating a NEW log
     if (isMorning && !isEditMode) {
       setIsMorningCheckIn(true);
-      // Skip Mood/Productivity screens, start at Sleep (Step 3)
       setCurrentStep(3);
     }
   }, [isEditMode]);
@@ -124,9 +121,8 @@ const LogEntry = () => {
 
       if (forecast) {
         setPrediction(forecast.message);
-        setShowSuccess(true); // Re-use success screen or create a custom one
+        setShowSuccess(true);
       } else {
-        // Fallback if no prediction (e.g. not enough data)
         navigate("/dashboard");
       }
     } catch (err) {
@@ -270,10 +266,10 @@ const LogEntry = () => {
   }
 
   return (
-    <div className="h-screen overflow-hidden bg-gradient-to-br from-blue-50 to-indigo-100 flex flex-col items-center justify-between p-8">
+    <div className="h-screen overflow-hidden bg-gradient-to-br from-blue-50 to-indigo-100 flex flex-col items-center justify-between p-4 relative">
       {/* Show success screen OR the regular flow */}
       {showSuccess ? (
-        // Success Screen - takes over the whole page
+        // Success Screen
         <div className="flex-1 flex flex-col items-center justify-center animate-fade-in">
           <div className="text-center">
             <div className="text-8xl mb-6">🎉</div>
@@ -301,7 +297,9 @@ const LogEntry = () => {
                 className="fixed top-6 left-6 flex items-center gap-2 px-4 py-2 bg-white rounded-full shadow-md hover:shadow-lg transition-all text-gray-600 hover:text-gray-900 z-50"
               >
                 <span>←</span>
-                <span>Back</span>
+                <span hidden sm:inline>
+                  Back
+                </span>
               </button>
             )}
           {!isEditMode && (
@@ -340,7 +338,9 @@ const LogEntry = () => {
               Editing: {formData.log_date}
             </div>
           )}
-          <ProgressBar currentStep={currentStep} />
+          <div className="w-full max-w-xl mt-16 mb-4">
+            <ProgressBar currentStep={currentStep} />
+          </div>
           {currentStep === 1 && !isMorningCheckIn && (
             <QuestionScreen
               title="It's a new day to track!"
