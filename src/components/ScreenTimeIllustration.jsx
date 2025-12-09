@@ -6,7 +6,7 @@ const ScreenTimeIllustration = ({ hours }) => {
   return (
     <div className="my-2 flex items-center justify-center">
       {/* Increased size slightly for detail */}
-      <div className="w-54 h-32 relative">
+      <div className="w-54 h-32 relative scale-75 sm:scale-90 md:scale-100 origin-center transition-transform">
         {/* 1. Outer eye shape & Base White */}
         <div className="w-full h-full bg-white rounded-[50%] border-4 border-gray-800 overflow-hidden relative shadow-lg">
           {/* 2. General Redness (Sclera inflammation) */}

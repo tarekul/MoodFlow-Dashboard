@@ -92,7 +92,7 @@ export const PHYSICAL_ACTIVITY_OPTIONS = [
   { value: 75, label: "Long (60-90 mins)" },
   { value: 45, label: "Medium (30-60 mins)" },
   { value: 22, label: "Short (15-30 mins)" },
-  { value: 0, label: "None (0-15 mins)" },
+  { value: 0, label: "None" },
 ];
 
 export const DIET_QUALITY_OPTIONS = [

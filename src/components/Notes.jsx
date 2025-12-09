@@ -12,16 +12,16 @@ const Notes = ({ onComplete, initialValue }) => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex flex-col items-center justify-between p-8">
+    <div className="h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex flex-col items-center justify-between p-8">
       <div className="w-full max-w-2xl">
-        <h2 className="text-3xl font-serif mb-2 text-gray-900 text-center">
+        <h2 className="text-2xl sm:text-4xl font-serif mb-1 text-gray-900 leading-tight text-center">
           Notes
         </h2>
-        <p className="text-gray-600 text-center mb-8">
+        <p className="text-gray-600 text-center mb-4">
           Add any additional notes about your day
         </p>
 
-        <div className="bg-white rounded-2xl p-6 shadow-lg">
+        <div className="bg-white rounded-2xl p-2 shadow-lg">
           <textarea
             value={notes}
             onChange={(e) => setNotes(e.target.value)}

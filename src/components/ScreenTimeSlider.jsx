@@ -14,15 +14,15 @@ const ScreenTimeSlider = ({ onComplete, onSkip, initialValue }) => {
 
   return (
     <div className="h-full bg-gradient-to-br from-blue-50 to-indigo-100 flex flex-col items-center justify-between p-8 animate-fade-in">
-      <div className="text-center mt-8 sm:mt-12 shrink-0">
-        <h1 className="text-4xl font-serif mb-4 text-gray-900">
+      <div className="text-center mt-2 relative z-10">
+        <h1 className="text-2xl sm:text-4xl font-serif mb-1 text-gray-900 leading-tight">
           How much screen time did you have?
         </h1>
-        <p className="text-gray-600 text-base sm:text-lg max-w-md mx-auto px-4">
+        <p className="text-gray-600 text-xs sm:text-base max-w-xs mx-auto">
           Track the amount of screen time you had today.
         </p>
       </div>
-      <div className="shrink-1 flex items-center justify-center my-4 sm:my-8 scale-90 sm:scale-100">
+      <div className="flex-1 min-h-0 flex items-center justify-center w-full py-2 sm:py-4 relative z-0">
         <ScreenTimeIllustration hours={hours} />
       </div>
       <div className="w-full max-w-md space-y-8 sm:space-y-12 shrink-0 pb-8">
@@ -51,7 +51,7 @@ const ScreenTimeSlider = ({ onComplete, onSkip, initialValue }) => {
         </div>
         <button
           onClick={() => onComplete(hours)}
-          className="w-full py-4 bg-indigo-600 text-white rounded-full font-semibold text-lg hover:bg-indigo-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full py-2 bg-indigo-600 text-white rounded-full font-semibold text-md hover:bg-indigo-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Continue →
         </button>

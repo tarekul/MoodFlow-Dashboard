@@ -1,22 +1,17 @@
 import React from "react";
 
 const SocialInteractionIllustration = ({ hours }) => {
-  // Normalize hours: 0 to 10 scale for intensity calculation.
-  // 0-2: Low/Quiet, 4-6: Balanced, 8+: Loud/Busy
   const intensity = Math.max(0, Math.min(hours / 10, 1));
 
-  // Helper for dynamic color interpolation (Blue -> Yellow -> Pink/Red)
   const getBaseColor = () => {
-    if (intensity < 0.4) return "bg-blue-100 border-blue-300"; // Quiet
-    if (intensity < 0.7) return "bg-yellow-100 border-yellow-400"; // Social
-    return "bg-pink-100 border-pink-500"; // Loud/Party
+    if (intensity < 0.4) return "bg-blue-100 border-blue-300";
+    if (intensity < 0.7) return "bg-yellow-100 border-yellow-400";
+    return "bg-pink-100 border-pink-500";
   };
 
   return (
     <div className="my-8 flex items-center justify-center">
-      <div className="w-64 h-40 relative flex items-center justify-center">
-        {/* 1. Background Aura (Social Noise) */}
-        {/* Expands and changes color based on intensity */}
+      <div className="w-64 h-40 relative flex items-center justify-center scale-75 sm:scale-90 md:scale-100 origin-center transition-transform">
         <div
           className={`absolute rounded-full transition-all duration-700 ease-out opacity-20 blur-xl
             ${intensity > 0.6 ? "bg-purple-500 animate-pulse" : "bg-blue-400"}
