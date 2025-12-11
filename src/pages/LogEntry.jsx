@@ -21,6 +21,12 @@ import {
   WEATHER_OPTIONS,
 } from "../utils/helpers";
 
+import CancelButton from "../components/CancelButton";
+import EditModeIndicator from "../components/EditModeIndicator";
+import ExitButton from "../components/ExitButton";
+import LogBackButton from "../components/LogBackButton";
+import PredictionSuccess from "../components/PredictionSuccess";
+import ShowLogSuccess from "../components/ShowLogSuccess";
 import { analysisAPI, logsAPI } from "../utils/api";
 
 const LogEntry = () => {
@@ -112,19 +118,24 @@ const LogEntry = () => {
 
       await logsAPI.createLog(payload);
 
-      // Fetch the prediction immediately after saving!
-      const analysis = await analysisAPI.getAnalysis();
-      // Find the forecast in smart_insights
-      const forecast = analysis.smart_insights.find(
-        (i) => i.type === "prediction"
-      );
+      const logs = await logsAPI.getMyLogs();
 
-      if (forecast) {
-        setPrediction(forecast.message);
-        setShowSuccess(true);
-      } else {
-        navigate("/dashboard");
+      if (logs.length > 7) {
+        // Fetch the prediction immediately after saving!
+        const analysis = await analysisAPI.getAnalysis();
+        // Find the forecast in smart_insights
+        const forecast = analysis.smart_insights.find(
+          (i) => i.type === "prediction"
+        );
+        if (forecast) {
+          setPrediction(forecast.message);
+          setShowSuccess(true);
+        } else {
+          navigate("/dashboard");
+        }
       }
+
+      navigate("/dashboard");
     } catch (err) {
       setError("Failed to save morning log", err);
     } finally {
@@ -243,104 +254,29 @@ const LogEntry = () => {
 
   // Custom "Prediction Success" Screen
   if (showSuccess && prediction) {
-    return (
-      <div className="flex-1 flex flex-col items-center justify-center animate-fade-in p-8 text-center">
-        <div className="text-6xl mb-4">🔮</div>
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">
-          Forecast Ready
-        </h1>
-        <div className="bg-indigo-50 border border-indigo-200 p-6 rounded-xl my-6">
-          <p className="text-lg text-indigo-900 font-medium">{prediction}</p>
-        </div>
-        <p className="text-gray-500 mb-8">
-          Come back tonight to log your actual day!
-        </p>
-        <button
-          onClick={() => navigate("/dashboard")}
-          className="px-8 py-3 bg-indigo-600 text-white rounded-full"
-        >
-          Go to Dashboard
-        </button>
-      </div>
-    );
+    return <PredictionSuccess prediction={prediction} navigate={navigate} />;
   }
 
   return (
     <div className="h-[100dvh] overflow-hidden bg-gradient-to-br from-blue-50 to-indigo-100 flex flex-col items-center justify-between p-4 relative">
       {/* Show success screen OR the regular flow */}
       {showSuccess ? (
-        // Success Screen
-        <div className="flex-1 flex flex-col items-center justify-center animate-fade-in">
-          <div className="text-center">
-            <div className="text-8xl mb-6">🎉</div>
-            <h1 className="text-4xl font-serif mb-4 text-gray-900">
-              Great job!
-            </h1>
-            <p className="text-gray-600 text-lg mb-8">
-              Your day has been logged successfully
-            </p>
-            <div className="text-gray-400 text-sm">
-              Redirecting to dashboard...
-            </div>
-          </div>
-        </div>
+        <ShowLogSuccess />
       ) : (
-        // Regular flow - all your steps
         <>
           {/* Back Button */}
-          {!isMorningCheckIn &&
-            currentStep > 1 &&
-            currentStep <= 10 &&
-            !loading && (
-              <button
-                onClick={() => setCurrentStep(currentStep - 1)}
-                className="fixed top-6 left-6 flex items-center gap-2 px-4 py-2 bg-white rounded-full shadow-md hover:shadow-lg transition-all text-gray-600 hover:text-gray-900 z-50"
-              >
-                <span>←</span>
-                <span hidden sm:inline>
-                  Back
-                </span>
-              </button>
-            )}
-          {!isEditMode && (
-            <button
-              onClick={() => navigate("/dashboard")}
-              className="fixed top-6 right-6 w-10 h-10 flex items-center justify-center rounded-full bg-white/80 hover:bg-white shadow-md hover:shadow-lg transition-all duration-200 text-gray-500 hover:text-gray-800 z-50 backdrop-blur-sm border border-gray-200 hover:border-gray-300"
-              aria-label="Close and return to dashboard"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
-            </button>
-          )}
-          {isEditMode && (
-            <button
-              onClick={() => navigate("/my-logs")}
-              className="fixed top-6 right-6 px-4 py-2 text-gray-600 hover:text-gray-900 z-50"
-            >
-              Cancel
-            </button>
-          )}
+          <LogBackButton
+            isMorningCheckIn={isMorningCheckIn}
+            currentStep={currentStep}
+            loading={loading}
+            setCurrentStep={setCurrentStep}
+          />
+          {!isEditMode && <ExitButton navigate={navigate} />}
+          {isEditMode && <CancelButton navigate={navigate} />}
+
           {/* Edit mode indicator */}
-          {isEditMode && (
-            <div className="fixed top-6 left-1/2 transform -translate-x-1/2 bg-indigo-100 text-indigo-800 px-4 py-2 rounded-full text-sm font-medium z-50">
-              Editing: {formData.log_date}
-            </div>
-          )}
-          <div className="w-full max-w-xl mt-16 mb-4">
-            <ProgressBar currentStep={currentStep} />
-          </div>
+          {isEditMode && <EditModeIndicator formData={formData} />}
+          <ProgressBar currentStep={currentStep} />
           {currentStep === 1 && !isMorningCheckIn && (
             <QuestionScreen
               title="It's a new day to track!"

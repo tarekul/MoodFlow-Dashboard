@@ -1,19 +1,11 @@
 const ProgressBar = ({ currentStep }) => {
   return (
-    <div className="w-full max-w-md">
-      <div className="flex gap-2">
-        {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((step) => (
-          <div
-            key={step}
-            className={`h-2 flex-1 rounded-full transition-all duration-300 ${
-              step < currentStep
-                ? "bg-green-500" // Completed - green!
-                : step === currentStep
-                ? "bg-indigo-500" // Current - indigo!
-                : "bg-gray-300" // Not yet - gray
-            }`}
-          />
-        ))}
+    <div className="w-full max-w-xl mt-16 mb-4">
+      <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+        <div
+          className="h-2 bg-indigo-600 rounded-full transition-all duration-300"
+          style={{ width: `${(currentStep / 10) * 100}%` }}
+        />
       </div>
     </div>
   );
