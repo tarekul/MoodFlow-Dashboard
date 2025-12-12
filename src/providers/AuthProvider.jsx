@@ -7,7 +7,6 @@ export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Load token from localStorage on mount
   useEffect(() => {
     const savedToken = localStorage.getItem("token");
     const savedUser = localStorage.getItem("user");
@@ -18,6 +17,26 @@ export const AuthProvider = ({ children }) => {
     }
     setLoading(false);
   }, []);
+
+  const googleLogin = async (credential) => {
+    try {
+      const data = await authAPI.googleLogin(credential);
+
+      localStorage.setItem("token", data.access_token);
+      localStorage.setItem("user", JSON.stringify(data.user));
+
+      setToken(data.access_token);
+      setUser(data.user);
+
+      return { success: true };
+    } catch (error) {
+      console.error("Google login error:", error);
+      return {
+        success: false,
+        error: error.response?.data?.detail || "Google login failed",
+      };
+    }
+  };
 
   // Login function
   const login = async (email, password) => {
@@ -73,6 +92,7 @@ export const AuthProvider = ({ children }) => {
   const value = {
     user,
     token,
+    googleLogin,
     loading,
     login,
     signup,

@@ -1,3 +1,4 @@
+import { GoogleLogin } from "@react-oauth/google";
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
@@ -8,8 +9,29 @@ const Login = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const { login } = useAuth();
+  const { login, googleLogin } = useAuth();
   const navigate = useNavigate();
+
+  const handleGoogleSuccess = async (credentialResponse) => {
+    setError("");
+    setLoading(true);
+    try {
+      // Send the ID token to your backend
+      const result = await googleLogin(credentialResponse.credential);
+      if (result.success) {
+        navigate("/dashboard");
+      } else {
+        setError(result.error || "Google login failed");
+      }
+    } catch {
+      setError("Google login failed. Please try again.");
+    }
+    setLoading(false);
+  };
+
+  const handleGoogleError = () => {
+    setError("Google Login Failed");
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -47,6 +69,28 @@ const Login = () => {
               {error}
             </div>
           )}
+
+          <div className="mb-6 flex justify-center">
+            <GoogleLogin
+              onSuccess={handleGoogleSuccess}
+              onError={handleGoogleError}
+              useOneTap
+              theme="filled_blue"
+              shape="pill"
+              text="continue_with"
+            />
+          </div>
+
+          <div className="relative mb-6">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-gray-300"></div>
+            </div>
+            <div className="relative flex justify-center text-sm">
+              <span className="px-2 bg-white text-gray-500">
+                Or continue with email
+              </span>
+            </div>
+          </div>
 
           <form onSubmit={handleSubmit}>
             <div className="mb-4">
