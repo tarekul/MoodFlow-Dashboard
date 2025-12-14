@@ -1,101 +1,83 @@
 import { getStrengthColor, getStrengthStars } from "../utils/helpers";
 
 function BoosterCard({ boosters, comparisons = [] }) {
-  const getComparison = (factor) => {
-    return comparisons.find((c) => c.factor === factor);
-  };
-
-  const getComparisonBadge = (comparison) => {
+  const getComparisonBadge = (factor) => {
+    const comparison = comparisons.find((c) => c.factor === factor);
     if (!comparison) return null;
 
     const threshold = 0.1;
     const diff = comparison.user_correlation - comparison.population_avg;
 
-    let status = "typical";
-    if (diff > threshold) status = "higher";
-    if (diff < -threshold) status = "lower";
-
-    if (status === "higher") {
+    if (diff > threshold) {
       return (
-        <div className="mt-2 flex items-center gap-2 text-xs">
-          <span className="px-2 py-1 rounded-full bg-orange-100 text-orange-700 border border-orange-300 font-semibold">
-            📈 MORE RESPONSIVE
+        <div className="mt-3 sm:mt-0 sm:ml-auto flex flex-col items-start sm:items-end">
+          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-800 border border-orange-200">
+            📈 More Responsive
           </span>
-          <span className="text-orange-700">
-            You benefit MORE from this than most users! (avg:{" "}
-            {comparison.population_avg.toFixed(2)})
+          <span className="text-[10px] text-gray-500 mt-1">
+            vs avg: {comparison.population_avg.toFixed(2)}
           </span>
         </div>
       );
     }
-
-    if (status === "lower") {
-      return (
-        <div className="mt-2 flex items-center gap-2 text-xs">
-          <span className="px-2 py-1 rounded-full bg-blue-100 text-blue-700 border border-blue-300">
-            📉 LESS RESPONSIVE
-          </span>
-          <span className="text-blue-700">
-            This matters less for you than average (avg:{" "}
-            {comparison.population_avg.toFixed(2)})
-          </span>
-        </div>
-      );
-    }
+    return null;
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
-      <h2 className="text-lg sm:text-xl font-bold text-gray-800 mb-4">
-        🚀 PRODUCTIVITY BOOSTERS
-      </h2>
-      <p className="text-sm sm:text-base text-gray-600 mb-4">
-        Do MORE of these to increase productivity:
-      </p>
-      <div className="space-y-4">
-        {boosters.map((booster, idx) => {
-          const comparison = getComparison(booster.factor);
+    <div className="bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden">
+      <div className="p-6 border-b border-gray-100 bg-green-50/50">
+        <h2 className="text-xl font-bold text-gray-800 flex items-center gap-2">
+          🚀 Productivity Boosters
+        </h2>
+        <p className="text-sm text-gray-600 mt-1">
+          Do <span className="font-bold text-green-700">MORE</span> of these to
+          increase productivity:
+        </p>
+      </div>
 
-          return (
-            <div
-              key={idx}
-              className="p-3 sm:p-4 bg-green-50 rounded-lg border border-green-200"
-            >
-              <div className="flex items-center justify-between">
-                <div className="flex items-center">
-                  <span className="text-xl sm:text-2xl mr-2 sm:mr-3">😊</span>
-                  <span className="font-semibold text-sm sm:text-base text-gray-800">
-                    {booster.factor}
-                  </span>
+      <div className="p-6 space-y-4">
+        {boosters.map((booster, idx) => (
+          <div
+            key={idx}
+            className="p-4 bg-white rounded-xl border border-gray-200 hover:border-green-300 transition-colors shadow-sm group"
+          >
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-full bg-green-50 flex items-center justify-center text-2xl border border-green-100">
+                  😊
                 </div>
-                <div className="text-right">
-                  <div
-                    className={`font-bold text-sm sm:text-base ${getStrengthColor(
-                      booster.strength
-                    )}`}
-                  >
-                    +{booster.correlation.toFixed(2)}{" "}
-                    <span className="hidden sm:inline">
-                      {getStrengthStars(booster.strength)}
+                <div>
+                  <h3 className="font-bold text-gray-900 text-lg">
+                    {booster.factor}
+                  </h3>
+                  <div className="flex items-center gap-2 text-sm">
+                    <span
+                      className={`font-bold ${getStrengthColor(
+                        booster.strength
+                      )}`}
+                    >
+                      +{booster.correlation.toFixed(2)}
                     </span>
-                  </div>
-                  <div className="text-xs sm:text-sm text-gray-600">
-                    {booster.strength}
+                    <span className="text-gray-400 text-xs">•</span>
+                    <span className="text-gray-500 text-xs uppercase font-semibold tracking-wide">
+                      {booster.strength} {getStrengthStars(booster.strength)}
+                    </span>
                   </div>
                 </div>
               </div>
 
-              {getComparisonBadge(comparison)}
+              {getComparisonBadge(booster.factor)}
             </div>
-          );
-        })}
-      </div>
+          </div>
+        ))}
 
-      <div className="mt-4 p-3 sm:p-4 bg-green-50 rounded-lg border border-green-200">
-        <p className="text-xs sm:text-sm text-green-800">
-          💡 <strong>Pro tip:</strong> Focus on boosters marked "MORE
-          RESPONSIVE" - these are your unique strengths!
-        </p>
+        <div className="bg-green-50 rounded-lg p-3 text-sm text-green-800 flex gap-2 items-start">
+          <span>💡</span>
+          <span>
+            <strong>Pro tip:</strong> Focus on boosters marked "More Responsive"
+            - these are your unique strengths!
+          </span>
+        </div>
       </div>
     </div>
   );

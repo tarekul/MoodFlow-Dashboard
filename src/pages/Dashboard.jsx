@@ -1,16 +1,14 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ActionPlanCard from "../components/ActionPlanCard.jsx";
-import BoosterCard from "../components/BoosterCard.jsx";
 import CorrelationChart from "../components/CorrelationChart.jsx";
-import DrainerCard from "../components/DrainerCard.jsx";
 import Footer from "../components/Footer.jsx";
-import SmartInsightsCard from "../components/SmartInsightsCard.jsx";
+import Header from "../components/header.jsx";
+import InsightsTab from "../components/InsightsTab.jsx";
 import StreakMilestone from "../components/StreakMilestone.jsx";
 import SummaryCard from "../components/SummaryCard.jsx";
 import TabNavigation from "../components/TabNavigation.jsx";
 import TimeSeriesChart from "../components/TimeSeriesChart.jsx";
-import TopRecommendation from "../components/TopRecommendation.jsx";
 import { useAuth } from "../contexts/AuthContext.jsx";
 import { analysisAPI, logsAPI } from "../utils/api.js";
 import calculateStreak from "../utils/calculateStreak.js";
@@ -217,191 +215,16 @@ function Dashboard() {
       )}
 
       {/* Header - Responsive Layout */}
-      <header className="bg-white shadow-md">
-        <div className="max-w-7xl mx-auto px-3 sm:px-4 py-4 sm:py-6">
-          {/* Desktop Layout */}
-          <div className="hidden lg:flex items-center justify-between">
-            {/* Left: Title */}
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900">
-                MoodFlow Dashboard
-              </h1>
-              <p className="text-lg text-gray-600 mt-1">
-                Discover your unique productivity drivers
-              </p>
-            </div>
-
-            {/* Right: All Actions & Stats */}
-            <div className="flex items-center gap-3">
-              {/* Status Badge */}
-              {/* CASE 1: FULLY COMPLETE */}
-              {isFullyLogged ? (
-                <div className="bg-gradient-to-r from-green-400 to-emerald-500 text-white px-4 py-3 rounded-xl text-center shadow-md">
-                  <div className="text-xl font-bold">✓</div>
-                  <div className="text-xs opacity-90 whitespace-nowrap">
-                    logged today
-                  </div>
-                </div>
-              ) : isPartiallyLogged ? (
-                /* CASE 2: MORNING DONE, EVENING PENDING */
-                <button
-                  /* Navigate to EDIT mode using the existing log ID */
-                  onClick={() => navigate(`/log-entry/${todayLog.id}`)}
-                  className="px-5 py-2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-full font-semibold hover:shadow-lg transition-all whitespace-nowrap animate-pulse"
-                >
-                  ✏️ Finish Day
-                </button>
-              ) : (
-                /* CASE 3: NOTHING LOGGED */
-                <button
-                  onClick={() => navigate("/log-entry")}
-                  className="px-5 py-2 bg-indigo-600 text-white rounded-full font-semibold hover:bg-indigo-700 transition-all whitespace-nowrap"
-                >
-                  + Log Today
-                </button>
-              )}
-
-              {/* My Logs Button */}
-              <button
-                onClick={() => navigate("/my-logs")}
-                className="px-5 py-2 bg-indigo-50 text-indigo-700 rounded-lg font-semibold hover:bg-indigo-100 transition-all whitespace-nowrap"
-              >
-                My Logs
-              </button>
-
-              {/* Days Logged */}
-              <div className="text-center px-3">
-                <div className="text-xs text-gray-600">Days Logged</div>
-                <div className="text-2xl font-bold text-indigo-600">
-                  {displayData.days_logged}
-                </div>
-              </div>
-
-              {/* Streak Badge */}
-              <div className="bg-gradient-to-r from-orange-400 to-red-500 text-white px-4 py-3 rounded-xl text-center shadow-md">
-                <div className="text-2xl font-bold">{streak}🔥</div>
-                <div className="text-xs opacity-90 whitespace-nowrap">
-                  day streak
-                </div>
-              </div>
-
-              {/* User Info */}
-              <div className="text-right border-l border-gray-300 pl-3">
-                <div className="text-xs text-gray-600">Logged in as</div>
-                <div className="text-sm font-semibold text-gray-900">
-                  {user?.email}
-                </div>
-              </div>
-
-              {/* Logout Button */}
-              <button
-                onClick={logout}
-                className="px-4 py-2 text-gray-600 hover:text-gray-900 font-medium border-2 border-gray-300 rounded-lg hover:border-gray-400 transition-all whitespace-nowrap"
-              >
-                Logout
-              </button>
-            </div>
-          </div>
-
-          {/* Tablet/Mobile Layout */}
-          <div className="lg:hidden">
-            {/* Title Section */}
-            <div className="mb-4">
-              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
-                MoodFlow Dashboard
-              </h1>
-              <p className="text-sm sm:text-lg text-gray-600 mt-1">
-                Discover your unique productivity drivers
-              </p>
-            </div>
-
-            {/* Stats & Actions Section - Mobile Stacked */}
-            <div className="space-y-3">
-              {/* Row 1: Status Badge + Action Buttons + Streak */}
-              <div className="flex flex-wrap items-center gap-2 sm:gap-3">
-                {/* CASE 1: FULLY COMPLETE */}
-                {isFullyLogged ? (
-                  <div className="bg-gradient-to-r from-green-400 to-emerald-500 text-white px-4 py-3 rounded-xl text-center shadow-md">
-                    <div className="text-xl font-bold">✓</div>
-                    <div className="text-xs opacity-90 whitespace-nowrap">
-                      logged today
-                    </div>
-                  </div>
-                ) : isPartiallyLogged ? (
-                  /* CASE 2: MORNING DONE, EVENING PENDING */
-                  <button
-                    /* Navigate to EDIT mode using the existing log ID */
-                    onClick={() => navigate(`/log-entry/${todayLog.id}`)}
-                    className="px-5 py-2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-full font-semibold hover:shadow-lg transition-all whitespace-nowrap animate-pulse"
-                  >
-                    ✏️ Finish Day
-                  </button>
-                ) : (
-                  /* CASE 3: NOTHING LOGGED */
-                  <button
-                    onClick={() => navigate("/log-entry")}
-                    className="px-5 py-2 bg-indigo-600 text-white rounded-full font-semibold hover:bg-indigo-700 transition-all whitespace-nowrap"
-                  >
-                    + Log Today
-                  </button>
-                )}
-
-                <button
-                  onClick={() => navigate("/my-logs")}
-                  className="px-4 sm:px-5 py-2 bg-indigo-50 text-indigo-700 rounded-lg text-sm sm:text-base font-semibold hover:bg-indigo-100 transition-all whitespace-nowrap"
-                >
-                  My Logs
-                </button>
-
-                {/* Streak Badge */}
-                <div className="bg-gradient-to-r from-orange-400 to-red-500 text-white px-3 sm:px-4 py-2 sm:py-3 rounded-xl text-center shadow-md ml-auto sm:ml-0">
-                  <div className="text-lg sm:text-2xl font-bold">
-                    {streak}🔥
-                  </div>
-                  <div className="text-xs opacity-90 whitespace-nowrap">
-                    day streak
-                  </div>
-                </div>
-              </div>
-
-              {/* Row 2: User Info + Stats + Logout */}
-              <div className="flex flex-wrap items-center gap-3 sm:gap-4 justify-between">
-                {/* User Email - Hidden on smallest screens, shown as compact on small+ */}
-                <div className="hidden xs:block text-left">
-                  <div className="text-xs text-gray-600">Logged in as:</div>
-                  <div className="text-sm font-semibold text-gray-900 truncate max-w-[150px] sm:max-w-none">
-                    {user?.email}
-                  </div>
-                </div>
-
-                {/* Days Logged */}
-                <div className="text-left sm:text-center">
-                  <div className="text-xs text-gray-600">Days Logged</div>
-                  <div className="text-xl sm:text-2xl font-bold text-indigo-600">
-                    {displayData.days_logged}
-                  </div>
-                </div>
-
-                {/* Logout Button */}
-                <button
-                  onClick={logout}
-                  className="px-3 sm:px-4 py-2 text-sm sm:text-base text-gray-600 hover:text-gray-900 font-medium border-2 border-gray-300 rounded-lg hover:border-gray-400 transition-all whitespace-nowrap ml-auto"
-                >
-                  Logout
-                </button>
-              </div>
-
-              {/* Row 3: User Email on Mobile (only shown on smallest screens) */}
-              <div className="xs:hidden text-center py-2 border-t border-gray-200">
-                <div className="text-xs text-gray-600">Logged in as:</div>
-                <div className="text-sm font-semibold text-gray-900 truncate">
-                  {user?.email}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </header>
+      <Header
+        isFullyLogged={isFullyLogged}
+        isPartiallyLogged={isPartiallyLogged}
+        todayLog={todayLog}
+        navigate={navigate}
+        displayData={displayData}
+        streak={streak}
+        user={user}
+        logout={logout}
+      />
 
       {/* Tab Navigation */}
       <div className="max-w-7xl mx-auto px-3 sm:px-4 mt-4 sm:mt-6">
@@ -499,50 +322,7 @@ function Dashboard() {
           </div>
         )}
 
-        {/* Hide Insights/Action Plan tabs if we don't have full data */}
-        {activeTab === "insights" &&
-          (displayData.boosters.length > 0 ? (
-            <div className="space-y-4 sm:space-y-6">
-              <SmartInsightsCard insights={displayData.smart_insights} />
-              <TopRecommendation
-                top_recommendation={displayData.top_recommendation}
-                summary={displayData.summary}
-              />
-              <BoosterCard
-                boosters={displayData.boosters}
-                comparisons={displayData.population_comparison || []}
-              />
-              <DrainerCard
-                drainers={displayData.drainers}
-                comparisons={displayData.population_comparison || []}
-              />
-            </div>
-          ) : (
-            <div className="bg-white rounded-lg shadow-md p-12 text-center border border-gray-100">
-              <div className="text-6xl mb-4">🔒</div>
-              <h2 className="text-2xl font-bold text-gray-700 mb-2">
-                Insights Locked
-              </h2>
-              <p className="text-gray-500 max-w-md mx-auto">
-                Your personalized boosters, drainers, and recommendations will
-                appear here once you've logged 7 days of data.
-              </p>
-              <div className="mt-6 w-full max-w-xs mx-auto bg-gray-100 rounded-full h-2.5">
-                <div
-                  className="bg-indigo-600 h-2.5 rounded-full transition-all duration-500"
-                  style={{
-                    width: `${Math.min(
-                      (displayData.days_logged / 7) * 100,
-                      100
-                    )}%`,
-                  }}
-                ></div>
-              </div>
-              <p className="text-xs text-gray-500 mt-2">
-                {displayData.days_logged}/7 days logged
-              </p>
-            </div>
-          ))}
+        {activeTab === "insights" && <InsightsTab displayData={displayData} />}
 
         {activeTab === "action-plan" &&
           (displayData.action_plan.length > 0 ? (
