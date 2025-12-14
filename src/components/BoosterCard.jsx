@@ -15,20 +15,6 @@ function BoosterCard({ boosters, comparisons = [] }) {
     if (diff > threshold) status = "higher";
     if (diff < -threshold) status = "lower";
 
-    if (status === "typical") {
-      return (
-        <div className="mt-2 flex items-center gap-2 text-xs">
-          <span className="px-2 py-1 rounded-full bg-gray-100 text-gray-700 border border-gray-300">
-            TYPICAL
-          </span>
-          <span className="text-gray-600">
-            Your response is about average (avg:{" "}
-            {comparison.population_avg.toFixed(2)})
-          </span>
-        </div>
-      );
-    }
-
     if (status === "higher") {
       return (
         <div className="mt-2 flex items-center gap-2 text-xs">
