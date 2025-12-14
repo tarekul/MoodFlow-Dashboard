@@ -5,7 +5,6 @@ import App from "./App.jsx";
 import "./index.css";
 
 const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
-console.log("googleClientId", googleClientId);
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
