@@ -207,7 +207,7 @@ function Dashboard() {
   const isPartiallyLogged = todayLog && todayLog.mood === null;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex flex-col">
       {/* Streak Milestone Modal */}
       {showMilestone && (
         <StreakMilestone
@@ -409,7 +409,7 @@ function Dashboard() {
       </div>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-3 sm:px-4 py-4 sm:py-6">
+      <main className="max-w-7xl mx-auto px-3 sm:px-4 py-4 sm:py-6 flex-grow w-full">
         {/* BANNER FOR NEW USERS */}
         {!userData && logs.length > 0 && (
           <div
