@@ -214,7 +214,7 @@ function Dashboard() {
         />
       )}
 
-      {/* Header - Responsive Layout */}
+      {/* Header */}
       <Header
         isFullyLogged={isFullyLogged}
         isPartiallyLogged={isPartiallyLogged}
