@@ -112,3 +112,16 @@ export const WEATHER_OPTIONS = [
   { value: "Cloudy", label: "Cloudy" },
   { value: "Rainy", label: "Rainy" },
 ];
+
+export const getLocalDateString = () => {
+  const d = new Date();
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+};
+
+export const isDaytime = () => {
+  const hour = new Date().getHours(); // 0–23
+  return hour >= 6 && hour < 18; // 6am–6pm = day
+};

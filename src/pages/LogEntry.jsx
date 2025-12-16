@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import CalmVsChaoticIllustration from "../components/CalmVsChaoticIllustration";
 import DietQualityIllustration from "../components/DietQualityIllustration";
-import MoonIllustration from "../components/MoonIllustration";
+import MoodIllustration from "../components/MoodIllustration";
 import Notes from "../components/Notes";
 import PhysicalActivityIllustration from "../components/PhysicalActivityIllustration";
 import ProductivityIllustration from "../components/ProductivityIllustration";
@@ -14,6 +14,7 @@ import SocialInteractionsSlider from "../components/SocialInteractionsSlider";
 import WeatherIllustration from "../components/WeatherIllustration";
 import {
   DIET_QUALITY_OPTIONS,
+  getLocalDateString,
   MOOD_OPTIONS,
   PHYSICAL_ACTIVITY_OPTIONS,
   PRODUCTIVITY_OPTIONS,
@@ -41,7 +42,7 @@ const LogEntry = () => {
   const [initialLoading, setInitialLoading] = useState(isEditMode);
   const [error, setError] = useState(null);
   const [formData, setFormData] = useState({
-    log_date: new Date().toISOString().split("T")[0],
+    log_date: getLocalDateString(),
     mood: null,
     productivity: null,
     sleep_hours: null,
@@ -54,6 +55,7 @@ const LogEntry = () => {
     weather: null,
     notes: null,
   });
+
   const [isMorningCheckIn, setIsMorningCheckIn] = useState(false);
   const [prediction, setPrediction] = useState(null);
 
@@ -63,7 +65,7 @@ const LogEntry = () => {
 
     if (isMorning && !isEditMode) {
       setIsMorningCheckIn(true);
-      setCurrentStep(3);
+      setCurrentStep(1);
     }
   }, [isEditMode]);
 
@@ -78,7 +80,6 @@ const LogEntry = () => {
       setInitialLoading(true);
       const logs = await logsAPI.getMyLogs();
       const existingLog = logs.find((log) => log.id === parseInt(logId));
-      console.log(existingLog);
 
       if (existingLog) {
         setFormData({
@@ -109,9 +110,10 @@ const LogEntry = () => {
   const submitMorningLog = async (data) => {
     setLoading(true);
     try {
-      // Send minimal data (Date + Sleep)
+      // UPDATE: Include mood in the morning payload
       const payload = {
         log_date: data.log_date,
+        mood: data.mood,
         sleep_hours: data.sleep_hours,
         sleep_quality: data.sleep_quality,
       };
@@ -121,9 +123,7 @@ const LogEntry = () => {
       const logs = await logsAPI.getMyLogs();
 
       if (logs.length > 7) {
-        // Fetch the prediction immediately after saving!
         const analysis = await analysisAPI.getAnalysis();
-        // Find the forecast in smart_insights
         const forecast = analysis.smart_insights.find(
           (i) => i.type === "prediction"
         );
@@ -133,22 +133,27 @@ const LogEntry = () => {
         } else {
           navigate("/dashboard");
         }
+      } else {
+        navigate("/dashboard");
       }
-
-      navigate("/dashboard");
     } catch (err) {
-      setError("Failed to save morning log", err);
+      setError("Failed to save morning log");
+      console.error(err);
     } finally {
       setLoading(false);
     }
   };
 
   const handleMoodSelect = (mood) => {
-    setFormData({
-      ...formData,
-      mood,
-    });
-    setCurrentStep(currentStep + 1);
+    const updatedData = { ...formData, mood };
+    setFormData(updatedData);
+
+    // UPDATE: If morning, skip Productivity (Step 2) and go to Sleep (Step 3)
+    if (isMorningCheckIn) {
+      setCurrentStep(3);
+    } else {
+      setCurrentStep(currentStep + 1);
+    }
   };
 
   const handleProductivitySelect = (productivity) => {
@@ -163,6 +168,7 @@ const LogEntry = () => {
       sleep_quality: quality,
     };
     setFormData(updatedData);
+
     if (isMorningCheckIn) {
       submitMorningLog(updatedData);
     } else {
@@ -269,7 +275,14 @@ const LogEntry = () => {
             isMorningCheckIn={isMorningCheckIn}
             currentStep={currentStep}
             loading={loading}
-            setCurrentStep={setCurrentStep}
+            // UPDATE: Custom setter to handle the jump back from Sleep (3) to Mood (1)
+            setCurrentStep={(step) => {
+              if (isMorningCheckIn && step === 2) {
+                setCurrentStep(1);
+              } else {
+                setCurrentStep(step);
+              }
+            }}
           />
           {!isEditMode && <ExitButton navigate={navigate} />}
           {isEditMode && <CancelButton navigate={navigate} />}
@@ -277,16 +290,21 @@ const LogEntry = () => {
           {/* Edit mode indicator */}
           {isEditMode && <EditModeIndicator formData={formData} />}
           <ProgressBar currentStep={currentStep} />
-          {currentStep === 1 && !isMorningCheckIn && (
+
+          {currentStep === 1 && (
             <QuestionScreen
-              title="It's a new day to track!"
+              title={
+                isMorningCheckIn ? "Good Morning!" : "It's a new day to track!"
+              }
               subtitle="Select the mood that best reflects how you feel at this moment."
               options={MOOD_OPTIONS}
-              illustration={<MoonIllustration />}
+              illustration={<MoodIllustration />}
               onSelect={handleMoodSelect}
               selectedValue={formData.mood}
             />
           )}
+
+          {/* Productivity only shows if NOT morning */}
           {currentStep === 2 && !isMorningCheckIn && (
             <QuestionScreen
               title="How productive were you?"
@@ -297,6 +315,7 @@ const LogEntry = () => {
               selectedValue={formData.productivity}
             />
           )}
+
           {currentStep === 3 && (
             <SleepScreen
               onComplete={handleSleepSelect}
@@ -304,6 +323,7 @@ const LogEntry = () => {
               initialQuality={formData.sleep_quality}
             />
           )}
+
           {currentStep === 4 && !isMorningCheckIn && (
             <QuestionScreen
               title="How did you feel?"
@@ -386,7 +406,7 @@ const LogEntry = () => {
         </>
       )}
 
-      {/* Loading Overlay */}
+      {/* Loading & Error Overlays */}
       {loading && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-2xl p-8 text-center">
@@ -396,7 +416,6 @@ const LogEntry = () => {
         </div>
       )}
 
-      {/* Error Message */}
       {error && (
         <div className="fixed bottom-4 left-4 right-4 bg-red-50 border-2 border-red-500 rounded-lg p-4 shadow-lg z-50">
           <div className="font-semibold text-red-900">Error</div>

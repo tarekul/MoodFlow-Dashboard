@@ -72,8 +72,8 @@ const MyLogs = () => {
   const streak = calculateStreak(logs);
   const todayStr = new Date().toISOString().split("T")[0];
   const todayLog = logs.find((log) => log.log_date === todayStr);
-  const isFullyLogged = todayLog && todayLog.mood !== null;
-  const isPartiallyLogged = todayLog && todayLog.mood === null;
+  const isFullyLogged = todayLog && todayLog.stress !== null;
+  const isPartiallyLogged = todayLog && todayLog.stress === null;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6">

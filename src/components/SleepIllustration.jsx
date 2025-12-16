@@ -1,26 +1,126 @@
+import React from "react";
+
 const SleepIllustration = () => {
   return (
-    <div className="w-20 h-20 sm:w-24 sm:h-24 relative">
-      {/* Crescent Moon */}
-      <div className="w-24 h-24 sm:w-32 sm:h-32 bg-yellow-200 rounded-full absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 shadow-lg"></div>
-      <div className="w-16 h-16 sm:w-22 sm:h-22 bg-blue-50 rounded-full absolute top-1/2 left-1/2 -translate-x-[40%] -translate-y-[60%]"></div>
+    <div className="relative w-full max-w-[180px] aspect-square flex items-center justify-center">
+      <svg
+        viewBox="0 0 200 200"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        className="w-full h-full drop-shadow-2xl rounded-full"
+      >
+        <defs>
+          {/* Deep Night Gradient */}
+          <linearGradient
+            id="deep-sleep"
+            x1="100"
+            y1="0"
+            x2="100"
+            y2="200"
+            gradientUnits="userSpaceOnUse"
+          >
+            <stop stopColor="#1E1B4B" /> {/* Deep Indigo */}
+            <stop offset="1" stopColor="#312E81" /> {/* Softer Indigo */}
+          </linearGradient>
 
-      {/* Stars */}
+          {/* Soft Dream Gradient 1 */}
+          <linearGradient
+            id="dream-wave-1"
+            x1="0"
+            y1="0"
+            x2="200"
+            y2="200"
+            gradientUnits="userSpaceOnUse"
+          >
+            <stop stopColor="#6366F1" stopOpacity="0.6" />
+            <stop offset="1" stopColor="#A5B4FC" stopOpacity="0.2" />
+          </linearGradient>
 
-      {/* Star 1: Top-Left */}
-      <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-indigo-600 rounded-full absolute top-[30%] left-[40%] opacity-90 animate-pulse"></div>
+          {/* Soft Dream Gradient 2 */}
+          <linearGradient
+            id="dream-wave-2"
+            x1="200"
+            y1="0"
+            x2="0"
+            y2="200"
+            gradientUnits="userSpaceOnUse"
+          >
+            <stop stopColor="#818CF8" stopOpacity="0.5" />
+            <stop offset="1" stopColor="#C7D2FE" stopOpacity="0.1" />
+          </linearGradient>
 
-      {/* Star 2: Mid-Right */}
-      <div className="w-1 h-1 bg-indigo-600 rounded-full absolute top-[50%] right-[20%] opacity-80 animate-pulse delay-75"></div>
+          <filter id="soft-glow">
+            <feGaussianBlur stdDeviation="5" result="coloredBlur" />
+            <feMerge>
+              <feMergeNode in="coloredBlur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+        </defs>
 
-      {/* Star 3: Bottom-Left */}
-      <div className="w-1 h-1 bg-indigo-600 rounded-full absolute bottom-[40%] left-[10%] opacity-70 animate-pulse delay-200"></div>
+        {/* Base Circle (The Night Sky) */}
+        <circle cx="100" cy="100" r="98" fill="url(#deep-sleep)" />
 
-      {/* Star 4: Bottom-Right */}
-      <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-indigo-600 rounded-full absolute bottom-[20%] right-[20%] opacity-70 animate-pulse delay-500"></div>
+        {/* Abstract Wavy Shapes (Drifting Dreams) */}
+        <g className="animate-[pulse_8s_ease-in-out_infinite]">
+          <path
+            d="M0 100C30 120 70 80 100 110C130 140 170 90 200 120V200H0V100Z"
+            fill="url(#dream-wave-1)"
+            style={{ mixBlendMode: "overlay" }}
+          />
+        </g>
+        <g
+          className="animate-[pulse_10s_ease-in-out_infinite]"
+          style={{ animationDelay: "1s" }}
+        >
+          <path
+            d="M0 140C40 110 80 160 120 130C160 100 180 150 200 130V200H0V140Z"
+            fill="url(#dream-wave-2)"
+            style={{ mixBlendMode: "soft-light" }}
+          />
+        </g>
 
-      {/* Star 5: Bottom-Mid */}
-      <div className="w-1.25 h-1.25 sm:w-1.5 sm:h-1.5 bg-indigo-600 rounded-full absolute top-[80%] left-[80%] opacity-60 animate-pulse delay-1000"></div>
+        {/* Focal Point (The glowing sleep state) */}
+        <circle
+          cx="100"
+          cy="70"
+          r="15"
+          fill="#FDE68A"
+          filter="url(#soft-glow)"
+          opacity="0.8"
+          className="animate-pulse"
+          style={{ animationDuration: "4s" }}
+        />
+
+        {/* Tiny floating particles */}
+        <circle
+          cx="60"
+          cy="90"
+          r="2"
+          fill="#C7D2FE"
+          opacity="0.6"
+          className="animate-pulse"
+          style={{ animationDuration: "3s" }}
+        />
+        <circle
+          cx="140"
+          cy="50"
+          r="3"
+          fill="#C7D2FE"
+          opacity="0.4"
+          className="animate-pulse"
+          style={{ animationDuration: "5s" }}
+        />
+        <circle
+          cx="120"
+          cy="110"
+          r="1.5"
+          fill="#C7D2FE"
+          opacity="0.5"
+          className="animate-pulse"
+          style={{ animationDuration: "7s" }}
+        />
+      </svg>
     </div>
   );
 };
