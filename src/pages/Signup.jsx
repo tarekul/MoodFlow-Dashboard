@@ -4,6 +4,9 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 
 const Signup = () => {
+  // 1. Add state for names
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -38,7 +41,7 @@ const Signup = () => {
     setError("");
     setLoading(true);
 
-    const result = await signup(email, password);
+    const result = await signup(email, password, firstName, lastName);
 
     if (result.success) {
       navigate("/dashboard");
@@ -90,6 +93,33 @@ const Signup = () => {
           </div>
 
           <form onSubmit={handleSubmit}>
+            <div className="flex gap-4 mb-4">
+              <div className="w-1/2">
+                <label className="block text-gray-700 font-medium mb-2">
+                  First Name
+                </label>
+                <input
+                  type="text"
+                  required
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                />
+              </div>
+              <div className="w-1/2">
+                <label className="block text-gray-700 font-medium mb-2">
+                  Last Name
+                </label>
+                <input
+                  type="text"
+                  required
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                />
+              </div>
+            </div>
+
             <div className="mb-4">
               <label className="block text-gray-700 font-medium mb-2">
                 Email

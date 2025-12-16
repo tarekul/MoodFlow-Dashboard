@@ -65,10 +65,10 @@ export const AuthProvider = ({ children }) => {
   };
 
   // Signup function
-  const signup = async (email, password) => {
+  const signup = async (email, password, firstName, lastName) => {
     try {
       // Create user
-      await authAPI.signup(email, password);
+      await authAPI.signup(email, password, firstName, lastName);
 
       // Auto-login after signup
       return await login(email, password);

@@ -10,7 +10,11 @@ const Header = ({
   user,
   logout,
 }) => {
-  const userInitial = user?.email ? user.email[0].toUpperCase() : "U";
+  const userInitial = user?.first_name
+    ? `${user.first_name[0].toUpperCase()}${
+        user?.last_name ? user.last_name[0].toUpperCase() : ""
+      }`
+    : "U";
 
   return (
     <header className="bg-white/80 backdrop-blur-md sticky top-0 z-50 border-b border-gray-200">
@@ -101,11 +105,6 @@ const Header = ({
               <div className="flex items-center gap-2">
                 <div className="w-8 h-8 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold text-sm border border-indigo-200">
                   {userInitial}
-                </div>
-                <div className="hidden xl:block text-sm">
-                  <p className="font-medium text-gray-700 truncate max-w-[120px]">
-                    {user?.email?.split("@")[0]}
-                  </p>
                 </div>
               </div>
               <button
