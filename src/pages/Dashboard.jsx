@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import ActionPlanCard from "../components/ActionPlanCard.jsx";
 import CorrelationChart from "../components/CorrelationChart.jsx";
 import Footer from "../components/Footer.jsx";
-import Header from "../components/header.jsx";
+import Header from "../components/Header.jsx";
 import InsightsTab from "../components/InsightsTab.jsx";
 import StreakMilestone from "../components/StreakMilestone.jsx";
 import SummaryCard from "../components/SummaryCard.jsx";
