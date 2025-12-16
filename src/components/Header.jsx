@@ -106,6 +106,9 @@ const Header = ({
                 <div className="w-8 h-8 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold text-sm border border-indigo-200">
                   {userInitial}
                 </div>
+                <span className="text-xs font-medium text-gray-600 max-w-[80px] truncate">
+                  {user?.first_name}
+                </span>
               </div>
               <button
                 onClick={logout}
@@ -159,7 +162,7 @@ const Header = ({
                   {userInitial}
                 </div>
                 <span className="text-xs font-medium text-gray-600 max-w-[80px] truncate">
-                  {user?.email?.split("@")[0]}
+                  {user?.first_name}
                 </span>
               </div>
               <button
