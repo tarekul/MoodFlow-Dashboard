@@ -110,7 +110,6 @@ const LogEntry = () => {
   const submitMorningLog = async (data) => {
     setLoading(true);
     try {
-      // UPDATE: Include mood in the morning payload
       const payload = {
         log_date: data.log_date,
         mood: data.mood,
@@ -148,7 +147,6 @@ const LogEntry = () => {
     const updatedData = { ...formData, mood };
     setFormData(updatedData);
 
-    // UPDATE: If morning, skip Productivity (Step 2) and go to Sleep (Step 3)
     if (isMorningCheckIn) {
       setCurrentStep(3);
     } else {
@@ -264,7 +262,7 @@ const LogEntry = () => {
   }
 
   return (
-    <div className="h-[100dvh] overflow-hidden bg-gradient-to-br from-blue-50 to-indigo-100 flex flex-col items-center justify-between p-4 relative">
+    <div className="h-[100dvh] w-full bg-gradient-to-br from-blue-50 to-indigo-100 flex flex-col overflow-hidden relative p-4">
       {/* Show success screen OR the regular flow */}
       {showSuccess ? (
         <ShowLogSuccess />
@@ -291,118 +289,122 @@ const LogEntry = () => {
           {isEditMode && <EditModeIndicator formData={formData} />}
           <ProgressBar currentStep={currentStep} />
 
-          {currentStep === 1 && (
-            <QuestionScreen
-              title={
-                isMorningCheckIn ? "Good Morning!" : "It's a new day to track!"
-              }
-              subtitle="Select the mood that best reflects how you feel at this moment."
-              options={MOOD_OPTIONS}
-              illustration={<MoodIllustration />}
-              onSelect={handleMoodSelect}
-              selectedValue={formData.mood}
-            />
-          )}
+          <div className="flex-1 w-full min-h-0 flex flex-col relative pb-[env(safe-area-inset-bottom)]">
+            {currentStep === 1 && (
+              <QuestionScreen
+                title={
+                  isMorningCheckIn
+                    ? "Good Morning!"
+                    : "It's a new day to track!"
+                }
+                subtitle="Select the mood that best reflects how you feel at this moment."
+                options={MOOD_OPTIONS}
+                illustration={<MoodIllustration />}
+                onSelect={handleMoodSelect}
+                selectedValue={formData.mood}
+              />
+            )}
 
-          {/* Productivity only shows if NOT morning */}
-          {currentStep === 2 && !isMorningCheckIn && (
-            <QuestionScreen
-              title="How productive were you?"
-              subtitle="Think about what you accomplished today."
-              options={PRODUCTIVITY_OPTIONS}
-              illustration={<ProductivityIllustration />}
-              onSelect={handleProductivitySelect}
-              selectedValue={formData.productivity}
-            />
-          )}
+            {/* Productivity only shows if NOT morning */}
+            {currentStep === 2 && !isMorningCheckIn && (
+              <QuestionScreen
+                title="How productive were you?"
+                subtitle="Think about what you accomplished today."
+                options={PRODUCTIVITY_OPTIONS}
+                illustration={<ProductivityIllustration />}
+                onSelect={handleProductivitySelect}
+                selectedValue={formData.productivity}
+              />
+            )}
 
-          {currentStep === 3 && (
-            <SleepScreen
-              onComplete={handleSleepSelect}
-              initialHours={formData.sleep_hours}
-              initialQuality={formData.sleep_quality}
-            />
-          )}
+            {currentStep === 3 && (
+              <SleepScreen
+                onComplete={handleSleepSelect}
+                initialHours={formData.sleep_hours}
+                initialQuality={formData.sleep_quality}
+              />
+            )}
 
-          {currentStep === 4 && !isMorningCheckIn && (
-            <QuestionScreen
-              title="How did you feel?"
-              subtitle="Think about how stressful your day was."
-              options={STRESS_OPTIONS}
-              illustration={<CalmVsChaoticIllustration />}
-              onSelect={handleStressSelect}
-              selectedValue={formData.stress}
-            />
-          )}
-          {currentStep === 5 && !isMorningCheckIn && (
-            <QuestionScreen
-              title="How active were you?"
-              subtitle="Think about how active you were today."
-              options={PHYSICAL_ACTIVITY_OPTIONS}
-              illustration={<PhysicalActivityIllustration />}
-              onSelect={handlePhysicalActivitySelect}
-              selectedValue={formData.physical_activity}
-              onSkip={() => {
-                setFormData({ ...formData, physical_activity: null });
-                setCurrentStep(6);
-              }}
-            />
-          )}
+            {currentStep === 4 && !isMorningCheckIn && (
+              <QuestionScreen
+                title="How did you feel?"
+                subtitle="Think about how stressful your day was."
+                options={STRESS_OPTIONS}
+                illustration={<CalmVsChaoticIllustration />}
+                onSelect={handleStressSelect}
+                selectedValue={formData.stress}
+              />
+            )}
+            {currentStep === 5 && !isMorningCheckIn && (
+              <QuestionScreen
+                title="How active were you?"
+                subtitle="Think about how active you were today."
+                options={PHYSICAL_ACTIVITY_OPTIONS}
+                illustration={<PhysicalActivityIllustration />}
+                onSelect={handlePhysicalActivitySelect}
+                selectedValue={formData.physical_activity}
+                onSkip={() => {
+                  setFormData({ ...formData, physical_activity: null });
+                  setCurrentStep(6);
+                }}
+              />
+            )}
 
-          {currentStep === 6 && !isMorningCheckIn && (
-            <ScreenTimeSlider
-              onComplete={handleScreenTimeSelect}
-              onSkip={() => {
-                setFormData({ ...formData, screen_time: null });
-                setCurrentStep(7);
-              }}
-              initialValue={formData.screen_time}
-            />
-          )}
-          {currentStep === 7 && !isMorningCheckIn && (
-            <QuestionScreen
-              title="How would you rate your diet today?"
-              subtitle="Rate the overall quality of your meals and snacks — think about balance, portion sizes, and nutrients."
-              options={DIET_QUALITY_OPTIONS}
-              illustration={<DietQualityIllustration />}
-              onSelect={handleDietQualitySelect}
-              selectedValue={formData.diet_quality}
-              onSkip={() => {
-                setFormData({ ...formData, diet_quality: null });
-                setCurrentStep(8);
-              }}
-            />
-          )}
-          {currentStep === 8 && !isMorningCheckIn && (
-            <SocialInteractionsSlider
-              onComplete={handleSocialInteractionSelect}
-              onSkip={() => {
-                setFormData({ ...formData, social_interaction: null });
-                setCurrentStep(9);
-              }}
-              initialValue={formData.social_interaction}
-            />
-          )}
-          {currentStep === 9 && !isMorningCheckIn && (
-            <QuestionScreen
-              title="How was the weather?"
-              subtitle="Look at the weather outside"
-              options={WEATHER_OPTIONS}
-              illustration={<WeatherIllustration />}
-              onSelect={handleWeatherSelect}
-              selectedValue={formData.weather}
-              onSkip={() => {
-                setFormData({ ...formData, weather: null });
-                setCurrentStep(10);
-              }}
-            />
-          )}
-          {currentStep === 10 && !isMorningCheckIn && (
-            <Notes
-              onComplete={handleNotesSelect}
-              initialValue={formData.notes}
-            />
-          )}
+            {currentStep === 6 && !isMorningCheckIn && (
+              <ScreenTimeSlider
+                onComplete={handleScreenTimeSelect}
+                onSkip={() => {
+                  setFormData({ ...formData, screen_time: null });
+                  setCurrentStep(7);
+                }}
+                initialValue={formData.screen_time}
+              />
+            )}
+            {currentStep === 7 && !isMorningCheckIn && (
+              <QuestionScreen
+                title="How would you rate your diet today?"
+                subtitle="Rate the overall quality of your meals and snacks — think about balance, portion sizes, and nutrients."
+                options={DIET_QUALITY_OPTIONS}
+                illustration={<DietQualityIllustration />}
+                onSelect={handleDietQualitySelect}
+                selectedValue={formData.diet_quality}
+                onSkip={() => {
+                  setFormData({ ...formData, diet_quality: null });
+                  setCurrentStep(8);
+                }}
+              />
+            )}
+            {currentStep === 8 && !isMorningCheckIn && (
+              <SocialInteractionsSlider
+                onComplete={handleSocialInteractionSelect}
+                onSkip={() => {
+                  setFormData({ ...formData, social_interaction: null });
+                  setCurrentStep(9);
+                }}
+                initialValue={formData.social_interaction}
+              />
+            )}
+            {currentStep === 9 && !isMorningCheckIn && (
+              <QuestionScreen
+                title="How was the weather?"
+                subtitle="Look at the weather outside"
+                options={WEATHER_OPTIONS}
+                illustration={<WeatherIllustration />}
+                onSelect={handleWeatherSelect}
+                selectedValue={formData.weather}
+                onSkip={() => {
+                  setFormData({ ...formData, weather: null });
+                  setCurrentStep(10);
+                }}
+              />
+            )}
+            {currentStep === 10 && !isMorningCheckIn && (
+              <Notes
+                onComplete={handleNotesSelect}
+                initialValue={formData.notes}
+              />
+            )}
+          </div>
         </>
       )}
 

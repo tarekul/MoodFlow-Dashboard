@@ -2,7 +2,8 @@ import React from "react";
 
 const SleepIllustration = () => {
   return (
-    <div className="relative w-full max-w-[180px] aspect-square flex items-center justify-center">
+    // FIX: Lowered minimum width to 100px to fit on iPhone 5/SE
+    <div className="relative aspect-square flex items-center justify-center w-[clamp(100px,22vh,220px)]">
       <svg
         viewBox="0 0 200 200"
         fill="none"
@@ -10,7 +11,6 @@ const SleepIllustration = () => {
         className="w-full h-full drop-shadow-2xl rounded-full"
       >
         <defs>
-          {/* Deep Night Gradient */}
           <linearGradient
             id="deep-sleep"
             x1="100"
@@ -19,11 +19,10 @@ const SleepIllustration = () => {
             y2="200"
             gradientUnits="userSpaceOnUse"
           >
-            <stop stopColor="#1E1B4B" /> {/* Deep Indigo */}
-            <stop offset="1" stopColor="#312E81" /> {/* Softer Indigo */}
+            <stop stopColor="#1E1B4B" />
+            <stop offset="1" stopColor="#312E81" />
           </linearGradient>
 
-          {/* Soft Dream Gradient 1 */}
           <linearGradient
             id="dream-wave-1"
             x1="0"
@@ -36,7 +35,6 @@ const SleepIllustration = () => {
             <stop offset="1" stopColor="#A5B4FC" stopOpacity="0.2" />
           </linearGradient>
 
-          {/* Soft Dream Gradient 2 */}
           <linearGradient
             id="dream-wave-2"
             x1="200"
@@ -58,10 +56,8 @@ const SleepIllustration = () => {
           </filter>
         </defs>
 
-        {/* Base Circle (The Night Sky) */}
         <circle cx="100" cy="100" r="98" fill="url(#deep-sleep)" />
 
-        {/* Abstract Wavy Shapes (Drifting Dreams) */}
         <g className="animate-[pulse_8s_ease-in-out_infinite]">
           <path
             d="M0 100C30 120 70 80 100 110C130 140 170 90 200 120V200H0V100Z"
@@ -80,7 +76,6 @@ const SleepIllustration = () => {
           />
         </g>
 
-        {/* Focal Point (The glowing sleep state) */}
         <circle
           cx="100"
           cy="70"
@@ -92,7 +87,6 @@ const SleepIllustration = () => {
           style={{ animationDuration: "4s" }}
         />
 
-        {/* Tiny floating particles */}
         <circle
           cx="60"
           cy="90"

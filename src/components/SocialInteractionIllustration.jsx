@@ -1,12 +1,9 @@
 import React from "react";
 
 const SocialInteractionIllustration = ({ hours }) => {
-  // Normalize hours (0-8) to a scale factor (0-1)
   const safeHours = Math.max(0, Math.min(hours, 8));
   const intensity = safeHours / 8;
 
-  // Configuration for "Bubbles" (Friends)
-  // They appear radially around the center "Self" bubble
   const bubbles = [
     { angle: 0, dist: 60, minHours: 1 },
     { angle: 120, dist: 60, minHours: 2 },
@@ -16,17 +13,16 @@ const SocialInteractionIllustration = ({ hours }) => {
     { angle: 300, dist: 85, minHours: 7.5 },
   ];
 
-  // Dynamic Color Logic
   const getMainColor = () => {
-    if (hours <= 2) return "#3B82F6"; // Blue
-    if (hours <= 5) return "#6366F1"; // Indigo
-    if (hours <= 7) return "#A855F7"; // Purple
-    return "#EC4899"; // Pink
+    if (hours <= 2) return "#3B82F6";
+    if (hours <= 5) return "#6366F1";
+    if (hours <= 7) return "#A855F7";
+    return "#EC4899";
   };
   const mainColor = getMainColor();
 
   return (
-    <div className="relative w-full max-w-[240px] aspect-square flex items-center justify-center">
+    <div className="relative aspect-square flex items-center justify-center w-[clamp(100px,22vh,220px)]">
       <svg
         viewBox="0 0 200 200"
         fill="none"
@@ -34,7 +30,6 @@ const SocialInteractionIllustration = ({ hours }) => {
         className="w-full h-full drop-shadow-lg"
       >
         <defs>
-          {/* Main Gradient for bubbles */}
           <radialGradient
             id="bubbleGrad"
             cx="0"
@@ -54,7 +49,6 @@ const SocialInteractionIllustration = ({ hours }) => {
         </defs>
 
         {/* --- CONNECTING LINES --- */}
-        {/* Lines draw out from center to active bubbles */}
         <g
           stroke={mainColor}
           strokeWidth="2"
@@ -97,12 +91,9 @@ const SocialInteractionIllustration = ({ hours }) => {
             r={25 + intensity * 5}
             fill="url(#bubbleGrad)"
           />
-          {/* Smile Expression changes with intensity */}
           <path
             d={
-              intensity < 0.3
-                ? "M 90 100 H 110" // Neutral
-                : "M 90 102 Q 100 112 110 102" // Smile
+              intensity < 0.3 ? "M 90 100 H 110" : "M 90 102 Q 100 112 110 102"
             }
             stroke="white"
             strokeWidth="3"
@@ -110,12 +101,11 @@ const SocialInteractionIllustration = ({ hours }) => {
             fill="none"
             transform={`translate(0, ${intensity < 0.3 ? 5 : 0})`}
           />
-          {/* Eyes */}
           <circle cx="92" cy="92" r="2" fill="white" />
           <circle cx="108" cy="92" r="2" fill="white" />
         </g>
 
-        {/* --- SURROUNDING BUBBLES (FRIENDS) --- */}
+        {/* --- SURROUNDING BUBBLES --- */}
         {bubbles.map((b, i) => {
           const rad = (b.angle * Math.PI) / 180;
           const x = 100 + Math.cos(rad) * b.dist;
@@ -131,7 +121,6 @@ const SocialInteractionIllustration = ({ hours }) => {
               }`}
             >
               <circle r="15" fill="white" stroke={mainColor} strokeWidth="2" />
-              {/* Chat Lines inside bubble */}
               <path
                 d="M -5 -2 H 5"
                 stroke={mainColor}
@@ -150,7 +139,7 @@ const SocialInteractionIllustration = ({ hours }) => {
           );
         })}
 
-        {/* --- PARTY PARTICLES (High Intensity) --- */}
+        {/* --- PARTICLES --- */}
         {hours > 6 && (
           <g
             className="animate-spin"
