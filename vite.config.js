@@ -15,8 +15,8 @@ export default defineConfig({
       },
       includeAssets: ["favicon.ico", "apple-touch-icon.png", "masked-icon.svg"],
       manifest: {
-        name: "MoodFlow",
-        short_name: "MoodFlow",
+        name: "Oria",
+        short_name: "Oria",
         description: "Discover your unique productivity drivers",
         theme_color: "#6366f1",
         background_color: "#eff6ff",

@@ -1,10 +1,17 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>MoodFlow Icon Generator</title>
+    <title>Oria Icon Generator</title>
   </head>
-  <body style="margin: 0; padding: 20px; background: #f0f0f0">
-    <h2>MoodFlow Icons</h2>
+  <body
+    style="
+      margin: 0;
+      padding: 20px;
+      background: #f0f0f0;
+      font-family: sans-serif;
+    "
+  >
+    <h2>Oria Icons (Pulse Logo)</h2>
     <p>Right-click each canvas and "Save image as..."</p>
 
     <div style="margin: 20px 0">
@@ -32,49 +39,42 @@
         const ctx = canvas.getContext("2d");
         const size = canvas.width;
         const center = size / 2;
-        const radius = size * 0.4;
 
-        // Clear canvas
+        const radius = size * 0.48;
+
         ctx.clearRect(0, 0, size, size);
 
-        // Draw circular background
-        ctx.fillStyle = "#6366f1"; // indigo-600
+        ctx.fillStyle = "#4f46e5";
         ctx.beginPath();
         ctx.arc(center, center, radius, 0, Math.PI * 2);
         ctx.fill();
 
-        // Draw flowing wave pattern
+        const iconScale = (size / 24) * 0.55;
+
+        const offsetX = (size - 24 * iconScale) / 2;
+        const offsetY = (size - 24 * iconScale) / 2;
+
         ctx.strokeStyle = "#ffffff";
-        ctx.lineWidth = size * 0.04;
+        ctx.lineWidth = size * 0.05; // Dynamic stroke width
         ctx.lineCap = "round";
         ctx.lineJoin = "round";
 
-        // Draw 3 flowing waves
-        const waveCount = 3;
-        const waveSpacing = radius * 0.5;
+        ctx.beginPath();
 
-        for (let i = 0; i < waveCount; i++) {
-          ctx.beginPath();
-          const startY = center - waveSpacing + i * waveSpacing;
-          const amplitude = radius * 0.15;
-          const frequency = 2;
+        ctx.moveTo(offsetX + 2 * iconScale, offsetY + 12 * iconScale);
 
-          for (let x = 0; x <= radius * 1.4; x += 2) {
-            const relX = x / (radius * 1.4);
-            const y = startY + Math.sin(relX * Math.PI * frequency) * amplitude;
-            const actualX = center - radius * 0.7 + x;
+        ctx.lineTo(offsetX + 6 * iconScale, offsetY + 12 * iconScale);
 
-            if (x === 0) {
-              ctx.moveTo(actualX, y);
-            } else {
-              ctx.lineTo(actualX, y);
-            }
-          }
-          ctx.stroke();
-        }
+        ctx.lineTo(offsetX + 9 * iconScale, offsetY + 21 * iconScale);
+
+        ctx.lineTo(offsetX + 15 * iconScale, offsetY + 3 * iconScale);
+
+        ctx.lineTo(offsetX + 18 * iconScale, offsetY + 12 * iconScale);
+        ctx.lineTo(offsetX + 22 * iconScale, offsetY + 12 * iconScale);
+
+        ctx.stroke();
       }
 
-      // Draw both icons
       drawIcon(document.getElementById("icon192"));
       drawIcon(document.getElementById("icon512"));
     </script>

@@ -23,27 +23,28 @@ const Header = ({
         <div className="hidden lg:flex items-center justify-between">
           {/* Left: Brand */}
           <div className="flex items-center gap-3">
-            <div className="bg-indigo-600 text-white p-2 rounded-lg">
+            <div className="bg-indigo-600 text-white p-2 rounded-lg shadow-md shadow-indigo-200">
               <svg
                 className="w-6 h-6"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
               >
+                {/* Replaced Lightning Bolt with a "Rhythm Pulse" to match Rya */}
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M13 10V3L4 14h7v7l9-11h-7z"
+                  strokeWidth="2.5"
+                  d="M22 12h-4l-3 9L9 3l-3 9H2"
                 ></path>
               </svg>
             </div>
             <div>
               <h1 className="text-2xl font-bold text-gray-900 tracking-tight">
-                MoodFlow
+                Oria
               </h1>
               <p className="text-xs text-gray-500 font-medium">
-                Productivity Analytics
+                Discover your unique productivity drivers
               </p>
             </div>
           </div>
