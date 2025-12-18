@@ -7,7 +7,6 @@ const LogButton = ({
   todayLog,
   navigate,
 }) => {
-  // 1. COMPLETED STATE: Emerald theme
   if (isFullyLogged) {
     return (
       <div className="flex items-center gap-2 px-4 py-2.5 bg-emerald-50 text-emerald-700 rounded-2xl border border-emerald-100 shadow-sm shadow-emerald-100/50 transition-all">
@@ -17,7 +16,6 @@ const LogButton = ({
     );
   }
 
-  // 2. PARTIAL STATE: Gradient theme (Indigo to Violet)
   if (isPartiallyLogged) {
     return (
       <button
@@ -34,7 +32,6 @@ const LogButton = ({
     );
   }
 
-  // 3. EMPTY STATE: Now using Indigo-600 to match the app theme
   return (
     <button
       onClick={() => navigate("/log-entry")}

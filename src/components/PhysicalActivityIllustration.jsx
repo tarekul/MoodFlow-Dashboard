@@ -2,8 +2,6 @@ import React from "react";
 
 const PhysicalActivityIllustration = () => {
   return (
-    // FIX: Using clamp() for width based on VH to prevent overlap on short screens.
-    // Removes fixed w-full/max-w constraints in favor of fluid scaling.
     <div className="relative aspect-square flex items-center justify-center overflow-hidden rounded-3xl bg-blue-50/50 border-4 border-white shadow-xl w-[clamp(100px,22vh,220px)]">
       <svg
         viewBox="0 0 200 200"

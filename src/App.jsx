@@ -11,7 +11,6 @@ import Signup from "./pages/Signup";
 import { AuthProvider } from "./providers/AuthProvider";
 import { ToastProvider } from "./providers/ToastProvider";
 
-// Main App component with routing
 function App() {
   return (
     <AuthProvider>

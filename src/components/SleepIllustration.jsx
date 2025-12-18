@@ -2,7 +2,6 @@ import React from "react";
 
 const SleepIllustration = () => {
   return (
-    // FIX: Lowered minimum width to 100px to fit on iPhone 5/SE
     <div className="relative aspect-square flex items-center justify-center w-[clamp(100px,22vh,220px)]">
       <svg
         viewBox="0 0 200 200"

@@ -5,8 +5,6 @@ const MoodIllustration = () => {
   const isDay = isDaytime();
 
   return (
-    // FIX: Using clamp() for width ensures it shrinks on iPhone 5 (small screens)
-    // w-[clamp(180px,50vw,220px)] means: "Be at least 180px, ideally 50% of viewport width, but max 220px"
     <div
       className={`
         relative aspect-square flex items-center justify-center overflow-hidden 

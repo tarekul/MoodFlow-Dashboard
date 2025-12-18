@@ -11,7 +11,7 @@ const QuestionScreen = ({
 }) => {
   return (
     <div className="flex-1 w-full flex flex-col items-center animate-fade-in h-full relative">
-      {/* HEADER: Tighter padding and responsive text sizes */}
+      {/* HEADER */}
       <div className="text-center pt-2 px-4 sm:pt-6 shrink-0 z-10 w-full max-w-sm">
         <h1 className="text-xl xs:text-2xl sm:text-3xl font-bold mb-1 text-gray-900 tracking-tight leading-tight">
           {title}
@@ -21,14 +21,14 @@ const QuestionScreen = ({
         </p>
       </div>
 
-      {/* ILLUSTRATION: Flexible container */}
+      {/* ILLUSTRATION */}
       <div className="flex-1 w-full min-h-0 flex items-center justify-center py-1 sm:py-4 relative z-0">
         <div className="h-full w-full max-h-[35vh] sm:max-h-[300px] flex items-center justify-center">
           {illustration}
         </div>
       </div>
 
-      {/* FOOTER: Smaller buttons on small screens */}
+      {/* FOOTER */}
       <div className="w-full max-w-2xl px-2 pb-4 sm:px-4 sm:pb-8 shrink-0 z-20">
         <div className="flex flex-wrap justify-center gap-2 sm:gap-4">
           {options.map((option) => {
