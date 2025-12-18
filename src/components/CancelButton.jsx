@@ -1,11 +1,8 @@
-import React from "react";
-
 const CancelButton = ({ navigate }) => {
   return (
     <button
       onClick={() => navigate("/my-logs")}
-      className="w-8 h-8 flex items-center justify-center bg-white rounded-full shadow-sm hover:shadow-md border border-gray-100 transition-all text-gray-400 hover:text-red-500 active:scale-95"
-      aria-label="Cancel"
+      className="flex items-center justify-center w-8 h-8 bg-white rounded-full shadow-md border border-gray-100 hover:shadow-lg transition-all text-gray-400 hover:text-red-500 active:scale-95"
     >
       <svg
         className="h-4 w-4"
@@ -23,5 +20,4 @@ const CancelButton = ({ navigate }) => {
     </button>
   );
 };
-
 export default CancelButton;

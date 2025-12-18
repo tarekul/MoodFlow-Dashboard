@@ -268,26 +268,35 @@ const LogEntry = () => {
         <ShowLogSuccess />
       ) : (
         <>
-          {/* Back Button */}
-          <LogBackButton
-            isMorningCheckIn={isMorningCheckIn}
-            currentStep={currentStep}
-            loading={loading}
-            // UPDATE: Custom setter to handle the jump back from Sleep (3) to Mood (1)
-            setCurrentStep={(step) => {
-              if (isMorningCheckIn && step === 2) {
-                setCurrentStep(1);
-              } else {
-                setCurrentStep(step);
-              }
-            }}
-          />
-          {!isEditMode && <ExitButton navigate={navigate} />}
-          {isEditMode && <CancelButton navigate={navigate} />}
+          <div className="flex items-center justify-between min-h-[40px]">
+            {/* LEFT: Back Button Wrapper */}
+            <div className="w-10">
+              <LogBackButton
+                isMorningCheckIn={isMorningCheckIn}
+                currentStep={currentStep}
+                loading={loading}
+                // UPDATE: Custom setter to handle the jump back from Sleep (3) to Mood (1)
+                setCurrentStep={(step) => {
+                  if (isMorningCheckIn && step === 2) {
+                    setCurrentStep(1);
+                  } else {
+                    setCurrentStep(step);
+                  }
+                }}
+              />
+            </div>
+
+            <div className="w-10 flex justify-end">
+              {!isEditMode && <ExitButton navigate={navigate} />}
+              {isEditMode && <CancelButton navigate={navigate} />}
+            </div>
+          </div>
 
           {/* Edit mode indicator */}
-          {isEditMode && <EditModeIndicator formData={formData} />}
-          <ProgressBar currentStep={currentStep} />
+          <div className="mt-2 w-full">
+            {isEditMode && <EditModeIndicator formData={formData} />}
+            <ProgressBar currentStep={currentStep} />
+          </div>
 
           <div className="flex-1 w-full min-h-0 flex flex-col relative pb-[env(safe-area-inset-bottom)]">
             {currentStep === 1 && (

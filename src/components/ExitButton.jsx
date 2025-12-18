@@ -2,11 +2,9 @@ const ExitButton = ({ navigate }) => {
   return (
     <button
       onClick={() => navigate("/dashboard")}
-      className="fixed top-6 right-6 w-8 h-8 flex items-center justify-center rounded-full bg-white/80 hover:bg-white shadow-md hover:shadow-lg transition-all duration-200 text-gray-500 hover:text-gray-800 z-50 backdrop-blur-sm border border-gray-200 hover:border-gray-300"
-      aria-label="Close and return to dashboard"
+      className="flex items-center justify-center w-8 h-8 bg-white rounded-full shadow-md border border-gray-100 hover:shadow-lg transition-all text-gray-500 hover:text-gray-800 active:scale-95"
     >
       <svg
-        xmlns="http://www.w3.org/2000/svg"
         className="h-4 w-4"
         fill="none"
         viewBox="0 0 24 24"
@@ -22,5 +20,4 @@ const ExitButton = ({ navigate }) => {
     </button>
   );
 };
-
 export default ExitButton;

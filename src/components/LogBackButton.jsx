@@ -8,15 +8,24 @@ const LogBackButton = ({
     return (
       <button
         onClick={() => setCurrentStep(currentStep - 1)}
-        className="fixed top-6 left-6 flex items-center gap-1.5 px-3 py-1.5 text-sm bg-white rounded-full shadow-md hover:shadow-lg transition-all text-gray-600 hover:text-gray-900 z-50"
+        className="flex items-center justify-center w-8 h-8 bg-white rounded-full shadow-md border border-gray-100 hover:shadow-lg transition-all text-gray-600 hover:text-indigo-600 active:scale-95"
       >
-        <span>←</span>
-        <span hidden sm:inline>
-          Back
-        </span>
+        <svg
+          className="w-4 h-4"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2.5"
+            d="M15 19l-7-7 7-7"
+          />
+        </svg>
       </button>
     );
   }
+  return null;
 };
-
 export default LogBackButton;
