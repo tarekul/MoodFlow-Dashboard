@@ -1,125 +1,168 @@
 import React from "react";
 
 const SocialInteractionIllustration = ({ hours }) => {
-  const intensity = Math.max(0, Math.min(hours / 10, 1));
+  // Normalize hours (0-8) to a scale factor (0-1)
+  const safeHours = Math.max(0, Math.min(hours, 8));
+  const intensity = safeHours / 8;
 
-  const getBaseColor = () => {
-    if (intensity < 0.4) return "bg-blue-100 border-blue-300";
-    if (intensity < 0.7) return "bg-yellow-100 border-yellow-400";
-    return "bg-pink-100 border-pink-500";
+  // Configuration for "Bubbles" (Friends)
+  // They appear radially around the center "Self" bubble
+  const bubbles = [
+    { angle: 0, dist: 60, minHours: 1 },
+    { angle: 120, dist: 60, minHours: 2 },
+    { angle: 240, dist: 60, minHours: 3 },
+    { angle: 60, dist: 85, minHours: 5 },
+    { angle: 180, dist: 85, minHours: 6.5 },
+    { angle: 300, dist: 85, minHours: 7.5 },
+  ];
+
+  // Dynamic Color Logic
+  const getMainColor = () => {
+    if (hours <= 2) return "#3B82F6"; // Blue
+    if (hours <= 5) return "#6366F1"; // Indigo
+    if (hours <= 7) return "#A855F7"; // Purple
+    return "#EC4899"; // Pink
   };
+  const mainColor = getMainColor();
 
   return (
-    <div className="my-8 flex items-center justify-center">
-      <div className="w-64 h-40 relative flex items-center justify-center scale-75 sm:scale-90 md:scale-100 origin-center transition-transform">
-        <div
-          className={`absolute rounded-full transition-all duration-700 ease-out opacity-20 blur-xl
-            ${intensity > 0.6 ? "bg-purple-500 animate-pulse" : "bg-blue-400"}
-          `}
-          style={{
-            width: `${100 + intensity * 150}px`,
-            height: `${100 + intensity * 150}px`,
-          }}
-        ></div>
-
-        {/* 2. Floating Speech Bubbles (SVG Overlay) */}
-        {/* We map over fixed positions, but control opacity with intensity */}
-        <div className="absolute inset-0 w-full h-full pointer-events-none z-0">
-          {[
-            { top: "10%", left: "10%", delay: "0ms", rotate: "-12deg" },
-            { top: "5%", right: "15%", delay: "100ms", rotate: "12deg" },
-            { bottom: "20%", left: "5%", delay: "200ms", rotate: "-6deg" },
-            { bottom: "30%", right: "5%", delay: "300ms", rotate: "8deg" },
-            { top: "50%", left: "-10%", delay: "400ms", rotate: "-20deg" }, // Far left
-            { top: "40%", right: "-12%", delay: "500ms", rotate: "15deg" }, // Far right
-          ].map((bubble, index) => {
-            // Determine if this specific bubble should show based on intensity threshold
-            const isVisible = intensity > (index + 1) * 0.14; // Stagger appearance
-
-            return (
-              <div
-                key={index}
-                className={`absolute transition-all duration-500 ease-back-out ${
-                  isVisible ? "scale-100 opacity-100" : "scale-0 opacity-0"
-                }`}
-                style={{
-                  top: bubble.top,
-                  left: bubble.left,
-                  right: bubble.right,
-                  bottom: bubble.bottom,
-                  transitionDelay: bubble.delay,
-                }}
-              >
-                {/* The Bubble Graphic */}
-                <div
-                  className={`w-12 h-10 bg-white border-2 rounded-2xl flex items-center justify-center shadow-sm
-                    ${
-                      intensity > 0.8
-                        ? "border-pink-400 animate-bounce"
-                        : "border-gray-300"
-                    }
-                  `}
-                  style={{ transform: `rotate(${bubble.rotate})` }}
-                >
-                  <div className="w-6 h-1 bg-gray-200 rounded-full"></div>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-
-        {/* 3. The Avatar Head */}
-        <div
-          className={`relative z-10 w-24 h-24 rounded-full border-4 shadow-lg transition-colors duration-500 ${getBaseColor()}`}
-        >
-          {/* Eyes */}
-          <div className="absolute top-8 left-0 w-full flex justify-center gap-4">
-            {/* Eyes blink/close when low energy, widen when high energy */}
-            <div
-              className={`w-3 h-3 bg-gray-800 rounded-full transition-all duration-300 ${
-                intensity > 0.8 ? "h-4 w-4" : ""
-              }`}
-            ></div>
-            <div
-              className={`w-3 h-3 bg-gray-800 rounded-full transition-all duration-300 ${
-                intensity > 0.8 ? "h-4 w-4" : ""
-              }`}
-            ></div>
-          </div>
-
-          {/* Mouth (SVG for morphing expression) */}
-          <svg
-            className="absolute bottom-4 left-1/2 -translate-x-1/2 w-12 h-8"
-            viewBox="0 0 50 30"
+    <div className="relative w-full max-w-[240px] aspect-square flex items-center justify-center">
+      <svg
+        viewBox="0 0 200 200"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        className="w-full h-full drop-shadow-lg"
+      >
+        <defs>
+          {/* Main Gradient for bubbles */}
+          <radialGradient
+            id="bubbleGrad"
+            cx="0"
+            cy="0"
+            r="1"
+            gradientUnits="userSpaceOnUse"
+            gradientTransform="translate(0.3 0.3) scale(0.8)"
           >
-            <path
-              fill="none"
-              stroke="#1F2937"
-              strokeWidth="3"
-              strokeLinecap="round"
-              className="transition-all duration-500 ease-in-out"
-              // Morphing Logic:
-              // Low (0-3): Small flat line/slight smile
-              // Med (4-7): Big curve smile
-              // High (8+): Open mouth circle (O shape)
-              d={
-                intensity < 0.4
-                  ? "M 15 15 Q 25 15 35 15" // Flat/Neutral
-                  : intensity < 0.8
-                  ? "M 10 10 Q 25 25 40 10" // Smile
-                  : "M 15 10 Q 25 25 35 10 Q 25 -5 15 10" // Open/Chattering Mouth (Cycle)
-              }
-            />
-          </svg>
+            <stop offset="0" stopColor="white" stopOpacity="0.4" />
+            <stop offset="1" stopColor={mainColor} stopOpacity="0.1" />
+          </radialGradient>
 
-          {/* Sweat drop (Only appears at very high intensity) */}
-          <div
-            className={`absolute top-4 right-3 w-2 h-3 bg-blue-400 rounded-full opacity-0 transition-opacity duration-500 ${
-              intensity > 0.85 ? "opacity-100" : ""
-            }`}
-          ></div>
-        </div>
-      </div>
+          <filter id="glow">
+            <feGaussianBlur stdDeviation="3" result="blur" />
+            <feComposite in="SourceGraphic" in2="blur" operator="over" />
+          </filter>
+        </defs>
+
+        {/* --- CONNECTING LINES --- */}
+        {/* Lines draw out from center to active bubbles */}
+        <g
+          stroke={mainColor}
+          strokeWidth="2"
+          strokeLinecap="round"
+          opacity="0.3"
+        >
+          {bubbles.map((b, i) => {
+            const rad = (b.angle * Math.PI) / 180;
+            const x = 100 + Math.cos(rad) * b.dist;
+            const y = 100 + Math.sin(rad) * b.dist;
+            const isActive = hours >= b.minHours;
+
+            return isActive ? (
+              <line
+                key={i}
+                x1="100"
+                y1="100"
+                x2={x}
+                y2={y}
+                className="animate-[grow_0.5s_ease-out_forwards]"
+                strokeDasharray="100"
+                strokeDashoffset="0"
+              />
+            ) : null;
+          })}
+        </g>
+
+        {/* --- CENTER BUBBLE (YOU) --- */}
+        <g className="animate-[pulse_3s_infinite]">
+          <circle
+            cx="100"
+            cy="100"
+            r={25 + intensity * 5}
+            fill={mainColor}
+            className="transition-all duration-500"
+          />
+          <circle
+            cx="100"
+            cy="100"
+            r={25 + intensity * 5}
+            fill="url(#bubbleGrad)"
+          />
+          {/* Smile Expression changes with intensity */}
+          <path
+            d={
+              intensity < 0.3
+                ? "M 90 100 H 110" // Neutral
+                : "M 90 102 Q 100 112 110 102" // Smile
+            }
+            stroke="white"
+            strokeWidth="3"
+            strokeLinecap="round"
+            fill="none"
+            transform={`translate(0, ${intensity < 0.3 ? 5 : 0})`}
+          />
+          {/* Eyes */}
+          <circle cx="92" cy="92" r="2" fill="white" />
+          <circle cx="108" cy="92" r="2" fill="white" />
+        </g>
+
+        {/* --- SURROUNDING BUBBLES (FRIENDS) --- */}
+        {bubbles.map((b, i) => {
+          const rad = (b.angle * Math.PI) / 180;
+          const x = 100 + Math.cos(rad) * b.dist;
+          const y = 100 + Math.sin(rad) * b.dist;
+          const isActive = hours >= b.minHours;
+
+          return (
+            <g
+              key={i}
+              transform={`translate(${x}, ${y})`}
+              className={`transition-all duration-500 ${
+                isActive ? "opacity-100 scale-100" : "opacity-0 scale-0"
+              }`}
+            >
+              <circle r="15" fill="white" stroke={mainColor} strokeWidth="2" />
+              {/* Chat Lines inside bubble */}
+              <path
+                d="M -5 -2 H 5"
+                stroke={mainColor}
+                strokeWidth="2"
+                strokeLinecap="round"
+                opacity="0.5"
+              />
+              <path
+                d="M -5 3 H 2"
+                stroke={mainColor}
+                strokeWidth="2"
+                strokeLinecap="round"
+                opacity="0.5"
+              />
+            </g>
+          );
+        })}
+
+        {/* --- PARTY PARTICLES (High Intensity) --- */}
+        {hours > 6 && (
+          <g
+            className="animate-spin"
+            style={{ animationDuration: "10s", transformOrigin: "100px 100px" }}
+          >
+            <circle cx="100" cy="40" r="3" fill="#F472B6" />
+            <circle cx="160" cy="100" r="2" fill="#60A5FA" />
+            <circle cx="100" cy="160" r="3" fill="#34D399" />
+            <circle cx="40" cy="100" r="2" fill="#FBBF24" />
+          </g>
+        )}
+      </svg>
     </div>
   );
 };

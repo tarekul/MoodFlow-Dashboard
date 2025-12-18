@@ -9,13 +9,15 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import { getLocalDateString } from "../utils/helpers";
 
 const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
+    const localDate = new Date(label + "T00:00:00");
     return (
       <div className="bg-white/95 backdrop-blur-sm p-4 border border-gray-100 shadow-xl rounded-xl">
         <p className="text-sm font-bold text-gray-700 mb-2">
-          {new Date(label).toLocaleDateString("en-US", {
+          {localDate.toLocaleDateString(undefined, {
             weekday: "short",
             month: "short",
             day: "numeric",
@@ -53,11 +55,12 @@ function TimeSeriesChart({ data }) {
     setVisibleLines((prev) => ({ ...prev, [key]: !prev[key] }));
   };
 
-  const today = new Date().toISOString().split("T")[0];
+  const today = getLocalDateString();
+
   const hasToday = data.some((d) => d.log_date === today);
 
   const formatXAxis = (tickItem) => {
-    const date = new Date(tickItem);
+    const date = new Date(tickItem + "T00:00:00");
     return `${date.getMonth() + 1}/${date.getDate()}`;
   };
 
@@ -126,7 +129,7 @@ function TimeSeriesChart({ data }) {
           <ResponsiveContainer width="100%" height="100%">
             <ComposedChart
               data={data}
-              margin={{ top: 10, right: 30, left: -20, bottom: 0 }}
+              margin={{ top: 20, right: 30, left: -20, bottom: 0 }}
             >
               <defs>
                 <linearGradient id="colorMood" x1="0" y1="0" x2="0" y2="1">

@@ -1,19 +1,19 @@
+import { ArrowLeft, Calendar, Edit3, Trash2 } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import LogButton from "../components/LogButton";
 import { useToast } from "../contexts/ToastContext";
 import { logsAPI } from "../utils/api";
 import calculateStreak from "../utils/calculateStreak";
+import { getLocalDateString } from "../utils/helpers";
 
 const MyLogs = () => {
   const navigate = useNavigate();
-
   const [logs, setLogs] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const { showToast } = useToast();
   const [deleteConfirm, setDeleteConfirm] = useState(null);
 
-  // Fetch logs on mount
   useEffect(() => {
     fetchLogs();
   }, []);
@@ -23,10 +23,9 @@ const MyLogs = () => {
       setLoading(true);
       const data = await logsAPI.getMyLogs();
       setLogs(data);
-      setError(null);
     } catch (err) {
-      setError("Failed to load logs");
       console.error(err);
+      showToast("Failed to load history", "error");
     } finally {
       setLoading(false);
     }
@@ -38,19 +37,14 @@ const MyLogs = () => {
       setLogs(logs.filter((log) => log.id !== logId));
       setDeleteConfirm(null);
       showToast("Log deleted successfully", "success");
-    } catch (err) {
-      setError("Failed to delete log");
-      console.error(err);
+    } catch {
       showToast("Failed to delete log", "error");
     }
   };
 
-  // Helper to format date nicely
   const formatDate = (dateString) => {
-    const [year, month, day] = dateString.split("-").map(Number);
-    const date = new Date(year, month - 1, day);
-
-    return date.toLocaleDateString("en-US", {
+    const date = new Date(dateString + "T00:00:00");
+    return date.toLocaleDateString(undefined, {
       weekday: "short",
       month: "short",
       day: "numeric",
@@ -58,204 +52,170 @@ const MyLogs = () => {
     });
   };
 
-  if (loading) {
+  if (loading)
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-indigo-600 mx-auto mb-4"></div>
-          <div className="text-xl text-gray-600">Loading your logs...</div>
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="animate-pulse text-indigo-600 font-medium">
+          Loading your journey...
         </div>
       </div>
     );
-  }
 
   const streak = calculateStreak(logs);
-  const todayStr = new Date().toISOString().split("T")[0];
+  const todayStr = getLocalDateString();
   const todayLog = logs.find((log) => log.log_date === todayStr);
-  const isFullyLogged = todayLog && todayLog.stress !== null;
-  const isPartiallyLogged = todayLog && todayLog.stress === null;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6">
-      {/* Header */}
-      <div className="max-w-2xl mx-auto mb-8">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div className="flex justify-between items-center md:block">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900">My Logs</h1>
-              <p className="text-gray-600">{logs.length} entries</p>
-            </div>
-
-            <button
-              onClick={() => navigate("/dashboard")}
-              className="md:hidden px-3 py-1 text-gray-500 hover:text-gray-900 text-sm bg-white rounded-lg border border-gray-200"
-            >
-              Dashboard
-            </button>
-          </div>
-
-          <div className="flex items-center gap-3 w-full md:w-auto">
-            <div className="shrink-0 bg-gradient-to-r from-orange-400 to-red-500 text-white px-4 py-2 rounded-xl text-center">
-              <div className="text-2xl font-bold leading-none">{streak}🔥</div>
-              <div className="text-[10px] uppercase font-bold opacity-90 tracking-wide">
-                streak
-              </div>
-            </div>
-
-            {/* CASE 1: FULLY COMPLETE */}
-            {isFullyLogged ? (
-              <div className="bg-gradient-to-r from-green-400 to-emerald-500 text-white px-4 py-3 rounded-xl text-center shadow-md">
-                <div className="text-xl font-bold">✓</div>
-                <div className="text-xs opacity-90 whitespace-nowrap">
-                  logged today
-                </div>
-              </div>
-            ) : isPartiallyLogged ? (
-              /* CASE 2: MORNING DONE, EVENING PENDING */
-              <button
-                /* Navigate to EDIT mode using the existing log ID */
-                onClick={() => navigate(`/log-entry/${todayLog.id}`)}
-                className="px-5 py-2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-full font-semibold hover:shadow-lg transition-all whitespace-nowrap animate-pulse"
-              >
-                ✏️ Finish Day
-              </button>
-            ) : (
-              /* CASE 3: NOTHING LOGGED */
-              <button
-                onClick={() => navigate("/log-entry")}
-                className="px-5 py-2 bg-indigo-600 text-white rounded-full font-semibold hover:bg-indigo-700 transition-all whitespace-nowrap"
-              >
-                + Log Today
-              </button>
-            )}
-
-            <button
-              onClick={() => navigate("/dashboard")}
-              className="hidden md:block px-4 py-2 text-gray-600 hover:text-gray-900"
-            >
-              ← Dashboard
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Error Message */}
-      {error && (
-        <div className="max-w-2xl mx-auto mb-6 bg-red-50 border border-red-200 rounded-lg p-4 text-red-700">
-          {error}
-          <button onClick={() => setError(null)} className="ml-4 underline">
-            Dismiss
-          </button>
-        </div>
-      )}
-
-      {/* Empty State */}
-      {logs.length === 0 && (
-        <div className="max-w-2xl mx-auto text-center py-16">
-          <div className="text-6xl mb-4">📝</div>
-          <h2 className="text-2xl font-semibold text-gray-900 mb-2">
-            No logs yet
-          </h2>
-          <p className="text-gray-600 mb-6">
-            Start tracking your days to see patterns emerge
-          </p>
+    <div className="min-h-screen bg-[#F8FAFC] pb-20">
+      {/* Top Navigation Bar */}
+      <div className="sticky top-0 z-10 bg-white/80 backdrop-blur-md border-b border-gray-100 px-4 py-3">
+        <div className="max-w-2xl mx-auto flex items-center justify-between">
           <button
-            onClick={() => navigate("/log-entry")}
-            className="px-8 py-3 bg-indigo-600 text-white rounded-full font-semibold hover:bg-indigo-700"
+            onClick={() => navigate("/dashboard")}
+            className="p-2 -ml-2 text-gray-500 hover:text-indigo-600 transition-colors"
           >
-            Log Your First Day
+            <ArrowLeft size={20} />
           </button>
-        </div>
-      )}
-
-      {/* Logs List */}
-      <div className="max-w-2xl mx-auto space-y-4">
-        {logs.map((log) => (
-          <div
-            key={log.id}
-            className="bg-white rounded-xl shadow-sm p-6 hover:shadow-md transition-shadow"
-          >
-            <div className="flex items-start justify-between">
-              <div className="flex items-center gap-4">
-                <div>
-                  <div className="font-semibold text-gray-900">
-                    {formatDate(log.log_date)}
-                  </div>
-                  <div className="text-sm text-gray-500">
-                    Mood: {log.mood}/10 • Productivity: {log.productivity}/10
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex gap-2">
-                <button
-                  onClick={() => navigate(`/log-entry/${log.id}`)}
-                  className="px-3 py-1 text-indigo-600 hover:bg-indigo-50 rounded-lg text-sm"
-                >
-                  Edit
-                </button>
-                <button
-                  onClick={() => setDeleteConfirm(log.id)}
-                  className="px-3 py-1 text-red-600 hover:bg-red-50 rounded-lg text-sm"
-                >
-                  Delete
-                </button>
-              </div>
-            </div>
-
-            {/* Expanded details */}
-            <div className="mt-4 pt-4 border-t border-gray-100 grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-              <div>
-                <span className="text-gray-500">Sleep:</span>
-                <span className="ml-2 font-medium">{log.sleep_hours}hrs</span>
-              </div>
-              <div>
-                <span className="text-gray-500">Stress:</span>
-                <span className="ml-2 font-medium">{log.stress}/10</span>
-              </div>
-              {log.physical_activity_min && (
-                <div>
-                  <span className="text-gray-500">Activity:</span>
-                  <span className="ml-2 font-medium">
-                    {log.physical_activity_min}min
-                  </span>
-                </div>
-              )}
-              {log.screen_time_hours && (
-                <div>
-                  <span className="text-gray-500">Screen:</span>
-                  <span className="ml-2 font-medium">
-                    {log.screen_time_hours}hrs
-                  </span>
-                </div>
-              )}
-            </div>
-
-            {log.notes && (
-              <div className="mt-4 pt-4 border-t border-gray-100">
-                <p className="text-gray-600 text-sm italic">"{log.notes}"</p>
-              </div>
-            )}
+          <div className="flex items-center gap-2 bg-orange-50 px-3 py-1 rounded-full border border-orange-100">
+            <span className="text-orange-600 font-bold text-sm">
+              {streak} Day Streak
+            </span>
+            <span>🔥</span>
           </div>
-        ))}
+        </div>
       </div>
 
-      {/* Delete Confirmation Modal */}
+      <div className="max-w-2xl mx-auto p-4 sm:p-6">
+        <div className="mb-8 flex justify-between items-end">
+          <div>
+            <h1 className="text-2xl font-black text-gray-900 tracking-tight">
+              Daily History
+            </h1>
+            <p className="text-gray-500 text-sm font-medium">
+              {logs.length} total entries
+            </p>
+          </div>
+          <LogButton
+            isFullyLogged={todayLog && todayLog.stress !== null}
+            isPartiallyLogged={todayLog && todayLog.stress === null}
+            todayLog={todayLog}
+            navigate={navigate}
+          />
+        </div>
+
+        <div className="space-y-4">
+          {logs.map((log) => (
+            <div
+              key={log.id}
+              className="group bg-white rounded-2xl border border-gray-100 p-5 shadow-sm hover:shadow-md transition-all duration-200"
+            >
+              <div className="flex justify-between items-start mb-4">
+                <div className="flex items-center gap-3">
+                  <div className="bg-indigo-50 p-2.5 rounded-xl text-indigo-600">
+                    <Calendar size={18} />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-gray-900 leading-tight">
+                      {formatDate(log.log_date)}
+                    </h3>
+                    <div className="flex gap-2 mt-1">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-purple-600 bg-purple-50 px-2 py-0.5 rounded">
+                        Mood: {log.mood}
+                      </span>
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-blue-600 bg-blue-50 px-2 py-0.5 rounded">
+                        Prod: {log.productivity}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex gap-1">
+                  <button
+                    onClick={() => navigate(`/log-entry/${log.id}`)}
+                    className="p-2 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
+                  >
+                    <Edit3 size={16} />
+                  </button>
+                  <button
+                    onClick={() => setDeleteConfirm(log.id)}
+                    className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                  >
+                    <Trash2 size={16} />
+                  </button>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-gray-50/50 rounded-xl p-3">
+                <div className="flex flex-col">
+                  <span className="text-[10px] text-gray-400 uppercase font-bold tracking-tighter">
+                    Sleep
+                  </span>
+                  <span className="text-sm font-semibold text-gray-700">
+                    {log.sleep_hours}{" "}
+                    <span className="text-xs font-normal">hrs</span>
+                  </span>
+                </div>
+                <div className="flex flex-col border-l border-gray-200/50 pl-3 sm:border-l-0 sm:pl-0">
+                  <span className="text-[10px] text-gray-400 uppercase font-bold tracking-tighter">
+                    Stress
+                  </span>
+                  <span className="text-sm font-semibold text-gray-700">
+                    {log.stress || "—"}
+                    <span className="text-xs font-normal">/10</span>
+                  </span>
+                </div>
+                <div className="flex flex-col border-t border-gray-200/50 pt-2 sm:border-t-0 sm:pt-0 sm:border-l sm:pl-3">
+                  <span className="text-[10px] text-gray-400 uppercase font-bold tracking-tighter">
+                    Activity
+                  </span>
+                  <span className="text-sm font-semibold text-gray-700">
+                    {log.physical_activity_min || 0}{" "}
+                    <span className="text-xs font-normal">min</span>
+                  </span>
+                </div>
+                <div className="flex flex-col border-t border-gray-200/50 pt-2 border-l border-gray-200/50 pl-3 sm:border-t-0 sm:pt-0">
+                  <span className="text-[10px] text-gray-400 uppercase font-bold tracking-tighter">
+                    Screen
+                  </span>
+                  <span className="text-sm font-semibold text-gray-700">
+                    {log.screen_time_hours || 0}{" "}
+                    <span className="text-xs font-normal">hrs</span>
+                  </span>
+                </div>
+              </div>
+
+              {log.notes && (
+                <div className="mt-4 text-sm text-gray-600 bg-indigo-50/30 p-3 rounded-lg border-l-2 border-indigo-200 italic">
+                  "{log.notes}"
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+
       {deleteConfirm && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-2xl p-6 max-w-sm mx-4">
-            <h3 className="text-xl font-semibold mb-2">Delete this log?</h3>
-            <p className="text-gray-600 mb-6">This action cannot be undone.</p>
+        <div className="fixed inset-0 bg-gray-900/60 backdrop-blur-sm flex items-end sm:items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-3xl p-6 w-full max-w-sm">
+            <div className="w-12 h-12 bg-red-50 text-red-600 rounded-2xl flex items-center justify-center mb-4">
+              <Trash2 size={24} />
+            </div>
+            <h3 className="text-xl font-bold text-gray-900 mb-2">
+              Delete this entry?
+            </h3>
+            <p className="text-gray-500 mb-6 text-sm">
+              This data will be permanently removed from your history.
+            </p>
             <div className="flex gap-3">
               <button
                 onClick={() => setDeleteConfirm(null)}
-                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
+                className="flex-1 py-3 px-4 bg-gray-100 text-gray-600 font-bold rounded-xl hover:bg-gray-200"
               >
                 Cancel
               </button>
               <button
                 onClick={() => handleDelete(deleteConfirm)}
-                className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
+                className="flex-1 py-3 px-4 bg-red-600 text-white font-bold rounded-xl hover:bg-red-700"
               >
                 Delete
               </button>

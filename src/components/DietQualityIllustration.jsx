@@ -2,73 +2,187 @@ import React from "react";
 
 const DietQualityIllustration = () => {
   return (
-    <div className="my-2 flex items-center justify-center">
-      {/* Main Container with subtle gradient background */}
-      <div className="w-54 h-54 relative bg-gradient-to-tr from-orange-50 via-stone-50 to-green-50 rounded-2xl overflow-hidden shadow-sm">
-        {/* --- THE SPECTRUM PATH (Curved Line) --- */}
-        {/* Created using a large border radius to form an arc */}
-        <div className="absolute bottom-12 left-0 w-full h-32 overflow-hidden opacity-30">
-          <div className="w-[120%] h-full border-t-4 border-dashed border-indigo-300 rounded-t-full absolute top-8 -left-[10%] rotate-6"></div>
-        </div>
+    // Container: Ensures responsiveness. Fills width up to max, maintains square aspect.
+    <div className="relative w-full max-w-[220px] aspect-square flex items-center justify-center p-2">
+      {/* Subtle background blob for depth */}
+      <div className="absolute inset-0 bg-gradient-to-tr from-orange-100/50 to-green-100/50 rounded-[3rem] rotate-3 scale-95 -z-10"></div>
 
-        {/* --- THE "BAD" QUALITY SIDE (Left - Processed/Dull) --- */}
-        <div className="absolute left-6 top-1/2 -translate-y-1/2 z-10">
-          {/* Burger/Fast Food Icon representing processed food */}
-          <div className="relative transform -rotate-12 scale-90 origin-bottom-right hover:scale-95 transition-transform">
+      <svg
+        viewBox="0 0 200 200"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        className="w-full h-full drop-shadow-sm"
+      >
+        <defs>
+          {/* --- GRADIENTS --- */}
+          {/* Warm/Heavy gradient for processed food */}
+          <linearGradient id="bad-food-grad" x1="0" y1="0" x2="0" y2="100%">
+            <stop stopColor="#F59E0B" /> {/* Amber-500 */}
+            <stop offset="1" stopColor="#B45309" /> {/* Amber-700 */}
+          </linearGradient>
+
+          {/* Fresh/Vibrant gradient for healthy food */}
+          <linearGradient id="good-food-grad" x1="0" y1="0" x2="0" y2="100%">
+            <stop stopColor="#86EFAC" /> {/* Green-300 */}
+            <stop offset="1" stopColor="#22C55E" /> {/* Green-500 */}
+          </linearGradient>
+
+          {/* Spectrum path gradient fade */}
+          <linearGradient id="path-grad" x1="0" y1="0" x2="100%" y2="0%">
+            <stop stopColor="#FDBA74" stopOpacity="0.4" /> {/* Orange-300 */}
+            <stop offset="1" stopColor="#86EFAC" stopOpacity="0.4" />{" "}
+            {/* Green-300 */}
+          </linearGradient>
+
+          {/* Soft glow filter */}
+          <filter id="soft-glow" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="6" result="blur" />
+            <feComposite in="SourceGraphic" in2="blur" operator="over" />
+          </filter>
+        </defs>
+
+        {/* --- THE SPECTRUM PATH (Curved arc) --- */}
+        <path
+          d="M 30 140 Q 100 90 170 140"
+          stroke="url(#path-grad)"
+          strokeWidth="4"
+          strokeLinecap="round"
+          strokeDasharray="8 10"
+        />
+
+        {/* --- THE "BAD" SIDE (Left - Burger) --- */}
+        <g transform="translate(30, 110) rotate(-10)">
+          {/* Heavy Aura Blob */}
+          <circle
+            cx="0"
+            cy="0"
+            r="35"
+            fill="#FDBA74"
+            opacity="0.2"
+            filter="url(#soft-glow)"
+          />
+
+          {/* Burger Icon */}
+          <g transform="translate(-18, -15)">
             {/* Top Bun */}
-            <div className="w-14 h-7 bg-amber-700/80 rounded-t-full relative">
-              {/* Sesame seeds (dots) */}
-              <div className="absolute top-2 left-3 w-1 h-1 bg-amber-200 rounded-full opacity-50"></div>
-              <div className="absolute top-3 left-8 w-1 h-1 bg-amber-200 rounded-full opacity-50"></div>
-              <div className="absolute top-4 left-5 w-1 h-1 bg-amber-200 rounded-full opacity-50"></div>
-            </div>
-            {/* Patty/Cheese layers */}
-            <div className="w-16 h-3 bg-red-800/80 rounded-md -mx-1 my-1"></div>
-            <div className="w-16 h-2 bg-yellow-600/80 rounded-md -mx-1 mb-1"></div>
+            <path d="M 0 12 C 0 2, 36 2, 36 12" fill="url(#bad-food-grad)" />
+            {/* Seeds */}
+            <circle cx="10" cy="6" r="1.5" fill="#FDE68A" opacity="0.7" />
+            <circle cx="20" cy="8" r="1.5" fill="#FDE68A" opacity="0.7" />
+            <circle cx="28" cy="5" r="1.5" fill="#FDE68A" opacity="0.7" />
+            {/* Patty & Cheese Lines */}
+            <rect
+              x="2"
+              y="14"
+              width="32"
+              height="4"
+              rx="2"
+              fill="#92400E"
+            />{" "}
+            {/* Meat */}
+            <rect
+              x="4"
+              y="18"
+              width="28"
+              height="2"
+              rx="1"
+              fill="#FCD34D"
+            />{" "}
+            {/* Cheese */}
             {/* Bottom Bun */}
-            <div className="w-14 h-5 bg-amber-700/80 rounded-b-xl"></div>
+            <path
+              d="M 2 22 C 2 28, 34 28, 34 22 V 20 H 2 V 22 Z"
+              fill="url(#bad-food-grad)"
+            />
+          </g>
+        </g>
 
-            {/* Sluggish aura effect */}
-            <div className="absolute -inset-4 bg-amber-900/20 blur-md rounded-full -z-10"></div>
-          </div>
-        </div>
+        {/* --- THE "GOOD" SIDE (Right - Fruit) --- */}
+        <g transform="translate(170, 110) rotate(10)">
+          {/* Fresh Aura Blob */}
+          <circle
+            cx="0"
+            cy="0"
+            r="35"
+            fill="#86EFAC"
+            opacity="0.2"
+            filter="url(#soft-glow)"
+          />
 
-        {/* --- THE "GOOD" QUALITY SIDE (Right - Fresh/Vibrant) --- */}
-        <div className="absolute right-6 top-1/2 -translate-y-[60%] z-10">
-          {/* Pear & Leaf Icon representing fresh produce */}
-          <div className="relative transform rotate-12 scale-110 origin-bottom-left hover:scale-125 transition-transform">
+          {/* Apple/Fruit Icon */}
+          <g transform="translate(-15, -20)">
             {/* Leaf */}
-            <div className="absolute -top-4 right-1/2 w-6 h-6 bg-green-500 rounded-tr-3xl rounded-bl-xl"></div>
+            <path d="M 15 0 Q 22 -8 28 0 Q 22 10 15 0" fill="#4ADE80" />
             {/* Stem */}
-            <div className="absolute -top-2 right-1/2 translate-x-2 w-1 h-3 bg-green-700 rounded-full"></div>
-            {/* Pear Body (stacked shapes for organic look) */}
-            <div className="relative">
-              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-10 bg-green-300 rounded-t-3xl"></div>
-              <div className="absolute top-6 -left-1 w-12 h-12 bg-green-300 rounded-full"></div>
-            </div>
+            <path
+              d="M 15 2 C 15 2, 13 -4, 18 -6"
+              stroke="#65A30D"
+              strokeWidth="2"
+              strokeLinecap="round"
+            />
+            {/* Fruit Body */}
+            <path
+              d="M 15 5 C 0 5, 0 35, 15 35 C 30 35, 30 5, 15 5"
+              fill="url(#good-food-grad)"
+            />
+            {/* Shine highlight */}
+            <ellipse
+              cx="22"
+              cy="12"
+              rx="3"
+              ry="5"
+              fill="white"
+              opacity="0.3"
+              transform="rotate(-20)"
+            />
+          </g>
+        </g>
 
-            {/* Vibrant aura effect */}
-            <div className="absolute -inset-4 bg-green-300/30 blur-xl rounded-full -z-10"></div>
-          </div>
-        </div>
+        {/* --- THE INDICATOR KNOB --- */}
+        {/* Positioned on the curve, slightly towards the good side */}
+        <g transform="translate(125, 115)">
+          {/* Pulsing outer ring */}
+          <circle
+            cx="0"
+            cy="0"
+            r="12"
+            fill="#A5B4FC"
+            opacity="0.4"
+            className="animate-pulse"
+          />
+          {/* Solid center knob */}
+          <circle
+            cx="0"
+            cy="0"
+            r="7"
+            fill="#6366F1"
+            stroke="white"
+            strokeWidth="2"
+            shadow="sm"
+          />
+        </g>
 
-        {/* --- THE INDICATOR (Slider Knob) --- */}
-        {/* Positioned slightly past center towards the 'good' side */}
-        <div className="absolute top-1/2 left-[58%] -translate-y-1/2 -translate-x-1/2 z-20">
-          <div className="w-5 h-5 bg-indigo-500 rounded-full ring-4 ring-indigo-200 shadow-sm animate-pulse"></div>
-          {/* Subtle arrow pointing right */}
-          <div className="absolute left-6 top-1/2 -translate-y-1/2 w-0 h-0 border-t-[4px] border-t-transparent border-b-[4px] border-b-transparent border-l-[6px] border-l-indigo-300"></div>
-        </div>
-
-        {/* --- MOOD PARTICLES (Matching previous illustrations) --- */}
-        {/* Dull particles on left */}
-        <div className="absolute bottom-10 left-10 w-2 h-2 bg-amber-800/30 rounded-full animate-pulse delay-700"></div>
-        <div className="absolute top-10 left-16 w-1.5 h-1.5 bg-amber-800/40 rounded-full animate-pulse delay-1000"></div>
-
-        {/* Bright particles on right */}
-        <div className="absolute top-12 right-16 w-2.5 h-2.5 bg-green-400/60 rounded-full animate-pulse"></div>
-        <div className="absolute bottom-16 right-10 w-2 h-2 bg-green-300/70 rounded-full animate-pulse delay-300"></div>
-      </div>
+        {/* --- FLOATING PARTICLES --- */}
+        <g className="animate-pulse" style={{ animationDuration: "3s" }}>
+          <circle cx="50" cy="80" r="2" fill="#FDBA74" opacity="0.6" />
+          <circle
+            cx="150"
+            cy="70"
+            r="3"
+            fill="#86EFAC"
+            opacity="0.6"
+            style={{ animationDelay: "1s" }}
+          />
+          <circle
+            cx="100"
+            cy="160"
+            r="2"
+            fill="#CBD5E1"
+            opacity="0.4"
+            style={{ animationDelay: "0.5s" }}
+          />
+        </g>
+      </svg>
     </div>
   );
 };

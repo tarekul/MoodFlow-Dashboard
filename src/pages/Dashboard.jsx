@@ -12,7 +12,7 @@ import TimeSeriesChart from "../components/TimeSeriesChart.jsx";
 import { useAuth } from "../contexts/AuthContext.jsx";
 import { analysisAPI, logsAPI } from "../utils/api.js";
 import calculateStreak from "../utils/calculateStreak.js";
-import { getSummaryDescription } from "../utils/helpers.js";
+import { getLocalDateString, getSummaryDescription } from "../utils/helpers.js";
 
 function Dashboard() {
   const navigate = useNavigate();
@@ -199,7 +199,7 @@ function Dashboard() {
   // Get key factor for badges (only if real analysis exists)
   const keyFactor = userData?.correlations?.[0]?.factor;
 
-  const todayStr = new Date().toISOString().split("T")[0];
+  const todayStr = getLocalDateString();
   const todayLog = logs.find((log) => log.log_date === todayStr);
   const isFullyLogged = todayLog && todayLog.stress !== null;
   const isPartiallyLogged = todayLog && todayLog.stress === null;

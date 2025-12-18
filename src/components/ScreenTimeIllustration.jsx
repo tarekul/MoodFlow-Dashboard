@@ -1,60 +1,154 @@
+import React from "react";
+
 const ScreenTimeIllustration = ({ hours }) => {
-  // Calculate intensity (0 to 1).
-  // We start showing strain after 2 hours, maxing out at 12.
-  const intensity = Math.max(0, Math.min((hours - 2) / 10, 1));
+  // 1. Calculations
+  const maxHours = 12;
+  const clampedHours = Math.max(0, Math.min(hours, maxHours));
+  const fillPercentage = clampedHours / maxHours; // 0 to 1
+
+  // 2. Color Logic (Green -> Blue -> Orange -> Red)
+  const getColor = (h) => {
+    if (h <= 2) return { top: "#6EE7B7", bottom: "#10B981" }; // Emerald
+    if (h <= 5) return { top: "#93C5FD", bottom: "#3B82F6" }; // Blue
+    if (h <= 8) return { top: "#FDBA74", bottom: "#F97316" }; // Orange
+    return { top: "#FCA5A5", bottom: "#EF4444" }; // Red
+  };
+
+  const colors = getColor(clampedHours);
+
+  // 3. Sand Height Calculations (SVG coordinates)
+  // The bottom bulb area starts around y=55 and ends at y=95. Height is ~40 units.
+  const sandMaxHeight = 38;
+  const currentSandHeight = sandMaxHeight * fillPercentage;
+  const sandYPosition = 95 - currentSandHeight; // Fill from bottom up
 
   return (
-    <div className="my-2 flex items-center justify-center">
-      {/* Increased size slightly for detail */}
-      <div className="w-54 h-32 relative scale-75 sm:scale-90 md:scale-100 origin-center transition-transform">
-        {/* 1. Outer eye shape & Base White */}
-        <div className="w-full h-full bg-white rounded-[50%] border-4 border-gray-800 overflow-hidden relative shadow-lg">
-          {/* 2. General Redness (Sclera inflammation) */}
-          {/* Using mix-blend-multiply allows the white to turn pinkish/red without covering details */}
-          <div
-            className="absolute inset-0 bg-red-500 mix-blend-multiply transition-opacity duration-500 ease-in-out"
-            style={{ opacity: intensity * 0.3 }} // Max 30% redness so it's not solid red
-          ></div>
-
-          {/* 3. Veins (SVG Overlay) */}
-          <svg
-            className="absolute inset-0 w-full h-full pointer-events-none"
-            viewBox="0 0 256 128"
+    <div className="relative w-full max-w-[180px] aspect-[1] flex items-center justify-center">
+      <svg
+        viewBox="0 0 100 100"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        className="w-full h-full drop-shadow-lg"
+      >
+        <defs>
+          {/* Dynamic Sand Gradient */}
+          <linearGradient
+            id="sandGradient"
+            x1="0"
+            y1="0"
+            x2="0"
+            y2="100%"
+            gradientUnits="userSpaceOnUse"
           >
-            <g
-              fill="none"
-              stroke="#EF4444" // Red-500
-              strokeWidth="2"
-              strokeLinecap="round"
-              className="transition-opacity duration-500 ease-in-out"
-              style={{ opacity: intensity }} // Opacity controlled by slider
-            >
-              {/* Left Side Veins */}
-              <path d="M-10 64 Q 20 50 40 64" />
-              <path d="M-5 64 Q 15 80 35 75" />
-              <path d="M-5 64 Q 20 30 30 45" />
+            <stop stopColor={colors.top} />
+            <stop offset="1" stopColor={colors.bottom} />
+          </linearGradient>
 
-              {/* Right Side Veins */}
-              <path d="M266 64 Q 236 50 216 64" />
-              <path d="M261 64 Q 241 80 221 75" />
-              <path d="M261 64 Q 236 30 226 45" />
+          {/* Glass Reflection Gradient */}
+          <linearGradient id="glassShine" x1="0" y1="0" x2="100%" y2="0%">
+            <stop offset="0" stopColor="white" stopOpacity="0.1" />
+            <stop offset="0.5" stopColor="white" stopOpacity="0.4" />
+            <stop offset="1" stopColor="white" stopOpacity="0.1" />
+          </linearGradient>
 
-              {/* Bottom veins creeping up */}
-              <path d="M128 138 Q 120 110 110 100" />
-              <path d="M128 138 Q 140 110 146 100" />
-            </g>
-          </svg>
+          {/* Clip path for the bottom sand to stay inside the bulb shape */}
+          <clipPath id="bottomBulbClip">
+            <path d="M 25 50 C 25 50, 30 95, 50 95 C 70 95, 75 50, 75 50 H 25 Z" />
+          </clipPath>
+        </defs>
 
-          {/* 4. Iris */}
-          <div className="absolute w-24 h-24 bg-blue-500 rounded-full top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 border-2 border-blue-600"></div>
+        {/* --- BACKGROUND GLOW --- */}
+        <circle
+          cx="50"
+          cy="50"
+          r="45"
+          fill={colors.top}
+          opacity="0.1"
+          className="transition-colors duration-500"
+        />
 
-          {/* 5. Pupil */}
-          <div className="absolute w-12 h-12 bg-gray-900 rounded-full top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"></div>
+        {/* --- GLASS CONTAINER --- */}
+        {/* The main hourglass shape */}
+        <path
+          d="M 30 5 
+             H 70 
+             Q 75 5, 75 15 
+             Q 75 40, 55 50 
+             Q 75 60, 75 85 
+             Q 75 95, 70 95 
+             H 30 
+             Q 25 95, 25 85 
+             Q 25 60, 45 50 
+             Q 25 40, 25 15 
+             Q 25 5, 30 5 Z"
+          fill="white"
+          fillOpacity="0.2"
+          stroke="#94A3B8" // Slate-400
+          strokeWidth="3"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
 
-          {/* 6. Screen glare reflection */}
-          <div className="absolute w-6 h-6 bg-white rounded-sm top-[40%] left-[55%] opacity-90 rotate-12 blur-[1px]"></div>
-        </div>
-      </div>
+        {/* --- SAND (ACCUMULATION) --- */}
+        <g clipPath="url(#bottomBulbClip)">
+          {/* The rising level of sand */}
+          <rect
+            x="0"
+            y={sandYPosition}
+            width="100"
+            height="100"
+            fill="url(#sandGradient)"
+            className="transition-all duration-500 ease-out"
+          />
+
+          {/* Top surface of the sand (elliptical curve for depth) */}
+          {clampedHours > 0 && (
+            <ellipse
+              cx="50"
+              cy={sandYPosition}
+              rx="23"
+              ry="3"
+              fill={colors.top}
+              opacity="0.8"
+              className="transition-all duration-500 ease-out"
+            />
+          )}
+        </g>
+
+        {/* --- TRICKLE STREAM --- */}
+        {/* Shows that time is currently accumulating (digital flow) */}
+        {/* Only show if there is actually time logged (> 0) */}
+        {clampedHours > 0 && clampedHours < 12 && (
+          <path
+            d="M 50 50 L 50 90"
+            stroke="url(#sandGradient)"
+            strokeWidth="2"
+            strokeDasharray="4 2"
+            opacity="0.6"
+          />
+        )}
+
+        {/* --- GLASS HIGHLIGHTS (Reflection) --- */}
+        {/* Top Shine */}
+        <path
+          d="M 32 10 Q 32 30, 48 45"
+          stroke="url(#glassShine)"
+          strokeWidth="3"
+          strokeLinecap="round"
+        />
+        {/* Bottom Shine */}
+        <path
+          d="M 28 85 Q 28 65, 45 55"
+          stroke="url(#glassShine)"
+          strokeWidth="3"
+          strokeLinecap="round"
+        />
+
+        {/* Top Cap */}
+        <rect x="28" y="2" width="44" height="4" rx="2" fill="#475569" />
+        {/* Bottom Cap */}
+        <rect x="28" y="94" width="44" height="4" rx="2" fill="#475569" />
+      </svg>
     </div>
   );
 };

@@ -115,6 +115,7 @@ export const WEATHER_OPTIONS = [
 
 export const getLocalDateString = () => {
   const d = new Date();
+  console.log(d);
   const year = d.getFullYear();
   const month = String(d.getMonth() + 1).padStart(2, "0");
   const day = String(d.getDate()).padStart(2, "0");
@@ -124,4 +125,75 @@ export const getLocalDateString = () => {
 export const isDaytime = () => {
   const hour = new Date().getHours(); // 0–23
   return hour >= 6 && hour < 18; // 6am–6pm = day
+};
+
+export const getScreenTimeUsageContext = (val) => {
+  // 1. Minimal (<= 2 hours): Emerald
+  // Matches illustration's #10B981
+  if (val <= 2)
+    return {
+      color: "text-emerald-500",
+      bg: "bg-emerald-500",
+      border: "border-emerald-200",
+      label: "Minimal",
+    };
+
+  // 2. Moderate (<= 5 hours): Blue
+  // Matches illustration's #3B82F6
+  if (val <= 5)
+    return {
+      color: "text-blue-500",
+      bg: "bg-blue-500",
+      border: "border-blue-200",
+      label: "Moderate",
+    };
+
+  // 3. High (<= 8 hours): Orange
+  // Matches illustration's #F97316
+  if (val <= 8)
+    return {
+      color: "text-orange-500",
+      bg: "bg-orange-500",
+      border: "border-orange-200",
+      label: "High",
+    };
+
+  // 4. Very High (> 8 hours): Red
+  // Matches illustration's #EF4444
+  return {
+    color: "text-red-500",
+    bg: "bg-red-500",
+    border: "border-red-200",
+    label: "Very High",
+  };
+};
+
+export const getSocialInteractionContext = (val) => {
+  if (val <= 2)
+    return {
+      color: "text-blue-500",
+      bg: "bg-blue-500",
+      border: "border-blue-200",
+      label: "Quiet",
+    };
+  if (val <= 5)
+    return {
+      color: "text-indigo-500",
+      bg: "bg-indigo-500",
+      border: "border-indigo-200",
+      label: "Balanced",
+    };
+  if (val <= 7)
+    return {
+      color: "text-purple-500",
+      bg: "bg-purple-500",
+      border: "border-purple-200",
+      label: "Social",
+    };
+  return {
+    color: "text-pink-500",
+    bg: "bg-pink-500",
+    border: "border-pink-200",
+    label: "Butterfly",
+  };
 };

@@ -1,4 +1,5 @@
 import React from "react";
+import LogButton from "./LogButton";
 
 const Header = ({
   isFullyLogged,
@@ -79,25 +80,12 @@ const Header = ({
                 My Logs
               </button>
 
-              {isFullyLogged ? (
-                <div className="flex items-center gap-2 px-4 py-2 bg-green-50 text-green-700 rounded-full border border-green-200 text-sm font-bold">
-                  <span>✓ Logged</span>
-                </div>
-              ) : isPartiallyLogged ? (
-                <button
-                  onClick={() => navigate(`/log-entry/${todayLog.id}`)}
-                  className="px-5 py-2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-full text-sm font-bold hover:shadow-lg hover:scale-105 transition-all animate-pulse"
-                >
-                  ✏️ Finish Day
-                </button>
-              ) : (
-                <button
-                  onClick={() => navigate("/log-entry")}
-                  className="px-5 py-2 bg-indigo-600 text-white rounded-full text-sm font-bold hover:bg-indigo-700 hover:shadow-lg transition-all"
-                >
-                  + Log Today
-                </button>
-              )}
+              <LogButton
+                isFullyLogged={isFullyLogged}
+                isPartiallyLogged={isPartiallyLogged}
+                todayLog={todayLog}
+                navigate={navigate}
+              />
             </div>
 
             {/* User Profile Dropdown/Area */}
