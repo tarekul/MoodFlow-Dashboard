@@ -13,6 +13,7 @@ import SleepScreen from "../components/SleepScreen";
 import SocialInteractionsSlider from "../components/SocialInteractionsSlider";
 import WeatherIllustration from "../components/WeatherIllustration";
 import {
+  ACTIVITY_TIME_OPTIONS,
   DIET_QUALITY_OPTIONS,
   getLocalDateString,
   MOOD_OPTIONS,
@@ -49,6 +50,7 @@ const LogEntry = () => {
     sleep_quality: null,
     stress: null,
     physical_activity: null,
+    activity_time: null,
     screen_time: null,
     diet_quality: null,
     social_interaction: null,
@@ -150,7 +152,7 @@ const LogEntry = () => {
     if (isMorningCheckIn) {
       setCurrentStep(3);
     } else {
-      setCurrentStep(currentStep + 1);
+      setCurrentStep(2);
     }
   };
 
@@ -170,7 +172,7 @@ const LogEntry = () => {
     if (isMorningCheckIn) {
       submitMorningLog(updatedData);
     } else {
-      setCurrentStep(currentStep + 1);
+      setCurrentStep(4);
     }
   };
 
@@ -180,7 +182,18 @@ const LogEntry = () => {
   };
 
   const handlePhysicalActivitySelect = (physical_activity) => {
-    setFormData({ ...formData, physical_activity });
+    const updatedFormData = { ...formData, physical_activity };
+    setFormData(updatedFormData);
+
+    if (physical_activity === 0) {
+      setCurrentStep(6);
+    } else {
+      setCurrentStep(5.5);
+    }
+  };
+
+  const handleActivityTimeSelect = (activity_time) => {
+    setFormData({ ...formData, activity_time });
     setCurrentStep(6);
   };
 
@@ -220,6 +233,7 @@ const LogEntry = () => {
         sleep_quality: finalData.sleep_quality,
         stress: finalData.stress,
         physical_activity_min: finalData.physical_activity,
+        activity_time: finalData.activity_time,
         screen_time_hours: finalData.screen_time,
         diet_quality: finalData.diet_quality,
         social_interaction_hours: finalData.social_interaction,
@@ -269,13 +283,11 @@ const LogEntry = () => {
       ) : (
         <>
           <div className="flex items-center justify-between min-h-[40px]">
-            {/* LEFT: Back Button Wrapper */}
             <div className="w-10">
               <LogBackButton
                 isMorningCheckIn={isMorningCheckIn}
                 currentStep={currentStep}
                 loading={loading}
-                // UPDATE: Custom setter to handle the jump back from Sleep (3) to Mood (1)
                 setCurrentStep={(step) => {
                   if (isMorningCheckIn && step === 2) {
                     setCurrentStep(1);
@@ -354,6 +366,22 @@ const LogEntry = () => {
                 selectedValue={formData.physical_activity}
                 onSkip={() => {
                   setFormData({ ...formData, physical_activity: null });
+                  setCurrentStep(6);
+                }}
+              />
+            )}
+
+            {currentStep === 5.5 && !isMorningCheckIn && (
+              <QuestionScreen
+                title="When did you exercise?"
+                subtitle="Timing matters for your energy levels."
+                options={ACTIVITY_TIME_OPTIONS}
+                // You can reuse the illustration or create a variation
+                illustration={<PhysicalActivityIllustration variant="time" />}
+                onSelect={handleActivityTimeSelect}
+                selectedValue={formData.activity_time}
+                onSkip={() => {
+                  setFormData({ ...formData, activity_time: null });
                   setCurrentStep(6);
                 }}
               />

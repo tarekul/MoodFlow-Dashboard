@@ -50,11 +50,6 @@ const QuestionScreen = ({
                   }
                 `}
               >
-                {option.emoji && (
-                  <span className="text-base sm:text-xl transform transition-transform group-hover:scale-110">
-                    {option.emoji}
-                  </span>
-                )}
                 <span>{option.label}</span>
 
                 {isSelected && (

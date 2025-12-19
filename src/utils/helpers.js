@@ -95,6 +95,12 @@ export const PHYSICAL_ACTIVITY_OPTIONS = [
   { value: 0, label: "None" },
 ];
 
+export const ACTIVITY_TIME_OPTIONS = [
+  { value: "Morning", label: "Morning" },
+  { value: "Afternoon", label: "Afternoon" },
+  { value: "Evening", label: "Evening" },
+];
+
 export const DIET_QUALITY_OPTIONS = [
   { value: "Good", label: "Good" },
   { value: "Average", label: "Average" },
@@ -115,7 +121,6 @@ export const WEATHER_OPTIONS = [
 
 export const getLocalDateString = () => {
   const d = new Date();
-  console.log(d);
   const year = d.getFullYear();
   const month = String(d.getMonth() + 1).padStart(2, "0");
   const day = String(d.getDate()).padStart(2, "0");

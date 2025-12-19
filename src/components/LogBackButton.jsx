@@ -7,7 +7,9 @@ const LogBackButton = ({
   if (!isMorningCheckIn && currentStep > 1 && currentStep <= 10 && !loading) {
     return (
       <button
-        onClick={() => setCurrentStep(currentStep - 1)}
+        onClick={() =>
+          setCurrentStep(currentStep === 5.5 ? 5 : currentStep - 1)
+        }
         className="flex items-center justify-center w-8 h-8 bg-white rounded-full shadow-md border border-gray-100 hover:shadow-lg transition-all text-gray-600 hover:text-indigo-600 active:scale-95"
       >
         <svg
