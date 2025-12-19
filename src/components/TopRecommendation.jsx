@@ -1,17 +1,21 @@
 import React from "react";
 
 function TopRecommendation({ top_recommendation, summary }) {
-  // Guard clause if data is missing
   if (!top_recommendation) return null;
 
   const potentialGain = top_recommendation.potential_gain || 0;
   const currentAvg = summary?.avg_productivity || 1;
   const percentageGain = ((potentialGain / currentAvg) * 100).toFixed(0);
 
-  // Use dynamic values from backend, with fallbacks just in case
   const action = top_recommendation.action_label || "Improving";
   const step = top_recommendation.improvement_step || 2;
   const unit = top_recommendation.improvement_unit || "points";
+
+  const isBooster = top_recommendation.is_booster;
+
+  const headerLabel = isBooster
+    ? "🎯 Your #1 Productivity Driver"
+    : "🛑 Your #1 Productivity Barrier";
 
   return (
     <div className="bg-gradient-to-br from-indigo-600 to-purple-700 rounded-xl shadow-lg text-white overflow-hidden relative">
@@ -21,7 +25,7 @@ function TopRecommendation({ top_recommendation, summary }) {
         <div className="flex flex-col sm:flex-row gap-6 items-start justify-between">
           <div className="space-y-2 relative z-10">
             <h2 className="text-xs font-bold tracking-widest text-indigo-200 uppercase mb-1">
-              🎯 Your #1 Productivity Driver
+              {headerLabel}
             </h2>
             <div className="text-4xl sm:text-5xl font-black tracking-tight">
               {top_recommendation.factor}
@@ -40,7 +44,6 @@ function TopRecommendation({ top_recommendation, summary }) {
             <div className="flex items-start gap-3">
               <span className="text-2xl">💡</span>
               <div>
-                {/* DYNAMIC TEXT RENDERING */}
                 <p className="text-indigo-100 text-sm mb-2 leading-relaxed">
                   {action} your{" "}
                   <strong>{top_recommendation.factor.toLowerCase()}</strong> by{" "}
