@@ -204,6 +204,8 @@ function Dashboard() {
   const isFullyLogged = todayLog && todayLog.stress !== null;
   const isPartiallyLogged = todayLog && todayLog.stress === null;
 
+  console.log(displayData);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex flex-col">
       {/* Streak Milestone Modal */}

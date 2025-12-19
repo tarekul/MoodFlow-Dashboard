@@ -202,3 +202,57 @@ export const getSocialInteractionContext = (val) => {
     label: "Butterfly",
   };
 };
+
+export const INSIGHT_STYLES = {
+  forecast: {
+    bg: "bg-white",
+    border: "border-indigo-100 hover:border-indigo-300",
+    iconBg: "bg-indigo-50",
+    iconColor: "text-indigo-600",
+    badgeBg: "bg-indigo-100",
+    badgeText: "text-indigo-700",
+    boldText: "text-indigo-700",
+
+    icon: "🔮",
+    label: "Forecast",
+  },
+  optimization: {
+    bg: "bg-white",
+    border: "border-emerald-100 hover:border-emerald-300",
+
+    iconBg: "bg-emerald-50",
+    iconColor: "text-emerald-600",
+    badgeBg: "bg-emerald-100",
+    badgeText: "text-emerald-700",
+    boldText: "text-emerald-700",
+
+    icon: "⚡",
+    label: "Optimization",
+  },
+  impact: {
+    bg: "bg-white",
+    border: "border-amber-100 hover:border-amber-300",
+
+    iconBg: "bg-amber-50",
+    iconColor: "text-amber-600",
+    badgeBg: "bg-amber-100",
+    badgeText: "text-amber-700",
+    boldText: "text-amber-800",
+
+    icon: "💡",
+    label: "Impact",
+  },
+  default: {
+    bg: "bg-white",
+    border: "border-gray-200",
+
+    iconBg: "bg-gray-50",
+    iconColor: "text-gray-500",
+    badgeBg: "bg-gray-100",
+    badgeText: "text-gray-600",
+    boldText: "text-gray-900",
+
+    icon: "📝",
+    label: "Insight",
+  },
+};
