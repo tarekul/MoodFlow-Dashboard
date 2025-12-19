@@ -1,7 +1,17 @@
+import React from "react";
+
 function TopRecommendation({ top_recommendation, summary }) {
+  // Guard clause if data is missing
+  if (!top_recommendation) return null;
+
   const potentialGain = top_recommendation.potential_gain || 0;
-  const currentAvg = summary.avg_productivity || 1;
+  const currentAvg = summary?.avg_productivity || 1;
   const percentageGain = ((potentialGain / currentAvg) * 100).toFixed(0);
+
+  // Use dynamic values from backend, with fallbacks just in case
+  const action = top_recommendation.action_label || "Improving";
+  const step = top_recommendation.improvement_step || 2;
+  const unit = top_recommendation.improvement_unit || "points";
 
   return (
     <div className="bg-gradient-to-br from-indigo-600 to-purple-700 rounded-xl shadow-lg text-white overflow-hidden relative">
@@ -21,7 +31,7 @@ function TopRecommendation({ top_recommendation, summary }) {
                 Correlation: {top_recommendation.correlation.toFixed(2)}
               </span>
               <span className="opacity-75 text-xs uppercase">
-                • Extremely Strong
+                • {top_recommendation.strength}
               </span>
             </div>
           </div>
@@ -30,11 +40,13 @@ function TopRecommendation({ top_recommendation, summary }) {
             <div className="flex items-start gap-3">
               <span className="text-2xl">💡</span>
               <div>
+                {/* DYNAMIC TEXT RENDERING */}
                 <p className="text-indigo-100 text-sm mb-2 leading-relaxed">
-                  Improving your{" "}
-                  <strong>{top_recommendation.factor.toLowerCase()}</strong> by
-                  2 points could boost productivity by:
+                  {action} your{" "}
+                  <strong>{top_recommendation.factor.toLowerCase()}</strong> by{" "}
+                  {step} {unit} could boost productivity by:
                 </p>
+
                 <div className="flex items-baseline gap-2">
                   <span className="text-3xl font-bold text-white">
                     +{potentialGain.toFixed(1)} pts
