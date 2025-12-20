@@ -24,6 +24,7 @@ import {
 } from "../utils/helpers";
 
 import CancelButton from "../components/CancelButton";
+import ContextTagsScreen from "../components/ContextTagsScreen";
 import EditModeIndicator from "../components/EditModeIndicator";
 import ExitButton from "../components/ExitButton";
 import LogBackButton from "../components/LogBackButton";
@@ -56,6 +57,7 @@ const LogEntry = () => {
     social_interaction: null,
     weather: null,
     notes: null,
+    tags: [],
   });
 
   const [isMorningCheckIn, setIsMorningCheckIn] = useState(false);
@@ -97,6 +99,7 @@ const LogEntry = () => {
           social_interaction: existingLog.social_interaction_hours,
           weather: existingLog.weather,
           notes: existingLog.notes,
+          tags: existingLog.tags || [],
         });
       } else {
         setError("Log not found");
@@ -217,6 +220,11 @@ const LogEntry = () => {
     setCurrentStep(10);
   };
 
+  const handleTagsSelect = (tags) => {
+    setFormData({ ...formData, tags });
+    setCurrentStep(11);
+  };
+
   const handleNotesSelect = async (notes) => {
     const finalData = { ...formData, notes };
     setFormData(finalData);
@@ -239,6 +247,7 @@ const LogEntry = () => {
         social_interaction_hours: finalData.social_interaction,
         weather: finalData.weather,
         notes: finalData.notes,
+        tags: finalData.tags,
       };
 
       if (isEditMode) {
@@ -435,7 +444,18 @@ const LogEntry = () => {
                 }}
               />
             )}
+
             {currentStep === 10 && !isMorningCheckIn && (
+              <ContextTagsScreen
+                onComplete={handleTagsSelect}
+                initialTags={formData.tags}
+                onSkip={() => {
+                  setFormData({ ...formData, tags: [] });
+                  setCurrentStep(11);
+                }}
+              />
+            )}
+            {currentStep === 11 && !isMorningCheckIn && (
               <Notes
                 onComplete={handleNotesSelect}
                 initialValue={formData.notes}

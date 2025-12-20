@@ -256,3 +256,16 @@ export const INSIGHT_STYLES = {
     label: "Insight",
   },
 };
+
+export const CONTEXT_TAG_OPTIONS = [
+  { id: "wfh", label: "Work from Home", icon: "🏠" },
+  { id: "office", label: "Office Day", icon: "🏢" },
+  { id: "deadline", label: "Deadline/Busy", icon: "🔥" },
+  { id: "travel", label: "Traveling", icon: "✈️" },
+  { id: "sick", label: "Sick/Tired", icon: "🤒" },
+  { id: "social", label: "Social Event", icon: "🎉" },
+  { id: "family", label: "Family Time", icon: "👨‍👩‍👧‍👦" },
+  { id: "vacation", label: "Vacation", icon: "🌴" },
+  { id: "menstruation", label: "Period", icon: "🩸" },
+  { id: "fasting", label: "Fasting", icon: "🍽️" },
+];
