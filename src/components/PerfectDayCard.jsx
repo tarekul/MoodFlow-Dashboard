@@ -1,11 +1,12 @@
 // PerfectDayCard.jsx
 import {
   Dumbbell,
-  MapPin,
   Moon,
   Smartphone,
+  Tag,
   Trophy,
   Users,
+  Zap,
 } from "lucide-react";
 import React from "react";
 
@@ -16,7 +17,9 @@ const PerfectDayCard = ({ blueprint }) => {
     <div className="bg-gradient-to-r from-indigo-500 to-purple-600 rounded-2xl p-6 text-white shadow-lg mb-8 relative overflow-hidden">
       <div className="absolute top-0 right-0 -mt-10 -mr-10 w-40 h-40 bg-white opacity-10 rounded-full blur-3xl"></div>
 
-      <div className="flex items-center justify-between mb-6 relative z-10">
+      {/* HEADER SECTION */}
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 relative z-10 gap-4">
+        {/* Title */}
         <div className="flex items-center gap-3">
           <div className="p-2 bg-white/20 rounded-lg backdrop-blur-sm">
             <span className="text-2xl">🧬</span>
@@ -29,16 +32,29 @@ const PerfectDayCard = ({ blueprint }) => {
           </div>
         </div>
 
-        <div className="flex items-center gap-2 bg-white/20 px-3 py-1.5 rounded-full backdrop-blur-md border border-white/10">
-          <Trophy size={14} className="text-yellow-300" />
-          <span className="font-bold text-sm">
-            Target: {blueprint.avg_score}/10
-          </span>
+        {/* Badges Container - Now holds Score AND Stress */}
+        <div className="flex items-center gap-3">
+          {/* Stress Badge (New Home) */}
+          <div className="flex items-center gap-1.5 bg-red-500/20 px-3 py-1.5 rounded-full backdrop-blur-md border border-red-200/20">
+            <Zap size={13} className="text-red-200" />
+            <span className="font-bold text-xs uppercase text-red-100 tracking-wide">
+              Max Stress: {blueprint.stress_limit}
+            </span>
+          </div>
+
+          {/* Target Score Badge */}
+          <div className="flex items-center gap-1.5 bg-emerald-500/20 px-3 py-1.5 rounded-full backdrop-blur-md border border-emerald-200/20">
+            <Trophy size={13} className="text-emerald-200" />
+            <span className="font-bold text-xs uppercase text-emerald-100 tracking-wide">
+              Target: {blueprint.avg_score}/10
+            </span>
+          </div>
         </div>
       </div>
 
+      {/* GRID SECTION - Back to 5 Items for perfect 1-row layout */}
       <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-        {/* Sleep */}
+        {/* 1. Sleep */}
         <div className="bg-white/10 rounded-xl p-3 backdrop-blur-sm border border-white/10">
           <div className="flex items-center gap-2 mb-1 text-indigo-100">
             <Moon size={14} />{" "}
@@ -49,7 +65,7 @@ const PerfectDayCard = ({ blueprint }) => {
           <div className="text-2xl font-bold">{blueprint.sleep}h</div>
         </div>
 
-        {/* Activity */}
+        {/* 2. Activity */}
         <div className="bg-white/10 rounded-xl p-3 backdrop-blur-sm border border-white/10">
           <div className="flex items-center gap-2 mb-1 text-indigo-100">
             <Dumbbell size={14} />{" "}
@@ -63,7 +79,7 @@ const PerfectDayCard = ({ blueprint }) => {
           <div className="text-xs opacity-75">{blueprint.activity} mins</div>
         </div>
 
-        {/* Screen Limit */}
+        {/* 3. Screen Limit */}
         <div className="bg-white/10 rounded-xl p-3 backdrop-blur-sm border border-white/10">
           <div className="flex items-center gap-2 mb-1 text-indigo-100">
             <Smartphone size={14} />{" "}
@@ -76,6 +92,7 @@ const PerfectDayCard = ({ blueprint }) => {
           </div>
         </div>
 
+        {/* 4. Social */}
         <div className="bg-white/10 rounded-xl p-3 backdrop-blur-sm border border-white/10">
           <div className="flex items-center gap-2 mb-1 text-indigo-100">
             <Users size={14} />{" "}
@@ -86,16 +103,16 @@ const PerfectDayCard = ({ blueprint }) => {
           <div className="text-2xl font-bold">{blueprint.social_hours}h</div>
         </div>
 
-        {/* Best Setting */}
+        {/* 5. Best Tags */}
         <div className="bg-white/10 rounded-xl p-3 backdrop-blur-sm border border-white/10 col-span-2 md:col-span-1">
           <div className="flex items-center gap-2 mb-1 text-indigo-100">
-            <MapPin size={14} />{" "}
+            <Tag size={14} />{" "}
             <span className="text-[10px] font-bold uppercase tracking-wider">
-              Setting
+              Power Zone
             </span>
           </div>
           <div className="text-lg font-bold capitalize leading-tight mt-1 truncate">
-            {blueprint.best_context || "Anywhere"}
+            {blueprint.best_context}
           </div>
         </div>
       </div>
