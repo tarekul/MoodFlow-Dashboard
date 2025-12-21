@@ -10,6 +10,7 @@ import StreakMilestone from "../components/StreakMilestone.jsx";
 import SummaryCard from "../components/SummaryCard.jsx";
 import TabNavigation from "../components/TabNavigation.jsx";
 import TimeSeriesChart from "../components/TimeSeriesChart.jsx";
+import TrophyCase from "../components/TrophyCase";
 import { useAuth } from "../contexts/AuthContext.jsx";
 import { analysisAPI, logsAPI } from "../utils/api.js";
 import calculateStreak from "../utils/calculateStreak.js";
@@ -301,6 +302,8 @@ function Dashboard() {
                 isKeyFactor={keyFactor === "Stress"}
               />
             </div>
+
+            <TrophyCase gamification={displayData.gamification} />
 
             <TimeSeriesChart data={displayData.time_series} />
 
