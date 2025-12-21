@@ -1,7 +1,7 @@
 import {
   Apple,
   Dumbbell,
-  HelpCircle, // Fallback icon
+  HelpCircle,
   Leaf,
   Moon,
   Smartphone,
@@ -21,15 +21,14 @@ function ActionPlanCard({ action_plan }) {
     Apple: Apple,
   };
 
-  // --- NEW: Map specific colors to each icon type ---
   const colorMap = {
-    Smile: "bg-amber-100 text-amber-600", // Mood -> Warm/Happy
-    Moon: "bg-indigo-100 text-indigo-600", // Sleep -> Night/Calm
-    Leaf: "bg-emerald-100 text-emerald-600", // Stress -> Nature/Relief
-    Dumbbell: "bg-rose-100 text-rose-600", // Activity -> Energy
-    Smartphone: "bg-blue-100 text-blue-600", // Screen -> Tech Blue
-    Users: "bg-purple-100 text-purple-600", // Social -> Connection
-    Apple: "bg-green-100 text-green-600", // Diet -> Fresh
+    Smile: "bg-amber-100 text-amber-600",
+    Moon: "bg-indigo-100 text-indigo-600",
+    Leaf: "bg-emerald-100 text-emerald-600",
+    Dumbbell: "bg-rose-100 text-rose-600",
+    Smartphone: "bg-blue-100 text-blue-600",
+    Users: "bg-purple-100 text-purple-600",
+    Apple: "bg-green-100 text-green-600",
   };
 
   return (
@@ -50,7 +49,6 @@ function ActionPlanCard({ action_plan }) {
           {action_plan.map((item) => {
             const IconComponent = iconMap[item.icon] || HelpCircle;
 
-            // Get colors or default to gray
             const colors = colorMap[item.icon] || "bg-gray-100 text-gray-600";
 
             return (
@@ -61,7 +59,6 @@ function ActionPlanCard({ action_plan }) {
                 {/* Top Row: Info & Impact Score */}
                 <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-6">
                   <div className="flex gap-4">
-                    {/* --- CHANGED: Dynamic Background & Text Colors --- */}
                     <div
                       className={`p-3 rounded-xl h-fit flex-shrink-0 ${colors}`}
                     >
