@@ -23,6 +23,7 @@ import {
   WEATHER_OPTIONS,
 } from "../utils/helpers";
 
+import BlueprintSuccess from "../components/BlueprintSuccess";
 import CancelButton from "../components/CancelButton";
 import ContextTagsScreen from "../components/ContextTagsScreen";
 import EditModeIndicator from "../components/EditModeIndicator";
@@ -31,6 +32,7 @@ import LogBackButton from "../components/LogBackButton";
 import PredictionSuccess from "../components/PredictionSuccess";
 import ShowLogSuccess from "../components/ShowLogSuccess";
 import { analysisAPI, logsAPI } from "../utils/api";
+import { checkBlueprintMatch } from "../utils/gamification";
 
 const LogEntry = () => {
   const navigate = useNavigate();
@@ -43,6 +45,7 @@ const LogEntry = () => {
   const [loading, setLoading] = useState(false);
   const [initialLoading, setInitialLoading] = useState(isEditMode);
   const [error, setError] = useState(null);
+  const [matchResults, setMatchResults] = useState(null);
   const [formData, setFormData] = useState({
     log_date: getLocalDateString(),
     mood: null,
@@ -256,6 +259,31 @@ const LogEntry = () => {
         await logsAPI.createLog(payload);
       }
 
+      if (!isEditMode) {
+        try {
+          // Fetch analysis to get the blueprint
+          const analysis = await analysisAPI.getAnalysis();
+
+          if (analysis && analysis.perfect_day) {
+            // Check for matches
+            const matches = checkBlueprintMatch(
+              finalData,
+              analysis.perfect_day
+            );
+
+            // If they hit at least 3 targets, show the special screen!
+            if (matches && matches.length >= 3) {
+              setMatchResults(matches);
+              setLoading(false);
+              return; // Stop here, UI will render BlueprintSuccess
+            }
+          }
+        } catch (e) {
+          console.log("Could not fetch analysis for gamification", e);
+          // Fail silently and proceed to normal success
+        }
+      }
+
       setLoading(false);
       setShowSuccess(true);
 
@@ -279,7 +307,10 @@ const LogEntry = () => {
     );
   }
 
-  // Custom "Prediction Success" Screen
+  if (matchResults) {
+    return <BlueprintSuccess matches={matchResults} navigate={navigate} />;
+  }
+
   if (showSuccess && prediction) {
     return <PredictionSuccess prediction={prediction} navigate={navigate} />;
   }

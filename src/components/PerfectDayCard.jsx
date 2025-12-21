@@ -37,6 +37,13 @@ const PerfectDayCard = ({ blueprint }) => {
             <div className="flex items-center gap-1.5 bg-red-500/20 px-3 py-1.5 rounded-full backdrop-blur-md border border-red-200/20">
               <Zap size={13} className="text-red-200" />
               <span className="font-bold text-xs uppercase text-red-100 tracking-wide">
+                Min Mood: {blueprint.mood}
+              </span>
+            </div>
+
+            <div className="flex items-center gap-1.5 bg-red-500/20 px-3 py-1.5 rounded-full backdrop-blur-md border border-red-200/20">
+              <Zap size={13} className="text-red-200" />
+              <span className="font-bold text-xs uppercase text-red-100 tracking-wide">
                 Max Stress: {blueprint.stress_limit}
               </span>
             </div>
