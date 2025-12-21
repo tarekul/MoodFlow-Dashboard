@@ -268,4 +268,8 @@ export const CONTEXT_TAG_OPTIONS = [
   { id: "vacation", label: "Vacation", icon: "🌴" },
   { id: "menstruation", label: "Period", icon: "🩸" },
   { id: "fasting", label: "Fasting", icon: "🍽️" },
+  { id: "burnout", label: "Burnout", icon: "🧠" },
+  { id: "recovery", label: "Recovery Day", icon: "🛌" },
+  { id: "deep_work", label: "Deep Work", icon: "🎯" },
+  { id: "low_energy", label: "Low Energy", icon: "🔋" },
 ];

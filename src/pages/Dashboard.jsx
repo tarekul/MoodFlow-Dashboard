@@ -5,6 +5,7 @@ import CorrelationChart from "../components/CorrelationChart.jsx";
 import Footer from "../components/Footer.jsx";
 import Header from "../components/Header.jsx";
 import InsightsTab from "../components/InsightsTab.jsx";
+import PerfectDayCard from "../components/PerfectDayCard.jsx";
 import StreakMilestone from "../components/StreakMilestone.jsx";
 import SummaryCard from "../components/SummaryCard.jsx";
 import TabNavigation from "../components/TabNavigation.jsx";
@@ -325,7 +326,10 @@ function Dashboard() {
 
         {activeTab === "action-plan" &&
           (displayData.action_plan.length > 0 ? (
-            <ActionPlanCard action_plan={displayData.action_plan} />
+            <>
+              <PerfectDayCard blueprint={displayData.perfect_day} />
+              <ActionPlanCard action_plan={displayData.action_plan} />
+            </>
           ) : (
             <div className="bg-white rounded-lg shadow-md p-12 text-center border border-gray-100">
               <div className="text-6xl mb-4">📅</div>
