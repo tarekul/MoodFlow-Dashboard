@@ -1,23 +1,18 @@
+import { HelpCircle, Leaf, Moon, Smile, TrendingUp } from "lucide-react";
 import React, { useState } from "react";
-import DefaultIcon from "./DefaultIcon";
-import MoodIcon from "./MoodIcon";
-import ProductivityIcon from "./ProductivityIcon";
-import SleepIcon from "./SleepIcon";
-import StressIcon from "./StressIcon";
 
-const getIcon = (type, colorClass) => {
-  const baseClasses = `w-6 h-6 ${colorClass}`;
+const getIcon = (type) => {
   switch (type) {
     case "mood":
-      return <MoodIcon baseClasses={baseClasses} />;
+      return <Smile color="purple" />;
     case "sleep":
-      return <SleepIcon baseClasses={baseClasses} />;
+      return <Moon color="blue" />;
     case "stress":
-      return <StressIcon baseClasses={baseClasses} />;
+      return <Leaf color="red" />;
     case "productivity":
-      return <ProductivityIcon baseClasses={baseClasses} />;
+      return <TrendingUp color="blue" />;
     default:
-      return <DefaultIcon baseClasses={baseClasses} />;
+      return <HelpCircle color="gray" />;
   }
 };
 function SummaryCard({ title, value, unit, description, color, isKeyFactor }) {
@@ -25,19 +20,15 @@ function SummaryCard({ title, value, unit, description, color, isKeyFactor }) {
 
   const getStyles = (title) => {
     const lower = title.toLowerCase();
-    if (lower.includes("mood"))
-      return { type: "mood", bg: "bg-purple-50", text: "text-purple-600" };
-    if (lower.includes("sleep"))
-      return { type: "sleep", bg: "bg-blue-50", text: "text-blue-600" };
-    if (lower.includes("stress"))
-      return { type: "stress", bg: "bg-orange-50", text: "text-orange-600" };
+    if (lower.includes("mood")) return { type: "mood", bg: "bg-purple-50" };
+    if (lower.includes("sleep")) return { type: "sleep", bg: "bg-blue-50" };
+    if (lower.includes("stress")) return { type: "stress", bg: "bg-orange-50" };
     if (lower.includes("productivity"))
       return {
         type: "productivity",
         bg: "bg-indigo-50",
-        text: "text-indigo-600",
       };
-    return { type: "default", bg: "bg-gray-50", text: "text-gray-600" };
+    return { type: "default", bg: "bg-gray-50" };
   };
 
   const style = getStyles(title);
@@ -57,7 +48,7 @@ function SummaryCard({ title, value, unit, description, color, isKeyFactor }) {
             <div
               className={`w-10 h-10 rounded-xl ${style.bg} flex items-center justify-center`}
             >
-              {getIcon(style.type, style.text)}
+              {getIcon(style.type)}
             </div>
             <div className="text-sm font-semibold text-gray-500 uppercase tracking-wide truncate">
               {title.replace("Avg ", "")}
