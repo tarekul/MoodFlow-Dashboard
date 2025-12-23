@@ -1,12 +1,14 @@
 import { ArrowLeft, Calendar, Edit3, Trash2 } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import ConsistencyGrid from "../components/ConsistencyGrid";
 import LogButton from "../components/LogButton";
 import { useToast } from "../contexts/ToastContext";
 import { logsAPI } from "../utils/api";
 import calculateStreak from "../utils/calculateStreak";
 import { getLocalDateString } from "../utils/helpers";
 
+// --- MAIN PAGE COMPONENT ---
 const MyLogs = () => {
   const navigate = useNavigate();
   const [logs, setLogs] = useState([]);
@@ -86,7 +88,7 @@ const MyLogs = () => {
       </div>
 
       <div className="max-w-2xl mx-auto p-4 sm:p-6">
-        <div className="mb-8 flex justify-between items-end">
+        <div className="mb-6 flex justify-between items-end">
           <div>
             <h1 className="text-2xl font-black text-gray-900 tracking-tight">
               Daily History
@@ -102,6 +104,8 @@ const MyLogs = () => {
             navigate={navigate}
           />
         </div>
+
+        <ConsistencyGrid logs={logs} />
 
         <div className="space-y-4">
           {logs.map((log) => (

@@ -117,11 +117,18 @@ function Dashboard() {
         correlation: 0,
         potential_gain: 0,
       },
+      weekly_rhythm: {
+        chart_data: [],
+        best_day: null,
+        insight: "",
+        percent_diff: 0,
+      },
     };
   };
 
   // Use real data if available, otherwise use calculated temporary data
   const displayData = userData || getTemporaryUserData();
+  console.log(displayData);
 
   // Loading state - wait for both to finish
   if (loading || logsLoading) {

@@ -41,7 +41,7 @@ const Header = ({
             </div>
             <div>
               <h1 className="text-2xl font-bold text-gray-900 tracking-tight">
-                Oria
+                Correlate
               </h1>
               <p className="text-xs text-gray-500 font-medium">
                 Discover your unique productivity drivers

@@ -1,7 +1,20 @@
-import { Flame, Gem, Leaf, Medal, Star, Trophy, Zap } from "lucide-react";
-import React from "react";
+import {
+  Dumbbell,
+  Flame,
+  Gem,
+  Medal,
+  RotateCcw,
+  Sprout,
+  Star,
+  Sun,
+  Trophy,
+  Zap,
+} from "lucide-react";
+import React, { useState } from "react";
 
 const TrophyCase = ({ gamification }) => {
+  const [flippedBadgeId, setFlippedBadgeId] = useState(null);
+
   if (
     !gamification ||
     !Array.isArray(gamification) ||
@@ -10,13 +23,27 @@ const TrophyCase = ({ gamification }) => {
     return null;
   }
 
+  const badgeDescriptions = {
+    perfect_day:
+      "Days where you hit all your key habits (Sleep, Screens, etc.).",
+    streak: "Consecutive days you have logged your data.",
+    diamond: "High Productivity (>7) despite High Stress (>7). Resilience!",
+    unplugged: "Days with less than 2 hours of screen time.",
+    flow_state: "The ideal zone: High Productivity (>8) AND High Mood (>8).",
+    iron_body: "Days with over 60 minutes of physical activity.",
+    zen_master: "Days where you kept stress levels very low (≤3).",
+    consistency: "Total number of logs you have ever created.",
+  };
+
   const iconMap = {
     Medal: Medal,
     Flame: Flame,
     Zap: Zap,
     Gem: Gem,
-    Leaf: Leaf,
+    Sprout: Sprout,
     Trophy: Trophy,
+    Sun: Sun,
+    Dumbbell: Dumbbell,
   };
 
   const colorVariants = {
@@ -48,6 +75,31 @@ const TrophyCase = ({ gamification }) => {
       text: "text-emerald-600",
       icon: "text-emerald-500",
     },
+    yellow: {
+      gradient: "from-yellow-400 to-amber-500",
+      border: "border-yellow-100",
+      bg: "bg-yellow-50",
+      text: "text-yellow-700",
+      icon: "text-yellow-600",
+    },
+    red: {
+      gradient: "from-red-400 to-rose-500",
+      border: "border-red-100",
+      bg: "bg-red-50",
+      text: "text-red-700",
+      icon: "text-red-600",
+    },
+    teal: {
+      gradient: "from-teal-400 to-emerald-500",
+      border: "border-teal-100",
+      bg: "bg-teal-50",
+      text: "text-teal-700",
+      icon: "text-teal-600",
+    },
+  };
+
+  const handleBadgeClick = (id) => {
+    setFlippedBadgeId(flippedBadgeId === id ? null : id);
   };
 
   return (
@@ -58,61 +110,77 @@ const TrophyCase = ({ gamification }) => {
         </div>
         <div>
           <h2 className="text-lg font-bold text-gray-900">Achievements</h2>
-          <p className="text-gray-500 text-xs">Your consistency milestones</p>
+          <p className="text-gray-500 text-xs">Click badges to see details</p>
         </div>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        {/* Map over the dynamic badges list */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 auto-rows-[160px]">
         {gamification.map((badge) => {
           const IconComponent = iconMap[badge.icon] || Star;
-
-          // Default to indigo if color is missing/invalid
           const style = colorVariants[badge.color] || colorVariants["indigo"];
-
-          // Logic: Display 'level' (e.g. "Lvl 3") if it exists, otherwise the count
           const mainValue = badge.level || badge.count;
-
-          // Logic: If showing Level, show count in subtitle. If showing Count, show specific label or subtitle
           const subText = badge.level
             ? `${badge.count} Logs Total`
             : badge.label;
           const topLabel = badge.level ? badge.label : "Total";
+          const description =
+            badgeDescriptions[badge.id] || "A consistency milestone.";
+          const isFlipped = flippedBadgeId === badge.id;
 
           return (
-            <div key={badge.id} className="relative group cursor-default">
-              {/* Hover Glow Effect */}
+            <div
+              key={badge.id}
+              className="group perspective-[1000px] cursor-pointer h-full"
+              onClick={() => handleBadgeClick(badge.id)}
+            >
               <div
-                className={`absolute inset-0 bg-gradient-to-br ${style.gradient} rounded-xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-500`}
+                className={`absolute inset-0 bg-gradient-to-br ${style.gradient} rounded-xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-500 -z-10`}
               ></div>
-
               <div
-                className={`relative bg-white border ${style.border} rounded-xl p-4 flex flex-col items-center text-center h-full hover:shadow-md transition-shadow`}
+                className={`relative w-full h-full transition-all duration-500 [transform-style:preserve-3d] ${
+                  isFlipped ? "[transform:rotateY(180deg)]" : ""
+                }`}
               >
-                <div className={`mb-3 p-3 rounded-full ${style.bg}`}>
-                  <IconComponent className={style.icon} size={28} />
-                </div>
-
-                <div className="text-2xl font-black text-gray-900 mb-1">
-                  {mainValue}
-                </div>
-
-                <div className="text-xs font-bold text-gray-500 uppercase tracking-wider">
-                  {badge.id === "consistency" ? topLabel : badge.label}
-                </div>
-
-                {/* Optional Tag/Subtitle */}
                 <div
-                  className={`mt-2 text-[10px] font-medium px-2 py-1 rounded-full ${style.bg} ${style.text}`}
+                  className={`absolute inset-0 [backface-visibility:hidden] bg-white border ${style.border} rounded-xl p-4 flex flex-col items-center justify-center text-center h-full shadow-sm group-hover:shadow-md transition-shadow`}
                 >
-                  {badge.id === "consistency" ? subText : "Earned"}
+                  <div className={`mb-3 p-3 rounded-full ${style.bg}`}>
+                    <IconComponent className={style.icon} size={28} />
+                  </div>
+                  <div className="text-2xl font-black text-gray-900 mb-1 leading-none">
+                    {mainValue}
+                  </div>
+                  <div className="text-xs font-bold text-gray-500 uppercase tracking-wider">
+                    {badge.id === "consistency" ? topLabel : badge.label}
+                  </div>
+                  <div
+                    className={`mt-2 text-[10px] font-medium px-2 py-1 rounded-full ${style.bg} ${style.text}`}
+                  >
+                    {badge.id === "consistency" ? subText : "Earned"}
+                  </div>
+
+                  <RotateCcw
+                    size={12}
+                    className="absolute top-2 right-2 text-gray-300 opacity-0 group-hover:opacity-100 transition-opacity"
+                  />
+                </div>
+
+                <div
+                  className={`absolute inset-0 h-full w-full rounded-xl p-5 text-center flex flex-col items-center justify-center [transform:rotateY(180deg)] [backface-visibility:hidden] border ${style.border} ${style.bg} shadow-sm`}
+                >
+                  <IconComponent
+                    className={`${style.icon} mb-2 opacity-50`}
+                    size={20}
+                  />
+                  <p className={`text-sm font-bold leading-snug ${style.text}`}>
+                    {description}
+                  </p>
                 </div>
               </div>
             </div>
           );
         })}
 
-        {/* Placeholder for Next Badge (Visual filler if they have few badges) */}
         {gamification.length < 4 && (
           <div className="border-2 border-dashed border-gray-100 rounded-xl p-4 flex flex-col items-center justify-center text-center h-full opacity-60">
             <div className="mb-2 p-3 bg-gray-50 rounded-full">

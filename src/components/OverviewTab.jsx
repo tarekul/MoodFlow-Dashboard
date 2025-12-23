@@ -2,6 +2,7 @@ import CorrelationChart from "./CorrelationChart";
 import SummaryCard from "./SummaryCard";
 import TimeSeriesChart from "./TimeSeriesChart";
 import TrophyCase from "./TrophyCase";
+import WeeklyRhythm from "./WeeklyRhythm";
 
 const OverviewTab = ({ displayData, keyFactor, getSummaryDescription }) => {
   return (
@@ -53,11 +54,14 @@ const OverviewTab = ({ displayData, keyFactor, getSummaryDescription }) => {
         />
       </div>
 
+      {displayData.weekly_rhythm && (
+        <WeeklyRhythm data={displayData.weekly_rhythm} />
+      )}
+
       <TrophyCase gamification={displayData.gamification} />
 
       <TimeSeriesChart data={displayData.time_series} />
 
-      {/* Only show Correlation Chart if we actually have data for it */}
       {displayData.correlations.length > 0 ? (
         <CorrelationChart correlations={displayData.correlations} />
       ) : (
