@@ -12,6 +12,7 @@ const ConsistencyGrid = ({ logs }) => {
     acc[log.log_date] = log;
     return acc;
   }, {});
+
   const getDayStatus = (log) => {
     if (!log) return { color: "bg-gray-100", tooltip: "No log" };
 
@@ -87,12 +88,24 @@ const ConsistencyGrid = ({ logs }) => {
           return (
             <div
               key={dateString}
-              title={`${dateString}: ${status.tooltip}`}
               className={`
-                  aspect-square rounded-sm sm:rounded-md transition-all duration-300 hover:scale-125 hover:z-10 cursor-help
+                  group relative 
+                  aspect-square rounded-sm sm:rounded-md 
+                  transition-all duration-300 hover:scale-125 hover:z-20 cursor-help
                   ${status.color}
                 `}
-            ></div>
+            >
+              <div className="absolute bottom-full left-1/2 mb-2 -translate-x-1/2 w-max max-w-[150px] opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-30">
+                <div className="bg-gray-900 text-white text-[10px] py-1 px-2 rounded shadow-lg text-center leading-tight">
+                  <div className="font-bold mb-0.5">{dateString}</div>
+                  <div className="font-medium text-gray-300">
+                    {status.tooltip}
+                  </div>
+                </div>
+
+                <div className="w-2 h-2 bg-gray-900 rotate-45 mx-auto -mt-1"></div>
+              </div>
+            </div>
           );
         })}
       </div>
