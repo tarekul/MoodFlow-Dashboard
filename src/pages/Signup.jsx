@@ -56,7 +56,7 @@ const Signup = () => {
       <div className="max-w-md w-full">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
-            MoodFlow
+            Correlate
           </h1>
           <p className="text-gray-600 mt-2">Create your account</p>
         </div>
