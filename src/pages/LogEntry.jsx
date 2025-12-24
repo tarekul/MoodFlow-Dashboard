@@ -1,16 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import CalmVsChaoticIllustration from "../components/CalmVsChaoticIllustration";
 import DietQualityIllustration from "../components/DietQualityIllustration";
-import MoodIllustration from "../components/MoodIllustration";
-import Notes from "../components/Notes";
-import PhysicalActivityIllustration from "../components/PhysicalActivityIllustration";
 import ProductivityIllustration from "../components/ProductivityIllustration";
 import ProgressBar from "../components/ProgressBar";
 import QuestionScreen from "../components/QuestionScreen";
 import ScreenTimeSlider from "../components/ScreenTimeSlider";
 import SleepScreen from "../components/SleepScreen";
 import SocialInteractionsSlider from "../components/SocialInteractionsSlider";
+
+// Import NEW Combined Components
+import CombinedActivityScreen from "../components/CombinedActivityScreen";
+import FinalDetailsScreen from "../components/FinalDetailsScreen";
+import MoodStressScreen from "../components/MoodStressScreen";
+
 import {
   ACTIVITY_TIME_OPTIONS,
   DIET_QUALITY_OPTIONS,
@@ -23,7 +25,6 @@ import {
 
 import BlueprintSuccess from "../components/BlueprintSuccess";
 import CancelButton from "../components/CancelButton";
-import ContextTagsScreen from "../components/ContextTagsScreen";
 import EditModeIndicator from "../components/EditModeIndicator";
 import ExitButton from "../components/ExitButton";
 import LogBackButton from "../components/LogBackButton";
@@ -37,10 +38,11 @@ const LogEntry = () => {
   const { logId } = useParams();
   const isEditMode = Boolean(logId);
 
+  // --- STATE ---
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [showSuccess, setShowSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [initialLoading, setInitialLoading] = useState(isEditMode);
+  const [initialLoading, setInitialLoading] = useState(true); // Start true to check for existing logs
   const [error, setError] = useState(null);
   const [matchResults, setMatchResults] = useState(null);
   const [prediction, setPrediction] = useState(null);
@@ -62,68 +64,85 @@ const LogEntry = () => {
     tags: [],
   });
 
+  // --- 1. INITIALIZATION & RESUME LOGIC ---
   useEffect(() => {
-    const hour = new Date().getHours();
-    const isMorning = hour >= 5 && hour < 12;
-
-    if (isMorning && !isEditMode) {
-      setIsMorningCheckIn(true);
-    }
-  }, [isEditMode]);
-
-  useEffect(() => {
-    if (isEditMode) {
-      fetchLogData();
-    }
-  }, [logId]);
-
-  const fetchLogData = async () => {
-    try {
+    const initializeLog = async () => {
       setInitialLoading(true);
-      const logs = await logsAPI.getMyLogs();
-      const existingLog = logs.find((log) => log.id === parseInt(logId));
+      try {
+        const today = getLocalDateString();
+        const logs = await logsAPI.getMyLogs();
 
-      if (existingLog) {
-        setFormData({
-          log_date: existingLog.log_date,
-          mood: existingLog.mood,
-          productivity: existingLog.productivity,
-          sleep_hours: existingLog.sleep_hours,
-          sleep_quality: existingLog.sleep_quality,
-          stress: existingLog.stress,
-          physical_activity: existingLog.physical_activity_min,
-          activity_time: existingLog.activity_time,
-          screen_time: existingLog.screen_time_hours,
-          diet_quality: existingLog.diet_quality,
-          social_interaction: existingLog.social_interaction_hours,
-          notes: existingLog.notes,
-          tags: existingLog.tags || [],
-        });
-      } else {
-        setError("Log not found");
+        // Scenario A: User clicked "Edit" on a specific log (URL has logId)
+        if (isEditMode) {
+          const existingLog = logs.find((log) => log.id === parseInt(logId));
+          if (existingLog) {
+            populateFormData(existingLog);
+            // NOTE: We do NOT set isMorningCheckIn to true here.
+            // Edit Mode always enables the full flow so they can finish the day.
+          } else {
+            setError("Log not found");
+          }
+        }
+        // Scenario B: User clicked "New Log" (No URL ID)
+        else {
+          // Check if a log ALREADY exists for today
+          const existingTodayLog = logs.find((l) => l.log_date === today);
+
+          if (existingTodayLog) {
+            // FOUND ONE! Redirect to Edit Mode immediately.
+            // This prevents duplicate morning logs and unlocks the full flow.
+            navigate(`/log/${existingTodayLog.id}`, { replace: true });
+            return;
+          }
+
+          // If no log exists, check if it is Morning Time
+          const hour = new Date().getHours();
+          if (hour >= 5 && hour < 12) {
+            setIsMorningCheckIn(true);
+          }
+        }
+      } catch (err) {
+        console.error(err);
+        setError("Failed to initialize log");
+      } finally {
+        setInitialLoading(false);
       }
-    } catch (err) {
-      setError("Failed to load log data");
-      console.error(err);
-    } finally {
-      setInitialLoading(false);
-    }
+    };
+
+    initializeLog();
+  }, [logId, isEditMode, navigate]);
+
+  const populateFormData = (existingLog) => {
+    setFormData({
+      log_date: existingLog.log_date,
+      mood: existingLog.mood,
+      productivity: existingLog.productivity,
+      sleep_hours: existingLog.sleep_hours,
+      sleep_quality: existingLog.sleep_quality,
+      stress: existingLog.stress,
+      physical_activity: existingLog.physical_activity_min,
+      activity_time: existingLog.activity_time,
+      screen_time: existingLog.screen_time_hours,
+      diet_quality: existingLog.diet_quality,
+      social_interaction: existingLog.social_interaction_hours,
+      notes: existingLog.notes,
+      tags: existingLog.tags || [],
+    });
   };
 
+  // --- HELPERS ---
   const updateFormData = (updates) => {
     setFormData((prev) => ({ ...prev, ...updates }));
   };
 
   const goToNextStep = (dataSnapshot = formData) => {
     let nextIndex = currentStepIndex + 1;
-
     while (
       nextIndex < FLOW_CONFIG.length &&
       !FLOW_CONFIG[nextIndex].shouldShow(dataSnapshot)
     ) {
       nextIndex++;
     }
-
     if (nextIndex < FLOW_CONFIG.length) {
       setCurrentStepIndex(nextIndex);
     }
@@ -139,20 +158,21 @@ const LogEntry = () => {
     }
   };
 
-  // --- API SUBMISSIONS ---
-
+  // --- API ---
   const handleMorningSubmit = async (finalData) => {
     setLoading(true);
     try {
       const payload = {
         log_date: finalData.log_date,
         mood: finalData.mood,
+        stress: finalData.stress,
         sleep_hours: finalData.sleep_hours,
         sleep_quality: finalData.sleep_quality,
       };
 
       await logsAPI.createLog(payload);
 
+      // Prediction Logic
       const logs = await logsAPI.getMyLogs();
       if (logs.length > 7) {
         const analysis = await analysisAPI.getAnalysis();
@@ -169,7 +189,6 @@ const LogEntry = () => {
       navigate("/dashboard");
     } catch (err) {
       setError("Failed to save morning log");
-      console.error(err);
     } finally {
       setLoading(false);
     }
@@ -177,8 +196,6 @@ const LogEntry = () => {
 
   const handleFinalSubmit = async (finalData) => {
     setLoading(true);
-    setError(null);
-
     try {
       const payload = {
         log_date: finalData.log_date,
@@ -202,7 +219,6 @@ const LogEntry = () => {
         await logsAPI.createLog(payload);
       }
 
-      // Check Gamification (Blueprint Match)
       if (!isEditMode) {
         try {
           const analysis = await analysisAPI.getAnalysis();
@@ -233,23 +249,19 @@ const LogEntry = () => {
     }
   };
 
+  // --- CONFIG ---
   const FLOW_CONFIG = [
     {
-      id: "mood",
+      id: "mood_stress",
       shouldShow: () => true,
       component: (
-        <QuestionScreen
-          title={
-            isMorningCheckIn ? "Good Morning!" : "It's a new day to track!"
-          }
-          subtitle="Select the mood that best reflects how you feel at this moment."
-          options={MOOD_OPTIONS}
-          illustration={<MoodIllustration />}
-          selectedValue={formData.mood}
-          onSelect={(val) => {
-            updateFormData({ mood: val });
-            goToNextStep({ ...formData, mood: val });
-          }}
+        <MoodStressScreen
+          mood={formData.mood}
+          stress={formData.stress}
+          moodOptions={MOOD_OPTIONS}
+          stressOptions={STRESS_OPTIONS}
+          onUpdate={updateFormData}
+          onNext={() => goToNextStep()}
         />
       ),
     },
@@ -265,7 +277,7 @@ const LogEntry = () => {
           selectedValue={formData.productivity}
           onSelect={(val) => {
             updateFormData({ productivity: val });
-            goToNextStep({ ...formData, productivity: val });
+            goToNextStep();
           }}
         />
       ),
@@ -284,7 +296,6 @@ const LogEntry = () => {
               sleep_quality: quality,
             };
             updateFormData(updated);
-
             if (isMorningCheckIn) {
               handleMorningSubmit(updated);
             } else {
@@ -295,61 +306,16 @@ const LogEntry = () => {
       ),
     },
     {
-      id: "stress",
+      id: "activity_combined",
       shouldShow: () => !isMorningCheckIn,
       component: (
-        <QuestionScreen
-          title="How did you feel?"
-          subtitle="Think about how stressful your day was."
-          options={STRESS_OPTIONS}
-          illustration={<CalmVsChaoticIllustration />}
-          selectedValue={formData.stress}
-          onSelect={(val) => {
-            updateFormData({ stress: val });
-            goToNextStep({ ...formData, stress: val });
-          }}
-        />
-      ),
-    },
-    {
-      id: "activity_level",
-      shouldShow: () => !isMorningCheckIn,
-      component: (
-        <QuestionScreen
-          title="How active were you?"
-          subtitle="Think about how active you were today."
-          options={PHYSICAL_ACTIVITY_OPTIONS}
-          illustration={<PhysicalActivityIllustration />}
-          selectedValue={formData.physical_activity}
-          onSelect={(val) => {
-            updateFormData({ physical_activity: val });
-            goToNextStep({ ...formData, physical_activity: val });
-          }}
-          onSkip={() => {
-            updateFormData({ physical_activity: null });
-            goToNextStep({ ...formData, physical_activity: null });
-          }}
-        />
-      ),
-    },
-    {
-      id: "activity_time",
-      shouldShow: (data) => !isMorningCheckIn && data.physical_activity > 0,
-      component: (
-        <QuestionScreen
-          title="When did you exercise?"
-          subtitle="Timing matters for your energy levels."
-          options={ACTIVITY_TIME_OPTIONS}
-          illustration={<PhysicalActivityIllustration variant="time" />}
-          selectedValue={formData.activity_time}
-          onSelect={(val) => {
-            updateFormData({ activity_time: val });
-            goToNextStep({ ...formData, activity_time: val });
-          }}
-          onSkip={() => {
-            updateFormData({ activity_time: null });
-            goToNextStep({ ...formData, activity_time: null });
-          }}
+        <CombinedActivityScreen
+          activityLevel={formData.physical_activity}
+          activityTime={formData.activity_time}
+          levelOptions={PHYSICAL_ACTIVITY_OPTIONS}
+          timeOptions={ACTIVITY_TIME_OPTIONS}
+          onUpdate={updateFormData}
+          onNext={() => goToNextStep()}
         />
       ),
     },
@@ -361,11 +327,11 @@ const LogEntry = () => {
           initialValue={formData.screen_time}
           onComplete={(val) => {
             updateFormData({ screen_time: val });
-            goToNextStep({ ...formData, screen_time: val });
+            goToNextStep();
           }}
           onSkip={() => {
             updateFormData({ screen_time: null });
-            goToNextStep({ ...formData, screen_time: null });
+            goToNextStep();
           }}
         />
       ),
@@ -375,18 +341,18 @@ const LogEntry = () => {
       shouldShow: () => !isMorningCheckIn,
       component: (
         <QuestionScreen
-          title="How would you rate your diet today?"
-          subtitle="Rate the overall quality of your meals and snacks."
+          title="How would you rate your diet?"
+          subtitle="Rate the overall quality of your meals."
           options={DIET_QUALITY_OPTIONS}
           illustration={<DietQualityIllustration />}
           selectedValue={formData.diet_quality}
           onSelect={(val) => {
             updateFormData({ diet_quality: val });
-            goToNextStep({ ...formData, diet_quality: val });
+            goToNextStep();
           }}
           onSkip={() => {
             updateFormData({ diet_quality: null });
-            goToNextStep({ ...formData, diet_quality: null });
+            goToNextStep();
           }}
         />
       ),
@@ -399,41 +365,25 @@ const LogEntry = () => {
           initialValue={formData.social_interaction}
           onComplete={(val) => {
             updateFormData({ social_interaction: val });
-            goToNextStep({ ...formData, social_interaction: val });
+            goToNextStep();
           }}
           onSkip={() => {
             updateFormData({ social_interaction: null });
-            goToNextStep({ ...formData, social_interaction: null });
+            goToNextStep();
           }}
         />
       ),
     },
     {
-      id: "tags",
+      id: "details",
       shouldShow: () => !isMorningCheckIn,
       component: (
-        <ContextTagsScreen
-          initialTags={formData.tags}
-          onComplete={(val) => {
-            updateFormData({ tags: val });
-            goToNextStep({ ...formData, tags: val });
-          }}
-          onSkip={() => {
-            updateFormData({ tags: [] });
-            goToNextStep({ ...formData, tags: [] });
-          }}
-        />
-      ),
-    },
-    {
-      id: "notes",
-      shouldShow: () => !isMorningCheckIn,
-      component: (
-        <Notes
-          initialValue={formData.notes}
-          onComplete={(val) => {
-            const updated = { ...formData, notes: val };
-            updateFormData(updated);
+        <FinalDetailsScreen
+          tags={formData.tags}
+          notes={formData.notes}
+          onUpdate={updateFormData}
+          onSubmit={(details) => {
+            const updated = { ...formData, ...details };
             handleFinalSubmit(updated);
           }}
         />
@@ -441,24 +391,17 @@ const LogEntry = () => {
     },
   ];
 
-  if (initialLoading) {
+  // --- RENDER ---
+  if (initialLoading)
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-indigo-600 mx-auto mb-4"></div>
-          <div className="text-xl text-gray-600">Loading log data...</div>
-        </div>
+      <div className="min-h-screen flex items-center justify-center">
+        Loading...
       </div>
     );
-  }
-
-  if (matchResults) {
+  if (matchResults)
     return <BlueprintSuccess matches={matchResults} navigate={navigate} />;
-  }
-
-  if (showSuccess && prediction) {
+  if (showSuccess && prediction)
     return <PredictionSuccess prediction={prediction} navigate={navigate} />;
-  }
 
   const currentStepConfig = FLOW_CONFIG[currentStepIndex];
 
@@ -472,12 +415,11 @@ const LogEntry = () => {
             <div className="w-10">
               <LogBackButton
                 isMorningCheckIn={isMorningCheckIn}
-                currentStep={currentStepIndex + 1} // +1 for display
+                currentStep={currentStepIndex + 1}
                 loading={loading}
                 setCurrentStep={() => goToPrevStep()}
               />
             </div>
-
             <div className="w-10 flex justify-end">
               {!isEditMode && <ExitButton navigate={navigate} />}
               {isEditMode && <CancelButton navigate={navigate} />}
@@ -505,24 +447,8 @@ const LogEntry = () => {
       )}
 
       {loading && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-2xl p-8 text-center">
-            <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-indigo-600 mx-auto mb-4"></div>
-            <div className="text-xl font-semibold">Saving your log...</div>
-          </div>
-        </div>
-      )}
-
-      {error && (
-        <div className="fixed bottom-4 left-4 right-4 bg-red-50 border-2 border-red-500 rounded-lg p-4 shadow-lg z-50">
-          <div className="font-semibold text-red-900">Error</div>
-          <div className="text-red-700">{error}</div>
-          <button
-            onClick={() => setError(null)}
-            className="mt-2 text-red-600 underline"
-          >
-            Dismiss
-          </button>
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-2xl p-8 text-center">Loading...</div>
         </div>
       )}
     </div>

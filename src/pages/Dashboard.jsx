@@ -206,8 +206,8 @@ function Dashboard() {
 
   const todayStr = getLocalDateString();
   const todayLog = logs.find((log) => log.log_date === todayStr);
-  const isFullyLogged = todayLog && todayLog.stress !== null;
-  const isPartiallyLogged = todayLog && todayLog.stress === null;
+  const isFullyLogged = todayLog && todayLog.productivity !== null;
+  const isPartiallyLogged = todayLog && todayLog.productivity === null;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex flex-col">

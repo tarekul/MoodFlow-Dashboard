@@ -8,7 +8,6 @@ import { logsAPI } from "../utils/api";
 import calculateStreak from "../utils/calculateStreak";
 import { getLocalDateString } from "../utils/helpers";
 
-// --- MAIN PAGE COMPONENT ---
 const MyLogs = () => {
   const navigate = useNavigate();
   const [logs, setLogs] = useState([]);
@@ -69,7 +68,6 @@ const MyLogs = () => {
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] pb-20">
-      {/* Top Navigation Bar */}
       <div className="sticky top-0 z-10 bg-white/80 backdrop-blur-md border-b border-gray-100 px-4 py-3">
         <div className="max-w-2xl mx-auto flex items-center justify-between">
           <button
@@ -98,8 +96,8 @@ const MyLogs = () => {
             </p>
           </div>
           <LogButton
-            isFullyLogged={todayLog && todayLog.stress !== null}
-            isPartiallyLogged={todayLog && todayLog.stress === null}
+            isFullyLogged={todayLog && todayLog.productivity !== null}
+            isPartiallyLogged={todayLog && todayLog.productivity === null}
             todayLog={todayLog}
             navigate={navigate}
           />

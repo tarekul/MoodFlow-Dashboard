@@ -1,13 +1,26 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { QUALITY_OPTIONS } from "../utils/helpers";
 import SleepIllustration from "./SleepIllustration";
 
-const SleepScreen = ({ onComplete, initialQuality }) => {
-  // Default: Bed at 11:00 PM, Wake at 7:00 AM
+const SleepScreen = ({ onComplete, initialQuality, initialHours }) => {
   const [bedTime, setBedTime] = useState("23:00");
   const [wakeTime, setWakeTime] = useState("07:00");
-  const [hours, setHours] = useState(8);
+  const [hours, setHours] = useState(initialHours ?? 8);
   const [quality, setQuality] = useState(initialQuality ?? null);
+
+  const wasPreFilled = useRef(!!initialQuality);
+
+  const [isInteracting, setIsInteracting] = useState(false);
+
+  useEffect(() => {
+    if (quality && isInteracting && !wasPreFilled.current) {
+      const timer = setTimeout(() => {
+        onComplete(hours, quality);
+      }, 750);
+
+      return () => clearTimeout(timer);
+    }
+  }, [quality, hours, isInteracting, onComplete]);
 
   useEffect(() => {
     calculateDuration(bedTime, wakeTime);
@@ -30,6 +43,11 @@ const SleepScreen = ({ onComplete, initialQuality }) => {
     setHours(Math.round(diffHours * 10) / 10);
   };
 
+  const handleQualitySelect = (val) => {
+    setIsInteracting(true);
+    setQuality(val);
+  };
+
   return (
     <div className="w-full h-full flex flex-col justify-between items-center animate-fade-in overflow-y-auto scrollbar-hide bg-gray-50/50">
       <div className="w-full min-h-full flex flex-col items-center p-4 sm:p-6 gap-4 sm:gap-6">
@@ -47,6 +65,7 @@ const SleepScreen = ({ onComplete, initialQuality }) => {
         </div>
 
         <div className="w-full max-w-md shrink-0 z-20 mb-2 flex flex-col gap-2">
+          {/* TIME INPUT CARD */}
           <div className="bg-white/80 backdrop-blur-md rounded-2xl p-4 shadow-sm border border-gray-100">
             <div className="text-center mb-4">
               <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest block">
@@ -99,12 +118,12 @@ const SleepScreen = ({ onComplete, initialQuality }) => {
                 return (
                   <button
                     key={option.value}
-                    onClick={() => setQuality(option.value)}
+                    onClick={() => handleQualitySelect(option.value)}
                     className={`
                       flex-1 flex flex-col items-center justify-center py-2 sm:py-3 px-1 rounded-xl border-2 transition-all duration-200 active:scale-95
                       ${
                         isActive
-                          ? "border-indigo-600 bg-indigo-50 text-indigo-900 shadow-md transform -translate-y-0.5"
+                          ? "border-indigo-600 bg-indigo-50 text-indigo-900 shadow-md transform -translate-y-0.5 scale-105"
                           : "border-transparent bg-gray-50 text-gray-500 hover:bg-gray-100 hover:border-gray-200"
                       }
                     `}
@@ -141,7 +160,11 @@ const SleepScreen = ({ onComplete, initialQuality }) => {
               }
             `}
           >
-            {!quality ? "Select Quality" : "Next Step →"}
+            {!quality
+              ? "Select Quality"
+              : wasPreFilled.current
+              ? "Save Changes"
+              : "Next Step →"}
           </button>
         </div>
       </div>

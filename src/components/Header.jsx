@@ -1,5 +1,5 @@
 import React from "react";
-import LogButton from "./LogButton";
+import LogButton from "./LogButton"; // Reuse your smart button everywhere
 
 const Header = ({
   isFullyLogged,
@@ -20,6 +20,7 @@ const Header = ({
   return (
     <header className="bg-white/80 backdrop-blur-md sticky top-0 z-50 border-b border-gray-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4">
+        {/* --- DESKTOP LAYOUT --- */}
         <div className="hidden lg:flex items-center justify-between">
           {/* Left: Brand */}
           <div className="flex items-center gap-3">
@@ -30,7 +31,6 @@ const Header = ({
                 stroke="currentColor"
                 viewBox="0 0 24 24"
               >
-                {/* Replaced Lightning Bolt with a "Rhythm Pulse" to match Rya */}
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -51,17 +51,16 @@ const Header = ({
 
           {/* Right: Actions & Stats */}
           <div className="flex items-center gap-4">
+            {/* Stats Pill */}
             <div className="flex items-center gap-3 bg-gray-50 rounded-full px-4 py-1.5 border border-gray-100">
               <div className="text-center px-2 border-r border-gray-200">
                 <span className="text-xs text-gray-500 uppercase font-bold tracking-wider">
-                  Days
+                  Logs
                 </span>
                 <span className="ml-2 text-sm font-bold text-indigo-700">
                   {displayData.days_logged}
                 </span>
               </div>
-
-              {/* Streak */}
               <div className="flex items-center gap-1 pl-1">
                 <span className="text-lg">🔥</span>
                 <span className="text-sm font-bold text-gray-800">
@@ -81,6 +80,7 @@ const Header = ({
                 My Logs
               </button>
 
+              {/* REUSE: Smart Log Button */}
               <LogButton
                 isFullyLogged={isFullyLogged}
                 isPartiallyLogged={isPartiallyLogged}
@@ -89,7 +89,7 @@ const Header = ({
               />
             </div>
 
-            {/* User Profile Dropdown/Area */}
+            {/* User Profile */}
             <div className="flex items-center gap-3 pl-4 border-l border-gray-200 ml-2">
               <div className="flex items-center gap-2">
                 <div className="w-8 h-8 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold text-sm border border-indigo-200">
@@ -127,7 +127,7 @@ const Header = ({
           {/* Row 1: Logo & User */}
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
-              <div className="bg-indigo-600 text-white p-1.5 rounded-md">
+              <div className="bg-indigo-600 text-white p-1.5 rounded-md shadow-sm">
                 <svg
                   className="w-5 h-5"
                   fill="none"
@@ -142,7 +142,9 @@ const Header = ({
                   ></path>
                 </svg>
               </div>
-              <h1 className="text-xl font-bold text-gray-900">MoodFlow</h1>
+              <h1 className="text-xl font-bold text-gray-900 tracking-tight">
+                Correlate
+              </h1>
             </div>
 
             <div className="flex items-center gap-3">
@@ -177,38 +179,26 @@ const Header = ({
 
           {/* Row 2: Action Bar */}
           <div className="flex items-center gap-2">
+            {/* MAIN BUTTON: Uses the Smart LogButton component */}
             <div className="flex-grow">
-              {isFullyLogged ? (
-                <div className="w-full bg-green-50 text-green-700 py-2.5 rounded-xl text-center font-bold text-sm border border-green-200 shadow-sm">
-                  ✓ Logged Today
-                </div>
-              ) : isPartiallyLogged ? (
-                <button
-                  onClick={() => navigate(`/log-entry/${todayLog.id}`)}
-                  className="w-full py-2.5 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-xl font-bold text-sm shadow-md animate-pulse"
-                >
-                  ✏️ Finish Day
-                </button>
-              ) : (
-                <button
-                  onClick={() => navigate("/log-entry")}
-                  className="w-full py-2.5 bg-indigo-600 text-white rounded-xl font-bold text-sm shadow-md active:scale-95 transition-transform"
-                >
-                  + Log Today
-                </button>
-              )}
+              <LogButton
+                isFullyLogged={isFullyLogged}
+                isPartiallyLogged={isPartiallyLogged}
+                todayLog={todayLog}
+                navigate={navigate}
+              />
             </div>
 
             {/* My Logs */}
             <button
               onClick={() => navigate("/my-logs")}
-              className="px-4 py-2.5 bg-white text-gray-700 border border-gray-200 rounded-xl font-semibold text-sm hover:bg-gray-50"
+              className="px-4 py-2.5 bg-white text-gray-700 border border-gray-200 rounded-2xl font-semibold text-sm hover:bg-gray-50 active:scale-95 transition-transform"
             >
               Logs
             </button>
 
             {/* Streak Badge */}
-            <div className="flex flex-col items-center justify-center bg-orange-50 text-orange-600 px-3 py-1 rounded-xl border border-orange-100 min-w-[3.5rem]">
+            <div className="flex flex-col items-center justify-center bg-orange-50 text-orange-600 px-3 py-1 rounded-2xl border border-orange-100 min-w-[3.5rem]">
               <span className="text-sm font-bold leading-none">{streak}🔥</span>
               <span className="text-[10px] font-medium leading-none mt-1">
                 streak
