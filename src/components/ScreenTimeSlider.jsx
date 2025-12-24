@@ -116,7 +116,7 @@ const ScreenTimeSlider = ({ onComplete, onSkip, initialValue }) => {
 
           <div className="mt-2 sm:mt-4 space-y-2 sm:space-y-3">
             <button
-              onClick={() => onComplete(decimalHours)}
+              onClick={() => onComplete(Number(decimalHours.toFixed(2)))}
               className="w-full py-3 sm:py-4 bg-indigo-600 text-white rounded-2xl font-bold text-base sm:text-lg shadow-lg shadow-indigo-200 hover:shadow-xl hover:bg-indigo-700 hover:-translate-y-0.5 transition-all active:translate-y-0"
             >
               Confirm Time

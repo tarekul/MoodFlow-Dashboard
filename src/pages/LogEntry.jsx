@@ -35,15 +35,17 @@ import { checkBlueprintMatch } from "../utils/gamification";
 const LogEntry = () => {
   const navigate = useNavigate();
   const { logId } = useParams();
-
   const isEditMode = Boolean(logId);
 
-  const [currentStep, setCurrentStep] = useState(1);
+  const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [showSuccess, setShowSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
   const [initialLoading, setInitialLoading] = useState(isEditMode);
   const [error, setError] = useState(null);
   const [matchResults, setMatchResults] = useState(null);
+  const [prediction, setPrediction] = useState(null);
+  const [isMorningCheckIn, setIsMorningCheckIn] = useState(false);
+
   const [formData, setFormData] = useState({
     log_date: getLocalDateString(),
     mood: null,
@@ -60,16 +62,12 @@ const LogEntry = () => {
     tags: [],
   });
 
-  const [isMorningCheckIn, setIsMorningCheckIn] = useState(false);
-  const [prediction, setPrediction] = useState(null);
-
   useEffect(() => {
     const hour = new Date().getHours();
     const isMorning = hour >= 5 && hour < 12;
 
     if (isMorning && !isEditMode) {
       setIsMorningCheckIn(true);
-      setCurrentStep(1);
     }
   }, [isEditMode]);
 
@@ -112,20 +110,50 @@ const LogEntry = () => {
     }
   };
 
-  const submitMorningLog = async (data) => {
+  const updateFormData = (updates) => {
+    setFormData((prev) => ({ ...prev, ...updates }));
+  };
+
+  const goToNextStep = (dataSnapshot = formData) => {
+    let nextIndex = currentStepIndex + 1;
+
+    while (
+      nextIndex < FLOW_CONFIG.length &&
+      !FLOW_CONFIG[nextIndex].shouldShow(dataSnapshot)
+    ) {
+      nextIndex++;
+    }
+
+    if (nextIndex < FLOW_CONFIG.length) {
+      setCurrentStepIndex(nextIndex);
+    }
+  };
+
+  const goToPrevStep = () => {
+    let prevIndex = currentStepIndex - 1;
+    while (prevIndex >= 0 && !FLOW_CONFIG[prevIndex].shouldShow(formData)) {
+      prevIndex--;
+    }
+    if (prevIndex >= 0) {
+      setCurrentStepIndex(prevIndex);
+    }
+  };
+
+  // --- API SUBMISSIONS ---
+
+  const handleMorningSubmit = async (finalData) => {
     setLoading(true);
     try {
       const payload = {
-        log_date: data.log_date,
-        mood: data.mood,
-        sleep_hours: data.sleep_hours,
-        sleep_quality: data.sleep_quality,
+        log_date: finalData.log_date,
+        mood: finalData.mood,
+        sleep_hours: finalData.sleep_hours,
+        sleep_quality: finalData.sleep_quality,
       };
 
       await logsAPI.createLog(payload);
 
       const logs = await logsAPI.getMyLogs();
-
       if (logs.length > 7) {
         const analysis = await analysisAPI.getAnalysis();
         const forecast = analysis.smart_insights.find(
@@ -134,12 +162,11 @@ const LogEntry = () => {
         if (forecast) {
           setPrediction(forecast.message);
           setShowSuccess(true);
-        } else {
-          navigate("/dashboard");
+          setLoading(false);
+          return;
         }
-      } else {
-        navigate("/dashboard");
       }
+      navigate("/dashboard");
     } catch (err) {
       setError("Failed to save morning log");
       console.error(err);
@@ -148,82 +175,7 @@ const LogEntry = () => {
     }
   };
 
-  const handleMoodSelect = (mood) => {
-    const updatedData = { ...formData, mood };
-    setFormData(updatedData);
-
-    if (isMorningCheckIn) {
-      setCurrentStep(3);
-    } else {
-      setCurrentStep(2);
-    }
-  };
-
-  const handleProductivitySelect = (productivity) => {
-    setFormData({ ...formData, productivity });
-    setCurrentStep(3);
-  };
-
-  const handleSleepSelect = (hours, quality) => {
-    const updatedData = {
-      ...formData,
-      sleep_hours: hours,
-      sleep_quality: quality,
-    };
-    setFormData(updatedData);
-
-    if (isMorningCheckIn) {
-      submitMorningLog(updatedData);
-    } else {
-      setCurrentStep(4);
-    }
-  };
-
-  const handleStressSelect = (stress) => {
-    setFormData({ ...formData, stress });
-    setCurrentStep(5);
-  };
-
-  const handlePhysicalActivitySelect = (physical_activity) => {
-    const updatedFormData = { ...formData, physical_activity };
-    setFormData(updatedFormData);
-
-    if (physical_activity === 0) {
-      setCurrentStep(6);
-    } else {
-      setCurrentStep(5.5);
-    }
-  };
-
-  const handleActivityTimeSelect = (activity_time) => {
-    setFormData({ ...formData, activity_time });
-    setCurrentStep(6);
-  };
-
-  const handleScreenTimeSelect = (screen_time) => {
-    setFormData({ ...formData, screen_time });
-    setCurrentStep(7);
-  };
-
-  const handleDietQualitySelect = (diet_quality) => {
-    setFormData({ ...formData, diet_quality });
-    setCurrentStep(8);
-  };
-
-  const handleSocialInteractionSelect = (social_interaction) => {
-    setFormData({ ...formData, social_interaction });
-    setCurrentStep(9);
-  };
-
-  const handleTagsSelect = (tags) => {
-    setFormData({ ...formData, tags });
-    setCurrentStep(10);
-  };
-
-  const handleNotesSelect = async (notes) => {
-    const finalData = { ...formData, notes };
-    setFormData(finalData);
-
+  const handleFinalSubmit = async (finalData) => {
     setLoading(true);
     setError(null);
 
@@ -250,34 +202,28 @@ const LogEntry = () => {
         await logsAPI.createLog(payload);
       }
 
+      // Check Gamification (Blueprint Match)
       if (!isEditMode) {
         try {
-          // Fetch analysis to get the blueprint
           const analysis = await analysisAPI.getAnalysis();
-
-          if (analysis && analysis.perfect_day) {
-            // Check for matches
+          if (analysis?.perfect_day) {
             const matches = checkBlueprintMatch(
               finalData,
               analysis.perfect_day
             );
-
-            // If they hit at least 3 targets, show the special screen!
             if (matches && matches.length >= 3) {
               setMatchResults(matches);
               setLoading(false);
-              return; // Stop here, UI will render BlueprintSuccess
+              return;
             }
           }
         } catch (e) {
-          console.log("Could not fetch analysis for gamification", e);
-          // Fail silently and proceed to normal success
+          console.log("Gamification check failed", e);
         }
       }
 
       setLoading(false);
       setShowSuccess(true);
-
       setTimeout(() => {
         navigate(isEditMode ? "/my-logs" : "/dashboard");
       }, 2000);
@@ -286,6 +232,214 @@ const LogEntry = () => {
       setLoading(false);
     }
   };
+
+  const FLOW_CONFIG = [
+    {
+      id: "mood",
+      shouldShow: () => true,
+      component: (
+        <QuestionScreen
+          title={
+            isMorningCheckIn ? "Good Morning!" : "It's a new day to track!"
+          }
+          subtitle="Select the mood that best reflects how you feel at this moment."
+          options={MOOD_OPTIONS}
+          illustration={<MoodIllustration />}
+          selectedValue={formData.mood}
+          onSelect={(val) => {
+            updateFormData({ mood: val });
+            goToNextStep({ ...formData, mood: val });
+          }}
+        />
+      ),
+    },
+    {
+      id: "productivity",
+      shouldShow: () => !isMorningCheckIn,
+      component: (
+        <QuestionScreen
+          title="How productive were you?"
+          subtitle="Think about what you accomplished today."
+          options={PRODUCTIVITY_OPTIONS}
+          illustration={<ProductivityIllustration />}
+          selectedValue={formData.productivity}
+          onSelect={(val) => {
+            updateFormData({ productivity: val });
+            goToNextStep({ ...formData, productivity: val });
+          }}
+        />
+      ),
+    },
+    {
+      id: "sleep",
+      shouldShow: () => true,
+      component: (
+        <SleepScreen
+          initialHours={formData.sleep_hours}
+          initialQuality={formData.sleep_quality}
+          onComplete={(hours, quality) => {
+            const updated = {
+              ...formData,
+              sleep_hours: hours,
+              sleep_quality: quality,
+            };
+            updateFormData(updated);
+
+            if (isMorningCheckIn) {
+              handleMorningSubmit(updated);
+            } else {
+              goToNextStep(updated);
+            }
+          }}
+        />
+      ),
+    },
+    {
+      id: "stress",
+      shouldShow: () => !isMorningCheckIn,
+      component: (
+        <QuestionScreen
+          title="How did you feel?"
+          subtitle="Think about how stressful your day was."
+          options={STRESS_OPTIONS}
+          illustration={<CalmVsChaoticIllustration />}
+          selectedValue={formData.stress}
+          onSelect={(val) => {
+            updateFormData({ stress: val });
+            goToNextStep({ ...formData, stress: val });
+          }}
+        />
+      ),
+    },
+    {
+      id: "activity_level",
+      shouldShow: () => !isMorningCheckIn,
+      component: (
+        <QuestionScreen
+          title="How active were you?"
+          subtitle="Think about how active you were today."
+          options={PHYSICAL_ACTIVITY_OPTIONS}
+          illustration={<PhysicalActivityIllustration />}
+          selectedValue={formData.physical_activity}
+          onSelect={(val) => {
+            updateFormData({ physical_activity: val });
+            goToNextStep({ ...formData, physical_activity: val });
+          }}
+          onSkip={() => {
+            updateFormData({ physical_activity: null });
+            goToNextStep({ ...formData, physical_activity: null });
+          }}
+        />
+      ),
+    },
+    {
+      id: "activity_time",
+      shouldShow: (data) => !isMorningCheckIn && data.physical_activity > 0,
+      component: (
+        <QuestionScreen
+          title="When did you exercise?"
+          subtitle="Timing matters for your energy levels."
+          options={ACTIVITY_TIME_OPTIONS}
+          illustration={<PhysicalActivityIllustration variant="time" />}
+          selectedValue={formData.activity_time}
+          onSelect={(val) => {
+            updateFormData({ activity_time: val });
+            goToNextStep({ ...formData, activity_time: val });
+          }}
+          onSkip={() => {
+            updateFormData({ activity_time: null });
+            goToNextStep({ ...formData, activity_time: null });
+          }}
+        />
+      ),
+    },
+    {
+      id: "screen_time",
+      shouldShow: () => !isMorningCheckIn,
+      component: (
+        <ScreenTimeSlider
+          initialValue={formData.screen_time}
+          onComplete={(val) => {
+            updateFormData({ screen_time: val });
+            goToNextStep({ ...formData, screen_time: val });
+          }}
+          onSkip={() => {
+            updateFormData({ screen_time: null });
+            goToNextStep({ ...formData, screen_time: null });
+          }}
+        />
+      ),
+    },
+    {
+      id: "diet",
+      shouldShow: () => !isMorningCheckIn,
+      component: (
+        <QuestionScreen
+          title="How would you rate your diet today?"
+          subtitle="Rate the overall quality of your meals and snacks."
+          options={DIET_QUALITY_OPTIONS}
+          illustration={<DietQualityIllustration />}
+          selectedValue={formData.diet_quality}
+          onSelect={(val) => {
+            updateFormData({ diet_quality: val });
+            goToNextStep({ ...formData, diet_quality: val });
+          }}
+          onSkip={() => {
+            updateFormData({ diet_quality: null });
+            goToNextStep({ ...formData, diet_quality: null });
+          }}
+        />
+      ),
+    },
+    {
+      id: "social",
+      shouldShow: () => !isMorningCheckIn,
+      component: (
+        <SocialInteractionsSlider
+          initialValue={formData.social_interaction}
+          onComplete={(val) => {
+            updateFormData({ social_interaction: val });
+            goToNextStep({ ...formData, social_interaction: val });
+          }}
+          onSkip={() => {
+            updateFormData({ social_interaction: null });
+            goToNextStep({ ...formData, social_interaction: null });
+          }}
+        />
+      ),
+    },
+    {
+      id: "tags",
+      shouldShow: () => !isMorningCheckIn,
+      component: (
+        <ContextTagsScreen
+          initialTags={formData.tags}
+          onComplete={(val) => {
+            updateFormData({ tags: val });
+            goToNextStep({ ...formData, tags: val });
+          }}
+          onSkip={() => {
+            updateFormData({ tags: [] });
+            goToNextStep({ ...formData, tags: [] });
+          }}
+        />
+      ),
+    },
+    {
+      id: "notes",
+      shouldShow: () => !isMorningCheckIn,
+      component: (
+        <Notes
+          initialValue={formData.notes}
+          onComplete={(val) => {
+            const updated = { ...formData, notes: val };
+            updateFormData(updated);
+            handleFinalSubmit(updated);
+          }}
+        />
+      ),
+    },
+  ];
 
   if (initialLoading) {
     return (
@@ -306,9 +460,10 @@ const LogEntry = () => {
     return <PredictionSuccess prediction={prediction} navigate={navigate} />;
   }
 
+  const currentStepConfig = FLOW_CONFIG[currentStepIndex];
+
   return (
     <div className="h-[100dvh] w-full bg-gradient-to-br from-blue-50 to-indigo-100 flex flex-col overflow-hidden relative p-4">
-      {/* Show success screen OR the regular flow */}
       {showSuccess ? (
         <ShowLogSuccess />
       ) : (
@@ -317,15 +472,9 @@ const LogEntry = () => {
             <div className="w-10">
               <LogBackButton
                 isMorningCheckIn={isMorningCheckIn}
-                currentStep={currentStep}
+                currentStep={currentStepIndex + 1} // +1 for display
                 loading={loading}
-                setCurrentStep={(step) => {
-                  if (isMorningCheckIn && step === 2) {
-                    setCurrentStep(1);
-                  } else {
-                    setCurrentStep(step);
-                  }
-                }}
+                setCurrentStep={() => goToPrevStep()}
               />
             </div>
 
@@ -335,143 +484,26 @@ const LogEntry = () => {
             </div>
           </div>
 
-          {/* Edit mode indicator */}
           <div className="mt-2 w-full">
             {isEditMode && <EditModeIndicator formData={formData} />}
-            <ProgressBar currentStep={currentStep} />
+            <ProgressBar
+              currentStep={currentStepIndex + 1}
+              totalSteps={
+                FLOW_CONFIG.filter((s) => s.shouldShow(formData)).length
+              }
+            />
           </div>
 
           <div className="flex-1 w-full min-h-0 flex flex-col relative pb-[env(safe-area-inset-bottom)]">
-            {currentStep === 1 && (
-              <QuestionScreen
-                title={
-                  isMorningCheckIn
-                    ? "Good Morning!"
-                    : "It's a new day to track!"
-                }
-                subtitle="Select the mood that best reflects how you feel at this moment."
-                options={MOOD_OPTIONS}
-                illustration={<MoodIllustration />}
-                onSelect={handleMoodSelect}
-                selectedValue={formData.mood}
-              />
-            )}
-
-            {/* Productivity only shows if NOT morning */}
-            {currentStep === 2 && !isMorningCheckIn && (
-              <QuestionScreen
-                title="How productive were you?"
-                subtitle="Think about what you accomplished today."
-                options={PRODUCTIVITY_OPTIONS}
-                illustration={<ProductivityIllustration />}
-                onSelect={handleProductivitySelect}
-                selectedValue={formData.productivity}
-              />
-            )}
-
-            {currentStep === 3 && (
-              <SleepScreen
-                onComplete={handleSleepSelect}
-                initialQuality={formData.sleep_quality}
-              />
-            )}
-
-            {currentStep === 4 && !isMorningCheckIn && (
-              <QuestionScreen
-                title="How did you feel?"
-                subtitle="Think about how stressful your day was."
-                options={STRESS_OPTIONS}
-                illustration={<CalmVsChaoticIllustration />}
-                onSelect={handleStressSelect}
-                selectedValue={formData.stress}
-              />
-            )}
-            {currentStep === 5 && !isMorningCheckIn && (
-              <QuestionScreen
-                title="How active were you?"
-                subtitle="Think about how active you were today."
-                options={PHYSICAL_ACTIVITY_OPTIONS}
-                illustration={<PhysicalActivityIllustration />}
-                onSelect={handlePhysicalActivitySelect}
-                selectedValue={formData.physical_activity}
-                onSkip={() => {
-                  setFormData({ ...formData, physical_activity: null });
-                  setCurrentStep(6);
-                }}
-              />
-            )}
-
-            {currentStep === 5.5 && !isMorningCheckIn && (
-              <QuestionScreen
-                title="When did you exercise?"
-                subtitle="Timing matters for your energy levels."
-                options={ACTIVITY_TIME_OPTIONS}
-                illustration={<PhysicalActivityIllustration variant="time" />}
-                onSelect={handleActivityTimeSelect}
-                selectedValue={formData.activity_time}
-                onSkip={() => {
-                  setFormData({ ...formData, activity_time: null });
-                  setCurrentStep(6);
-                }}
-              />
-            )}
-
-            {currentStep === 6 && !isMorningCheckIn && (
-              <ScreenTimeSlider
-                onComplete={handleScreenTimeSelect}
-                onSkip={() => {
-                  setFormData({ ...formData, screen_time: null });
-                  setCurrentStep(7);
-                }}
-                initialValue={formData.screen_time}
-              />
-            )}
-            {currentStep === 7 && !isMorningCheckIn && (
-              <QuestionScreen
-                title="How would you rate your diet today?"
-                subtitle="Rate the overall quality of your meals and snacks — think about balance, portion sizes, and nutrients."
-                options={DIET_QUALITY_OPTIONS}
-                illustration={<DietQualityIllustration />}
-                onSelect={handleDietQualitySelect}
-                selectedValue={formData.diet_quality}
-                onSkip={() => {
-                  setFormData({ ...formData, diet_quality: null });
-                  setCurrentStep(8);
-                }}
-              />
-            )}
-            {currentStep === 8 && !isMorningCheckIn && (
-              <SocialInteractionsSlider
-                onComplete={handleSocialInteractionSelect}
-                onSkip={() => {
-                  setFormData({ ...formData, social_interaction: null });
-                  setCurrentStep(9);
-                }}
-                initialValue={formData.social_interaction}
-              />
-            )}
-
-            {currentStep === 9 && !isMorningCheckIn && (
-              <ContextTagsScreen
-                onComplete={handleTagsSelect}
-                initialTags={formData.tags}
-                onSkip={() => {
-                  setFormData({ ...formData, tags: [] });
-                  setCurrentStep(11);
-                }}
-              />
-            )}
-            {currentStep === 10 && !isMorningCheckIn && (
-              <Notes
-                onComplete={handleNotesSelect}
-                initialValue={formData.notes}
-              />
+            {currentStepConfig ? (
+              currentStepConfig.component
+            ) : (
+              <div>Error: Unknown Step</div>
             )}
           </div>
         </>
       )}
 
-      {/* Loading & Error Overlays */}
       {loading && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-2xl p-8 text-center">
