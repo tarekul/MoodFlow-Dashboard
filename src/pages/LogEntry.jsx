@@ -11,7 +11,6 @@ import QuestionScreen from "../components/QuestionScreen";
 import ScreenTimeSlider from "../components/ScreenTimeSlider";
 import SleepScreen from "../components/SleepScreen";
 import SocialInteractionsSlider from "../components/SocialInteractionsSlider";
-import WeatherIllustration from "../components/WeatherIllustration";
 import {
   ACTIVITY_TIME_OPTIONS,
   DIET_QUALITY_OPTIONS,
@@ -20,7 +19,6 @@ import {
   PHYSICAL_ACTIVITY_OPTIONS,
   PRODUCTIVITY_OPTIONS,
   STRESS_OPTIONS,
-  WEATHER_OPTIONS,
 } from "../utils/helpers";
 
 import BlueprintSuccess from "../components/BlueprintSuccess";
@@ -58,7 +56,6 @@ const LogEntry = () => {
     screen_time: null,
     diet_quality: null,
     social_interaction: null,
-    weather: null,
     notes: null,
     tags: [],
   });
@@ -97,10 +94,10 @@ const LogEntry = () => {
           sleep_quality: existingLog.sleep_quality,
           stress: existingLog.stress,
           physical_activity: existingLog.physical_activity_min,
+          activity_time: existingLog.activity_time,
           screen_time: existingLog.screen_time_hours,
           diet_quality: existingLog.diet_quality,
           social_interaction: existingLog.social_interaction_hours,
-          weather: existingLog.weather,
           notes: existingLog.notes,
           tags: existingLog.tags || [],
         });
@@ -218,14 +215,9 @@ const LogEntry = () => {
     setCurrentStep(9);
   };
 
-  const handleWeatherSelect = (weather) => {
-    setFormData({ ...formData, weather });
-    setCurrentStep(10);
-  };
-
   const handleTagsSelect = (tags) => {
     setFormData({ ...formData, tags });
-    setCurrentStep(11);
+    setCurrentStep(10);
   };
 
   const handleNotesSelect = async (notes) => {
@@ -248,7 +240,6 @@ const LogEntry = () => {
         screen_time_hours: finalData.screen_time,
         diet_quality: finalData.diet_quality,
         social_interaction_hours: finalData.social_interaction,
-        weather: finalData.weather,
         notes: finalData.notes,
         tags: finalData.tags,
       };
@@ -381,7 +372,6 @@ const LogEntry = () => {
             {currentStep === 3 && (
               <SleepScreen
                 onComplete={handleSleepSelect}
-                initialHours={formData.sleep_hours}
                 initialQuality={formData.sleep_quality}
               />
             )}
@@ -416,7 +406,6 @@ const LogEntry = () => {
                 title="When did you exercise?"
                 subtitle="Timing matters for your energy levels."
                 options={ACTIVITY_TIME_OPTIONS}
-                // You can reuse the illustration or create a variation
                 illustration={<PhysicalActivityIllustration variant="time" />}
                 onSelect={handleActivityTimeSelect}
                 selectedValue={formData.activity_time}
@@ -461,22 +450,8 @@ const LogEntry = () => {
                 initialValue={formData.social_interaction}
               />
             )}
-            {currentStep === 9 && !isMorningCheckIn && (
-              <QuestionScreen
-                title="How was the weather?"
-                subtitle="Look at the weather outside"
-                options={WEATHER_OPTIONS}
-                illustration={<WeatherIllustration />}
-                onSelect={handleWeatherSelect}
-                selectedValue={formData.weather}
-                onSkip={() => {
-                  setFormData({ ...formData, weather: null });
-                  setCurrentStep(10);
-                }}
-              />
-            )}
 
-            {currentStep === 10 && !isMorningCheckIn && (
+            {currentStep === 9 && !isMorningCheckIn && (
               <ContextTagsScreen
                 onComplete={handleTagsSelect}
                 initialTags={formData.tags}
@@ -486,7 +461,7 @@ const LogEntry = () => {
                 }}
               />
             )}
-            {currentStep === 11 && !isMorningCheckIn && (
+            {currentStep === 10 && !isMorningCheckIn && (
               <Notes
                 onComplete={handleNotesSelect}
                 initialValue={formData.notes}

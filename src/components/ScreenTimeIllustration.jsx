@@ -1,130 +1,94 @@
 import React from "react";
 
 const ScreenTimeIllustration = ({ hours }) => {
-  // 1. Calculations
   const maxHours = 12;
   const clampedHours = Math.max(0, Math.min(hours, maxHours));
-  const fillPercentage = clampedHours / maxHours; // 0 to 1
+  const fillPercentage = Math.min((clampedHours / maxHours) * 100, 100);
 
-  // 2. Color Logic
   const getColor = (h) => {
-    if (h <= 2) return { top: "#6EE7B7", bottom: "#10B981" }; // Emerald
-    if (h <= 5) return { top: "#93C5FD", bottom: "#3B82F6" }; // Blue
-    if (h <= 8) return { top: "#FDBA74", bottom: "#F97316" }; // Orange
-    return { top: "#FCA5A5", bottom: "#EF4444" }; // Red
+    if (h <= 2) return { start: "#6EE7B7", end: "#10B981" }; // Emerald
+    if (h <= 5) return { start: "#93C5FD", end: "#3B82F6" }; // Blue
+    if (h <= 8) return { start: "#FDBA74", end: "#F97316" }; // Orange
+    return { start: "#FCA5A5", end: "#EF4444" }; // Red
   };
 
   const colors = getColor(clampedHours);
 
-  // 3. Sand Height Calculations
-  const sandMaxHeight = 38;
-  const currentSandHeight = sandMaxHeight * fillPercentage;
-  const sandYPosition = 95 - currentSandHeight;
-
   return (
-    <div className="relative aspect-square flex items-center justify-center w-[clamp(100px,22vh,220px)]">
+    <div className="relative w-full max-w-[280px] aspect-[2.2/1] flex items-center justify-center">
       <svg
-        viewBox="0 0 100 100"
+        viewBox="0 0 220 100"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
-        className="w-full h-full drop-shadow-lg"
+        className="w-full h-full drop-shadow-md"
       >
         <defs>
-          <linearGradient
-            id="sandGradient"
-            x1="0"
-            y1="0"
-            x2="0"
-            y2="100%"
-            gradientUnits="userSpaceOnUse"
-          >
-            <stop stopColor={colors.top} />
-            <stop offset="1" stopColor={colors.bottom} />
+          <linearGradient id="screenGradient" x1="0" y1="0" x2="100%" y2="0">
+            <stop offset="0%" stopColor={colors.start} />
+            <stop offset="100%" stopColor={colors.end} />
           </linearGradient>
 
-          <linearGradient id="glassShine" x1="0" y1="0" x2="100%" y2="0%">
-            <stop offset="0" stopColor="white" stopOpacity="0.1" />
-            <stop offset="0.5" stopColor="white" stopOpacity="0.4" />
-            <stop offset="1" stopColor="white" stopOpacity="0.1" />
-          </linearGradient>
-
-          <clipPath id="bottomBulbClip">
-            <path d="M 25 50 C 25 50, 30 95, 50 95 C 70 95, 75 50, 75 50 H 25 Z" />
+          <clipPath id="screenContentClip">
+            <rect x="18" y="12" width="184" height="76" rx="6" />
           </clipPath>
         </defs>
 
-        {/* GLOW */}
-        <circle
-          cx="50"
-          cy="50"
-          r="45"
-          fill={colors.top}
-          opacity="0.1"
-          className="transition-colors duration-500"
-        />
-
-        {/* GLASS CONTAINER */}
-        <path
-          d="M 30 5 H 70 Q 75 5, 75 15 Q 75 40, 55 50 Q 75 60, 75 85 Q 75 95, 70 95 H 30 Q 25 95, 25 85 Q 25 60, 45 50 Q 25 40, 25 15 Q 25 5, 30 5 Z"
-          fill="white"
-          fillOpacity="0.2"
-          stroke="#94A3B8"
+        {/* 1. Device Frame (Landscape Phone) */}
+        <rect
+          x="5"
+          y="5"
+          width="210"
+          height="90"
+          rx="14"
+          fill="#1E293B" // Slate-800
+          stroke="#475569" // Slate-600
           strokeWidth="3"
-          strokeLinecap="round"
-          strokeLinejoin="round"
         />
 
-        {/* SAND */}
-        <g clipPath="url(#bottomBulbClip)">
+        {/* 2. Dark Screen Background */}
+        <rect x="18" y="12" width="184" height="76" rx="6" fill="#0F172A" />
+
+        {/* 3. Screen Content (Clipped) */}
+        <g clipPath="url(#screenContentClip)">
+          {/* Subtle "App Grid" Background Pattern */}
+          <g fill="#334155" opacity="0.3">
+            <rect x="30" y="25" width="20" height="20" rx="4" />
+            <rect x="65" y="25" width="20" height="20" rx="4" />
+            <rect x="100" y="25" width="20" height="20" rx="4" />
+            <rect x="135" y="25" width="20" height="20" rx="4" />
+
+            <rect x="30" y="55" width="20" height="20" rx="4" />
+            <rect x="65" y="55" width="20" height="20" rx="4" />
+            <rect x="100" y="55" width="20" height="20" rx="4" />
+            <rect x="135" y="55" width="20" height="20" rx="4" />
+          </g>
+
+          {/* The Progress Bar (Fills horizontally) */}
           <rect
-            x="0"
-            y={sandYPosition}
-            width="100"
-            height="100"
-            fill="url(#sandGradient)"
-            className="transition-all duration-500 ease-out"
+            x="18"
+            y="12"
+            width={(184 * fillPercentage) / 100}
+            height="76"
+            fill="url(#screenGradient)"
+            className="transition-all duration-300 ease-out"
+            opacity="0.9"
           />
-          {clampedHours > 0 && (
-            <ellipse
-              cx="50"
-              cy={sandYPosition}
-              rx="23"
-              ry="3"
-              fill={colors.top}
-              opacity="0.8"
-              className="transition-all duration-500 ease-out"
-            />
-          )}
+
+          {/* Glass Reflection / Glare */}
+          <path
+            d="M 18 12 L 80 88 L 120 88 L 58 12 Z"
+            fill="white"
+            fillOpacity="0.1"
+            className="pointer-events-none"
+          />
         </g>
 
-        {/* TRICKLE */}
-        {clampedHours > 0 && clampedHours < 12 && (
-          <path
-            d="M 50 50 L 50 90"
-            stroke="url(#sandGradient)"
-            strokeWidth="2"
-            strokeDasharray="4 2"
-            opacity="0.6"
-          />
-        )}
+        {/* 4. Camera / Home Button Details */}
+        {/* Side Notch/Dynamic Island area */}
+        <rect x="10" y="35" width="4" height="30" rx="2" fill="#334155" />
 
-        {/* REFLECTIONS */}
-        <path
-          d="M 32 10 Q 32 30, 48 45"
-          stroke="url(#glassShine)"
-          strokeWidth="3"
-          strokeLinecap="round"
-        />
-        <path
-          d="M 28 85 Q 28 65, 45 55"
-          stroke="url(#glassShine)"
-          strokeWidth="3"
-          strokeLinecap="round"
-        />
-
-        {/* CAPS */}
-        <rect x="28" y="2" width="44" height="4" rx="2" fill="#475569" />
-        <rect x="28" y="94" width="44" height="4" rx="2" fill="#475569" />
+        {/* Camera Dot */}
+        <circle cx="202" cy="50" r="3" fill="#334155" />
       </svg>
     </div>
   );

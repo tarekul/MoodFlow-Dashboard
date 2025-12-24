@@ -128,7 +128,6 @@ function Dashboard() {
 
   // Use real data if available, otherwise use calculated temporary data
   const displayData = userData || getTemporaryUserData();
-  console.log(displayData);
 
   // Loading state - wait for both to finish
   if (loading || logsLoading) {

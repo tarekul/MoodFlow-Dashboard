@@ -69,7 +69,7 @@ export const PRODUCTIVITY_OPTIONS = [
   { value: 8, label: "Productive" },
   { value: 6, label: "Average" },
   { value: 4, label: "Struggled" },
-  { value: 2, label: "Unproductive" },
+  { value: 2, label: "Off Day" },
 ];
 
 export const QUALITY_OPTIONS = [
@@ -82,16 +82,16 @@ export const QUALITY_OPTIONS = [
 export const STRESS_OPTIONS = [
   { value: 10, label: "Burned Out", color: "bg-red-500" },
   { value: 8, label: "Strained", color: "bg-orange-500" },
-  { value: 6, label: "Elevated", color: "bg-yellow-500" },
-  { value: 4, label: "Moderate", color: "bg-blue-400" },
-  { value: 2, label: "Low", color: "bg-emerald-400" },
+  { value: 5, label: "Moderate", color: "bg-yellow-500" },
+  { value: 3, label: "Low", color: "bg-blue-400" },
+  { value: 1, label: "Zen", color: "bg-cyan-400" },
 ];
 
 export const PHYSICAL_ACTIVITY_OPTIONS = [
-  { value: 100, label: "Ultra (90+ mins)" },
-  { value: 75, label: "Long (60-90 mins)" },
-  { value: 45, label: "Medium (30-60 mins)" },
-  { value: 22, label: "Short (15-30 mins)" },
+  { value: 100, label: "90+ mins" },
+  { value: 75, label: "60-90 mins" },
+  { value: 45, label: "30-60 mins" },
+  { value: 22, label: "15-30 mins" },
   { value: 0, label: "None" },
 ];
 
@@ -102,21 +102,30 @@ export const ACTIVITY_TIME_OPTIONS = [
 ];
 
 export const DIET_QUALITY_OPTIONS = [
-  { value: "Good", label: "Good" },
-  { value: "Average", label: "Average" },
-  { value: "Poor", label: "Poor" },
+  {
+    value: "Good",
+    label: "Good",
+    desc: "Balanced, whole foods.",
+    color: "bg-emerald-500",
+  },
+  {
+    value: "Average",
+    label: "Average",
+    desc: "Standard mix, decent energy.",
+    color: "bg-amber-500",
+  },
+  {
+    value: "Poor",
+    label: "Poor",
+    desc: "Processed, sugar, or fast food.",
+    color: "bg-rose-500",
+  },
 ];
 
 export const SOCIAL_INTERACTION_OPTIONS = [
   { value: 10, label: "Good" },
   { value: 8, label: "Average" },
   { value: 6, label: "Poor" },
-];
-
-export const WEATHER_OPTIONS = [
-  { value: "Sunny", label: "Sunny" },
-  { value: "Cloudy", label: "Cloudy" },
-  { value: "Rainy", label: "Rainy" },
 ];
 
 export const getLocalDateString = () => {

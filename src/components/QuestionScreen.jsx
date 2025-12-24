@@ -31,27 +31,53 @@ const QuestionScreen = ({
           <div className="flex flex-wrap justify-center gap-2 sm:gap-3">
             {options.map((option) => {
               const isSelected = selectedValue === option.value;
+              const hasColor = !!option.color;
 
               return (
                 <button
                   key={option.value}
                   onClick={() => onSelect(option.value)}
                   className={`
-                    relative group flex items-center justify-center gap-2
+                    relative group flex flex-col items-center justify-center gap-0.5
                     px-4 py-3 sm:px-6 sm:py-4 rounded-2xl border-2 
-                    font-semibold text-xs sm:text-sm transition-all duration-200
+                    transition-all duration-200
                     active:scale-95 shadow-sm hover:shadow-md w-auto min-w-[100px]
                     ${
                       isSelected
-                        ? "border-indigo-600 bg-indigo-50 text-indigo-700 shadow-indigo-100"
+                        ? hasColor
+                          ? `${option.color} border-transparent text-white shadow-md`
+                          : "border-indigo-600 bg-indigo-50 text-indigo-700 shadow-indigo-100"
                         : "border-gray-200 bg-white text-gray-700 hover:border-indigo-300 hover:text-indigo-600"
                     }
                   `}
                 >
-                  <span>{option.label}</span>
+                  <span className="font-bold text-xs sm:text-sm">
+                    {option.label}
+                  </span>
+
+                  {option.desc && (
+                    <span
+                      className={`text-[10px] font-medium leading-tight max-w-[120px] ${
+                        isSelected
+                          ? "text-white/90"
+                          : "text-gray-400 group-hover:text-indigo-500/80"
+                      }`}
+                    >
+                      {option.desc}
+                    </span>
+                  )}
 
                   {isSelected && (
-                    <div className="absolute -top-1.5 -right-1.5 bg-indigo-600 text-white rounded-full p-0.5 shadow-sm border-2 border-white">
+                    <div
+                      className={`
+                        absolute -top-1.5 -right-1.5 rounded-full p-0.5 shadow-sm border-2 border-white
+                        ${
+                          hasColor
+                            ? "bg-white text-gray-900"
+                            : "bg-indigo-600 text-white"
+                        }
+                      `}
+                    >
                       <svg
                         className="w-3 h-3"
                         fill="none"

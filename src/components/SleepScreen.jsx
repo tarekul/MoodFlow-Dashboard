@@ -1,10 +1,34 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { QUALITY_OPTIONS } from "../utils/helpers";
 import SleepIllustration from "./SleepIllustration";
 
-const SleepScreen = ({ onComplete, initialHours, initialQuality }) => {
-  const [hours, setHours] = useState(initialHours ?? 7);
+const SleepScreen = ({ onComplete, initialQuality }) => {
+  // Default: Bed at 11:00 PM, Wake at 7:00 AM
+  const [bedTime, setBedTime] = useState("23:00");
+  const [wakeTime, setWakeTime] = useState("07:00");
+  const [hours, setHours] = useState(8);
   const [quality, setQuality] = useState(initialQuality ?? null);
+
+  useEffect(() => {
+    calculateDuration(bedTime, wakeTime);
+  }, [bedTime, wakeTime]);
+
+  const calculateDuration = (start, end) => {
+    const [startH, startM] = start.split(":").map(Number);
+    const [endH, endM] = end.split(":").map(Number);
+
+    let startMin = startH * 60 + startM;
+    let endMin = endH * 60 + endM;
+
+    if (endMin < startMin) {
+      endMin += 24 * 60;
+    }
+
+    const diffMinutes = endMin - startMin;
+    const diffHours = diffMinutes / 60;
+
+    setHours(Math.round(diffHours * 10) / 10);
+  };
 
   return (
     <div className="w-full h-full flex flex-col justify-between items-center animate-fade-in overflow-y-auto scrollbar-hide bg-gray-50/50">
@@ -14,7 +38,7 @@ const SleepScreen = ({ onComplete, initialHours, initialQuality }) => {
             How did you sleep?
           </h1>
           <p className="text-gray-500 text-xs sm:text-sm max-w-[280px] mx-auto">
-            Track duration and quality.
+            Set your sleep window.
           </p>
         </div>
 
@@ -23,12 +47,12 @@ const SleepScreen = ({ onComplete, initialHours, initialQuality }) => {
         </div>
 
         <div className="w-full max-w-md shrink-0 z-20 mb-2 flex flex-col gap-2">
-          <div className="bg-white/80 backdrop-blur-md rounded-2xl p-3 sm:p-4 shadow-sm border border-gray-100">
-            <div className="text-center mb-1 sm:mb-2">
+          <div className="bg-white/80 backdrop-blur-md rounded-2xl p-4 shadow-sm border border-gray-100">
+            <div className="text-center mb-4">
               <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest block">
-                Duration
+                Total Duration
               </span>
-              <div className="text-3xl sm:text-5xl font-black text-indigo-600 tracking-tight flex items-baseline justify-center">
+              <div className="text-4xl sm:text-5xl font-black text-indigo-600 tracking-tight flex items-baseline justify-center">
                 {hours}
                 <span className="text-sm sm:text-xl ml-1 font-bold text-indigo-300">
                   hrs
@@ -36,19 +60,32 @@ const SleepScreen = ({ onComplete, initialHours, initialQuality }) => {
               </div>
             </div>
 
-            <input
-              type="range"
-              min="3"
-              max="12"
-              step="0.5"
-              value={hours}
-              onChange={(e) => setHours(parseFloat(e.target.value))}
-              className="w-full h-2 bg-gray-100 rounded-full appearance-none cursor-pointer accent-indigo-600 hover:bg-gray-200 transition-colors focus:outline-none"
-            />
-            <div className="flex justify-between text-[9px] sm:text-[10px] uppercase font-bold text-gray-400 mt-1 px-1">
-              <span>3h</span>
-              <span>8h</span>
-              <span>12h</span>
+            <div className="flex gap-4 border-t border-gray-100 pt-4">
+              <div className="flex-1">
+                <label className="block text-[10px] font-bold text-gray-400 uppercase mb-1">
+                  Bedtime
+                </label>
+                <input
+                  type="time"
+                  value={bedTime}
+                  onChange={(e) => setBedTime(e.target.value)}
+                  className="w-full p-2 bg-gray-50 rounded-xl border border-gray-200 text-gray-900 font-bold text-center focus:ring-2 focus:ring-indigo-100 outline-none"
+                />
+              </div>
+
+              <div className="flex items-center text-gray-300 pt-4">→</div>
+
+              <div className="flex-1">
+                <label className="block text-[10px] font-bold text-gray-400 uppercase mb-1">
+                  Wake Up
+                </label>
+                <input
+                  type="time"
+                  value={wakeTime}
+                  onChange={(e) => setWakeTime(e.target.value)}
+                  className="w-full p-2 bg-gray-50 rounded-xl border border-gray-200 text-gray-900 font-bold text-center focus:ring-2 focus:ring-indigo-100 outline-none"
+                />
+              </div>
             </div>
           </div>
 

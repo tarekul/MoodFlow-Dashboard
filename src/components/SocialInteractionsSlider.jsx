@@ -1,3 +1,4 @@
+import { ChevronDown, ChevronUp } from "lucide-react";
 import React, { useState } from "react";
 import { getSocialInteractionContext } from "../utils/helpers";
 import SocialInteractionIllustration from "./SocialInteractionIllustration";
@@ -6,8 +7,13 @@ const SocialInteractionsSlider = ({ onComplete, onSkip, initialValue }) => {
   const [hours, setHours] = useState(initialValue ?? 2);
 
   const context = getSocialInteractionContext(hours);
-  const max = 8;
-  const percentage = Math.min((hours / max) * 100, 100);
+
+  const adjustHours = (amount) => {
+    setHours((prev) => {
+      const newVal = prev + amount;
+      return Math.max(0, Math.min(24, Math.round(newVal * 10) / 10));
+    });
+  };
 
   return (
     <div className="w-full h-full flex flex-col justify-between items-center animate-fade-in overflow-y-auto scrollbar-hide bg-gray-50/50">
@@ -24,61 +30,49 @@ const SocialInteractionsSlider = ({ onComplete, onSkip, initialValue }) => {
         <div className="shrink-0 relative z-0 flex items-center justify-center h-48 sm:h-64 w-full max-w-md my-auto">
           <SocialInteractionIllustration hours={hours} />
         </div>
-
         <div className="w-full max-w-md shrink-0 z-20 mb-2 flex flex-col gap-2">
           <div
-            className={`bg-white/80 backdrop-blur-md rounded-3xl p-4 sm:p-6 shadow-sm border ${context.border} transition-colors duration-300`}
+            className={`bg-white/80 backdrop-blur-md rounded-3xl p-6 shadow-sm border ${context.border} transition-colors duration-300`}
           >
-            <div className="flex flex-col items-center mb-4 sm:mb-6">
+            <div className="text-center mb-6">
               <span
-                className={`text-[10px] sm:text-xs font-bold uppercase tracking-widest mb-1 ${context.color} transition-colors duration-300`}
+                className={`text-[10px] sm:text-xs font-bold uppercase tracking-widest ${context.color} transition-colors duration-300`}
               >
                 {context.label}
               </span>
-              <div className="flex items-baseline gap-1">
+            </div>
+
+            <div className="flex items-center justify-center gap-6">
+              <button
+                onClick={() => adjustHours(-0.5)}
+                className="p-4 bg-gray-50 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-2xl transition-all active:scale-95 shadow-sm border border-transparent hover:border-indigo-100"
+              >
+                <ChevronDown size={28} />
+              </button>
+
+              <div className="flex flex-col items-center w-32">
                 <span
-                  className={`text-4xl sm:text-6xl font-black ${context.color} transition-colors duration-300`}
+                  className={`text-6xl font-black ${context.color} transition-colors duration-300 tracking-tight`}
                 >
                   {hours}
                 </span>
-                <span className="text-sm sm:text-xl font-bold text-gray-400">
-                  hrs
+                <span className="text-xs font-bold text-gray-400 uppercase tracking-widest mt-1">
+                  Hours
                 </span>
               </div>
-            </div>
 
-            <div className="relative w-full h-8 sm:h-10 flex items-center">
-              <input
-                type="range"
-                min="0"
-                max="8"
-                step="0.5"
-                value={hours}
-                onChange={(e) => setHours(parseFloat(e.target.value))}
-                className="w-full absolute z-20 opacity-0 cursor-pointer h-full"
-              />
-
-              <div className="w-full h-3 sm:h-4 bg-gray-100 rounded-full overflow-hidden relative z-10">
-                <div
-                  className={`h-full ${context.bg} transition-all duration-150 ease-out`}
-                  style={{ width: `${percentage}%` }}
-                />
-              </div>
-
-              <div
-                className="absolute h-6 w-6 sm:h-8 sm:w-8 bg-white border-2 border-gray-100 rounded-full shadow-md z-10 pointer-events-none transition-all duration-150 ease-out flex items-center justify-center -translate-x-1/2"
-                style={{ left: `${percentage}%` }}
+              <button
+                onClick={() => adjustHours(0.5)}
+                className="p-4 bg-gray-50 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-2xl transition-all active:scale-95 shadow-sm border border-transparent hover:border-indigo-100"
               >
-                <div
-                  className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full ${context.bg}`}
-                />
-              </div>
+                <ChevronUp size={28} />
+              </button>
             </div>
 
-            <div className="flex justify-between text-[9px] sm:text-[10px] uppercase font-bold text-gray-400 mt-2 px-1">
-              <span>0 hrs</span>
-              <span>4 hrs</span>
-              <span>8+ hrs</span>
+            <div className="text-center mt-6">
+              <p className="text-[10px] text-gray-400 font-medium">
+                Tap arrows to adjust in 30 min increments
+              </p>
             </div>
           </div>
 
