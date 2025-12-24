@@ -16,7 +16,6 @@ const Login = () => {
     setError("");
     setLoading(true);
     try {
-      // Send the ID token to your backend
       const result = await googleLogin(credentialResponse.credential);
       if (result.success) {
         navigate("/dashboard");

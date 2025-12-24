@@ -38,18 +38,13 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // Login function
   const login = async (email, password) => {
     try {
-      // Get token from API
       const data = await authAPI.login(email, password);
       const { access_token } = data;
-
-      // Get user info
       localStorage.setItem("token", access_token);
       const userData = await authAPI.getCurrentUser();
 
-      // Save to state and localStorage
       setToken(access_token);
       setUser(userData);
       localStorage.setItem("user", JSON.stringify(userData));
@@ -64,13 +59,9 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // Signup function
   const signup = async (email, password, firstName, lastName) => {
     try {
-      // Create user
       await authAPI.signup(email, password, firstName, lastName);
-
-      // Auto-login after signup
       return await login(email, password);
     } catch (error) {
       console.error("Signup error:", error);
@@ -81,7 +72,6 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // Logout function
   const logout = () => {
     setToken(null);
     setUser(null);
