@@ -32,7 +32,6 @@ function Dashboard() {
       const data = await analysisAPI.getAnalysis();
       setUserData(data);
     } catch (err) {
-      // Expected error when user has < 7 days of data - don't log to console
       if (err.response?.status === 400) {
         console.log("Analysis not ready yet (expected for new users)");
       } else {
@@ -98,7 +97,6 @@ function Dashboard() {
         avg_sleep: avg("sleep_hours"),
         avg_stress: avg("stress"),
       },
-      // Map logs to chart format and reverse to show oldest to newest
       time_series: logs
         .map((log) => ({
           log_date: log.log_date,

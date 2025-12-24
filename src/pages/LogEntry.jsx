@@ -1,17 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import CombinedActivityScreen from "../components/CombinedActivityScreen";
 import DietQualityIllustration from "../components/DietQualityIllustration";
+import FinalDetailsScreen from "../components/FinalDetailsScreen";
+import MoodStressScreen from "../components/MoodStressScreen";
 import ProductivityIllustration from "../components/ProductivityIllustration";
 import ProgressBar from "../components/ProgressBar";
 import QuestionScreen from "../components/QuestionScreen";
 import ScreenTimeSlider from "../components/ScreenTimeSlider";
 import SleepScreen from "../components/SleepScreen";
 import SocialInteractionsSlider from "../components/SocialInteractionsSlider";
-
-// Import NEW Combined Components
-import CombinedActivityScreen from "../components/CombinedActivityScreen";
-import FinalDetailsScreen from "../components/FinalDetailsScreen";
-import MoodStressScreen from "../components/MoodStressScreen";
 
 import {
   ACTIVITY_TIME_OPTIONS,
@@ -24,11 +22,11 @@ import {
 } from "../utils/helpers";
 
 import BlueprintSuccess from "../components/BlueprintSuccess";
-import CancelButton from "../components/CancelButton";
 import EditModeIndicator from "../components/EditModeIndicator";
 import ExitButton from "../components/ExitButton";
 import LogBackButton from "../components/LogBackButton";
 import PredictionSuccess from "../components/PredictionSuccess";
+import SaveAction from "../components/SaveAction";
 import ShowLogSuccess from "../components/ShowLogSuccess";
 import { analysisAPI, logsAPI } from "../utils/api";
 import { checkBlueprintMatch } from "../utils/gamification";
@@ -42,7 +40,7 @@ const LogEntry = () => {
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [showSuccess, setShowSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [initialLoading, setInitialLoading] = useState(true); // Start true to check for existing logs
+  const [initialLoading, setInitialLoading] = useState(true);
   const [error, setError] = useState(null);
   const [matchResults, setMatchResults] = useState(null);
   const [prediction, setPrediction] = useState(null);
@@ -53,6 +51,8 @@ const LogEntry = () => {
     mood: null,
     productivity: null,
     sleep_hours: null,
+    sleep_bed_time: null,
+    sleep_wake_time: null,
     sleep_quality: null,
     stress: null,
     physical_activity: null,
@@ -64,7 +64,6 @@ const LogEntry = () => {
     tags: [],
   });
 
-  // --- 1. INITIALIZATION & RESUME LOGIC ---
   useEffect(() => {
     const initializeLog = async () => {
       setInitialLoading(true);
@@ -72,30 +71,21 @@ const LogEntry = () => {
         const today = getLocalDateString();
         const logs = await logsAPI.getMyLogs();
 
-        // Scenario A: User clicked "Edit" on a specific log (URL has logId)
         if (isEditMode) {
           const existingLog = logs.find((log) => log.id === parseInt(logId));
           if (existingLog) {
             populateFormData(existingLog);
-            // NOTE: We do NOT set isMorningCheckIn to true here.
-            // Edit Mode always enables the full flow so they can finish the day.
           } else {
             setError("Log not found");
           }
-        }
-        // Scenario B: User clicked "New Log" (No URL ID)
-        else {
-          // Check if a log ALREADY exists for today
+        } else {
           const existingTodayLog = logs.find((l) => l.log_date === today);
 
           if (existingTodayLog) {
-            // FOUND ONE! Redirect to Edit Mode immediately.
-            // This prevents duplicate morning logs and unlocks the full flow.
             navigate(`/log/${existingTodayLog.id}`, { replace: true });
             return;
           }
 
-          // If no log exists, check if it is Morning Time
           const hour = new Date().getHours();
           if (hour >= 5 && hour < 12) {
             setIsMorningCheckIn(true);
@@ -119,6 +109,8 @@ const LogEntry = () => {
       productivity: existingLog.productivity,
       sleep_hours: existingLog.sleep_hours,
       sleep_quality: existingLog.sleep_quality,
+      sleep_bed_time: existingLog.sleep_bed_time,
+      sleep_wake_time: existingLog.sleep_wake_time,
       stress: existingLog.stress,
       physical_activity: existingLog.physical_activity_min,
       activity_time: existingLog.activity_time,
@@ -156,6 +148,10 @@ const LogEntry = () => {
     if (prevIndex >= 0) {
       setCurrentStepIndex(prevIndex);
     }
+  };
+
+  const handleEarlySave = () => {
+    handleFinalSubmit(formData);
   };
 
   // --- API ---
@@ -203,6 +199,8 @@ const LogEntry = () => {
         productivity: finalData.productivity,
         sleep_hours: finalData.sleep_hours,
         sleep_quality: finalData.sleep_quality,
+        sleep_bed_time: finalData.sleep_bed_time,
+        sleep_wake_time: finalData.sleep_wake_time,
         stress: finalData.stress,
         physical_activity_min: finalData.physical_activity,
         activity_time: finalData.activity_time,
@@ -289,11 +287,15 @@ const LogEntry = () => {
         <SleepScreen
           initialHours={formData.sleep_hours}
           initialQuality={formData.sleep_quality}
-          onComplete={(hours, quality) => {
+          initialBedTime={formData.sleep_bed_time}
+          initialWakeTime={formData.sleep_wake_time}
+          onComplete={(hours, quality, bedTime, wakeTime) => {
             const updated = {
               ...formData,
               sleep_hours: hours,
               sleep_quality: quality,
+              sleep_bed_time: bedTime,
+              sleep_wake_time: wakeTime,
             };
             updateFormData(updated);
             if (isMorningCheckIn) {
@@ -420,9 +422,12 @@ const LogEntry = () => {
                 setCurrentStep={() => goToPrevStep()}
               />
             </div>
-            <div className="w-10 flex justify-end">
-              {!isEditMode && <ExitButton navigate={navigate} />}
-              {isEditMode && <CancelButton navigate={navigate} />}
+            <div className="flex justify-end">
+              {isEditMode ? (
+                <SaveAction onSave={handleEarlySave} disabled={loading} />
+              ) : (
+                <ExitButton navigate={navigate} />
+              )}
             </div>
           </div>
 

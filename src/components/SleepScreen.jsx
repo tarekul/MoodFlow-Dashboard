@@ -2,9 +2,15 @@ import { useEffect, useRef, useState } from "react";
 import { QUALITY_OPTIONS } from "../utils/helpers";
 import SleepIllustration from "./SleepIllustration";
 
-const SleepScreen = ({ onComplete, initialQuality, initialHours }) => {
-  const [bedTime, setBedTime] = useState("23:00");
-  const [wakeTime, setWakeTime] = useState("07:00");
+const SleepScreen = ({
+  onComplete,
+  initialQuality,
+  initialHours,
+  initialBedTime,
+  initialWakeTime,
+}) => {
+  const [bedTime, setBedTime] = useState(initialBedTime ?? "23:00");
+  const [wakeTime, setWakeTime] = useState(initialWakeTime ?? "07:00");
   const [hours, setHours] = useState(initialHours ?? 8);
   const [quality, setQuality] = useState(initialQuality ?? null);
 
@@ -15,12 +21,12 @@ const SleepScreen = ({ onComplete, initialQuality, initialHours }) => {
   useEffect(() => {
     if (quality && isInteracting && !wasPreFilled.current) {
       const timer = setTimeout(() => {
-        onComplete(hours, quality);
+        onComplete(hours, quality, bedTime, wakeTime);
       }, 750);
 
       return () => clearTimeout(timer);
     }
-  }, [quality, hours, isInteracting, onComplete]);
+  }, [quality, hours, isInteracting, onComplete, bedTime, wakeTime]);
 
   useEffect(() => {
     calculateDuration(bedTime, wakeTime);
@@ -149,7 +155,7 @@ const SleepScreen = ({ onComplete, initialQuality, initialHours }) => {
           </div>
 
           <button
-            onClick={() => onComplete(hours, quality)}
+            onClick={() => onComplete(hours, quality, bedTime, wakeTime)}
             disabled={!quality}
             className={`
               w-full py-3 sm:py-4 rounded-2xl font-bold text-sm sm:text-lg transition-all duration-300 flex items-center justify-center gap-2 mt-2
