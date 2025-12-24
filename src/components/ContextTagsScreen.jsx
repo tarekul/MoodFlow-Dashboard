@@ -23,12 +23,6 @@ const ContextTagsScreen = ({ onComplete, onSkip, initialTags = [] }) => {
         </p>
       </div>
 
-      <div className="flex justify-center mb-8">
-        <div className="w-24 h-24 bg-indigo-100 rounded-full flex items-center justify-center text-4xl shadow-inner">
-          🏷️
-        </div>
-      </div>
-
       <div className="flex-1 overflow-y-auto px-2 pb-4">
         <div className="grid grid-cols-2 gap-3 max-w-md mx-auto">
           {CONTEXT_TAG_OPTIONS.map((option) => {
