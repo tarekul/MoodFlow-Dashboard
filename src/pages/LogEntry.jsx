@@ -399,7 +399,6 @@ const LogEntry = () => {
     return (
       <div className="min-h-screen w-full bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
         <div className="bg-white/40 backdrop-blur-xl rounded-3xl p-8 shadow-lg border border-white/50 flex flex-col items-center gap-6 max-w-xs w-full">
-          {/* Custom Spinner */}
           <div className="relative w-16 h-16">
             <div className="absolute inset-0 rounded-full border-4 border-indigo-200"></div>
             <div className="absolute inset-0 rounded-full border-4 border-t-indigo-600 border-r-transparent border-b-transparent border-l-transparent animate-spin"></div>
