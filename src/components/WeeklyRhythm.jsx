@@ -36,7 +36,6 @@ const WeeklyRhythm = ({ data }) => {
       </div>
 
       {/* The Bar Chart */}
-      {/* FIXED: Removed 'items-end' so columns can stretch. Increased height slightly. */}
       <div className="flex justify-between h-48 gap-2 sm:gap-4 mt-4">
         {chart_data.map((item) => {
           const isBest = item.day === best_day;
@@ -49,7 +48,6 @@ const WeeklyRhythm = ({ data }) => {
               key={item.day}
               className="flex flex-col items-center justify-end flex-1 group h-full"
             >
-              {/* Tooltip (Score) - Reserved space (h-6) prevents jumping */}
               <div
                 className={`h-6 mb-1 text-xs font-bold transition-all duration-300 ${
                   isBest
@@ -60,7 +58,6 @@ const WeeklyRhythm = ({ data }) => {
                 {item.score > 0 ? item.score : ""}
               </div>
 
-              {/* The Bar Track - FIXED: Given explicit height (h-32) to ensure drawing area exists */}
               <div className="w-full bg-gray-100 rounded-t-lg relative h-32 flex items-end overflow-hidden">
                 <div
                   style={{ height: `${heightPercent}%` }}
@@ -72,7 +69,6 @@ const WeeklyRhythm = ({ data }) => {
                 ></div>
               </div>
 
-              {/* Day Label */}
               <div
                 className={`mt-3 text-xs font-medium ${
                   isBest ? "text-indigo-600 font-bold" : "text-gray-400"
@@ -85,7 +81,6 @@ const WeeklyRhythm = ({ data }) => {
         })}
       </div>
 
-      {/* Footer / Context */}
       <div className="mt-4 pt-4 border-t border-gray-50 text-center sm:text-left">
         <p className="text-sm text-gray-500 italic">"{insight}"</p>
       </div>

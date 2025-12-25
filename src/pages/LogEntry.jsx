@@ -383,6 +383,7 @@ const LogEntry = () => {
         <FinalDetailsScreen
           tags={formData.tags}
           notes={formData.notes}
+          loading={loading}
           onUpdate={updateFormData}
           onSubmit={(details) => {
             const updated = { ...formData, ...details };
@@ -424,7 +425,11 @@ const LogEntry = () => {
             </div>
             <div className="flex justify-end">
               {isEditMode ? (
-                <SaveAction onSave={handleEarlySave} disabled={loading} />
+                <SaveAction
+                  onSave={handleEarlySave}
+                  loading={loading}
+                  disabled={loading}
+                />
               ) : (
                 <ExitButton navigate={navigate} />
               )}
@@ -449,12 +454,6 @@ const LogEntry = () => {
             )}
           </div>
         </>
-      )}
-
-      {loading && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-2xl p-8 text-center">Loading...</div>
-        </div>
       )}
     </div>
   );

@@ -54,8 +54,19 @@ const OverviewTab = ({ displayData, keyFactor, getSummaryDescription }) => {
         />
       </div>
 
-      {displayData.weekly_rhythm && (
+      {displayData.weekly_rhythm.chart_data.length > 0 ? (
         <WeeklyRhythm data={displayData.weekly_rhythm} />
+      ) : (
+        <div className="bg-white p-8 rounded-lg text-center text-gray-500 border-2 border-dashed border-gray-200 flex flex-col items-center justify-center h-[300px]">
+          <div className="text-4xl mb-2">📊</div>
+          <h3 className="text-lg font-semibold text-gray-700">
+            Weekly Rhythm Locked
+          </h3>
+          <p className="text-gray-500 max-w-md">
+            Keep logging! We need a few more days of data to identify your
+            natural peak days.
+          </p>
+        </div>
       )}
 
       <TrophyCase gamification={displayData.gamification} />
