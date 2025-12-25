@@ -397,8 +397,23 @@ const LogEntry = () => {
   // --- RENDER ---
   if (initialLoading)
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        Loading...
+      <div className="min-h-screen w-full bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
+        <div className="bg-white/40 backdrop-blur-xl rounded-3xl p-8 shadow-lg border border-white/50 flex flex-col items-center gap-6 max-w-xs w-full">
+          {/* Custom Spinner */}
+          <div className="relative w-16 h-16">
+            <div className="absolute inset-0 rounded-full border-4 border-indigo-200"></div>
+            <div className="absolute inset-0 rounded-full border-4 border-t-indigo-600 border-r-transparent border-b-transparent border-l-transparent animate-spin"></div>
+          </div>
+
+          <div className="text-center">
+            <h3 className="text-lg font-bold text-gray-900 mb-1">
+              {isEditMode ? "Loading Entry..." : "Setting up..."}
+            </h3>
+            <p className="text-sm text-gray-500 font-medium animate-pulse">
+              Getting your data ready
+            </p>
+          </div>
+        </div>
       </div>
     );
   if (matchResults)
