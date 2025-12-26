@@ -18,6 +18,7 @@ function Dashboard() {
   const { user, logout } = useAuth();
   const [activeTab, setActiveTab] = useState("overview");
   const [userData, setUserData] = useState(null);
+  const [storyData, setStoryData] = useState(null);
   const [logs, setLogs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [logsLoading, setLogsLoading] = useState(true);
@@ -56,6 +57,15 @@ function Dashboard() {
 
   useEffect(() => {
     Promise.all([fetchAnalysis(), fetchLogs()]);
+  }, []);
+
+  useEffect(() => {
+    const fetchStory = async () => {
+      const story = await analysisAPI.getStory();
+      console.log(story);
+      setStoryData(story);
+    };
+    fetchStory();
   }, []);
 
   // Calculate streak whenever logs change
@@ -263,7 +273,9 @@ function Dashboard() {
           />
         )}
 
-        {activeTab === "insights" && <InsightsTab displayData={displayData} />}
+        {activeTab === "insights" && (
+          <InsightsTab displayData={displayData} storyData={storyData} />
+        )}
 
         {activeTab === "action-plan" &&
           (displayData.action_plan.length > 0 ? (

@@ -141,6 +141,12 @@ export const analysisAPI = {
     const response = await api.get("/analysis");
     return response.data;
   },
+
+  // Get story
+  getStory: async () => {
+    const response = await api.get("/story");
+    return response.data;
+  },
 };
 
 // ============================================
