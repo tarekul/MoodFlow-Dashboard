@@ -1,8 +1,7 @@
-import { Play } from "lucide-react"; // Import a Play icon if you have lucide, otherwise use emoji
+import { Play } from "lucide-react";
 import React from "react";
 import { INSIGHT_STYLES } from "../utils/helpers";
 
-// Helper to highlight text dynamically based on the card's theme
 const renderBoldText = (text, colorClass) => {
   if (!text) return null;
   const parts = text.split(/(\*\*.*?\*\*)/g);
@@ -23,12 +22,9 @@ function SmartInsightsCard({ insights, setShowStory }) {
 
   return (
     <div className="mb-8 animate-fade-in-up">
-      {/* --- HEADER SECTION --- */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 px-1">
-        {/* Left Side: Title & Subtitle */}
         <div className="flex items-center gap-3">
           <div className="bg-indigo-100 p-2.5 rounded-xl text-indigo-600 shadow-sm">
-            {/* Brain Icon */}
             <svg
               className="w-6 h-6"
               fill="none"
@@ -53,7 +49,6 @@ function SmartInsightsCard({ insights, setShowStory }) {
           </div>
         </div>
 
-        {/* Right Side: The "Story" Button */}
         <button
           onClick={() => setShowStory(true)}
           className="
@@ -69,14 +64,12 @@ function SmartInsightsCard({ insights, setShowStory }) {
             overflow-hidden
           "
         >
-          {/* Shine Effect on Hover */}
           <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out" />
           <Play size={20} />
           <span>Play Data Story</span>
         </button>
       </div>
 
-      {/* --- GRID SECTION --- */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
         {insights.map((insight, idx) => {
           let styleKey = "default";
