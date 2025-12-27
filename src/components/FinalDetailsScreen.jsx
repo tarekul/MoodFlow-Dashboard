@@ -42,10 +42,10 @@ const FinalDetailsScreen = ({ tags, notes, onUpdate, onSubmit, loading }) => {
         </div>
       </div>
 
-      <div className="fixed bottom-0 left-0 right-0 ...">
+      <div className="fixed bottom-0 left-0 right-0 p-4 z-20 flex justify-center pb-[env(safe-area-inset-bottom)] bg-gradient-to-t from-white via-white/90 to-transparent">
         <button
           onClick={() => onSubmit({ tags, notes })}
-          disabled={loading} // Disable button
+          disabled={loading}
           className={`
             w-full max-w-md py-4 bg-indigo-600 text-white rounded-2xl font-bold text-lg 
             shadow-lg shadow-indigo-200 hover:shadow-xl transition-all
@@ -59,7 +59,6 @@ const FinalDetailsScreen = ({ tags, notes, onUpdate, onSubmit, loading }) => {
         >
           {loading ? (
             <>
-              {/* Simple CSS Spinner */}
               <svg
                 className="animate-spin h-5 w-5 text-white"
                 xmlns="http://www.w3.org/2000/svg"
