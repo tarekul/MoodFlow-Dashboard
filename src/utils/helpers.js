@@ -251,6 +251,17 @@ export const INSIGHT_STYLES = {
     icon: "💡",
     label: "Impact",
   },
+  root_cause: {
+    bg: "bg-gradient-to-br from-gray-50 to-slate-100",
+    border: "border-slate-200",
+    icon: "🔗",
+    iconBg: "bg-slate-800",
+    iconColor: "text-white",
+    label: "Root Cause",
+    badgeBg: "bg-slate-200",
+    badgeText: "text-slate-700",
+    boldText: "text-slate-800",
+  },
   default: {
     bg: "bg-white",
     border: "border-gray-200",
