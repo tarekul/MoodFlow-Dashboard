@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import {
   Area,
   CartesianGrid,
@@ -15,7 +15,7 @@ const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
     const localDate = new Date(label + "T00:00:00");
     return (
-      <div className="bg-white/95 backdrop-blur-sm p-4 border border-gray-100 shadow-xl rounded-xl">
+      <div className="bg-white/95 backdrop-blur-sm p-4 border border-gray-100 shadow-xl rounded-xl z-50">
         <p className="text-sm font-bold text-gray-700 mb-2">
           {localDate.toLocaleDateString(undefined, {
             weekday: "short",
@@ -34,7 +34,10 @@ const CustomTooltip = ({ active, payload, label }) => {
                 style={{ backgroundColor: entry.color }}
               ></span>
               <span className="text-gray-500 capitalize">{entry.name}:</span>
-              <span className="text-gray-900 font-bold">{entry.value}</span>
+              <span className="text-gray-900 font-bold">
+                {entry.payload[`original_${entry.dataKey}`] ?? entry.value}
+                {entry.dataKey === "sleep" ? " hrs" : ""}
+              </span>
             </div>
           ))}
         </div>
@@ -48,21 +51,41 @@ function TimeSeriesChart({ data }) {
   const [visibleLines, setVisibleLines] = useState({
     mood: true,
     productivity: true,
-    stress: true,
+    stress: false,
+    sleep: false,
   });
 
   const toggleLine = (key) => {
     setVisibleLines((prev) => ({ ...prev, [key]: !prev[key] }));
   };
 
-  const today = getLocalDateString();
+  const chartData = useMemo(() => {
+    return data.map((d) => ({
+      ...d,
+      sleep: d.sleep_hours ? Math.min(d.sleep_hours, 10) : null,
+      original_sleep: d.sleep_hours,
+    }));
+  }, [data]);
 
+  const today = getLocalDateString();
   const hasToday = data.some((d) => d.log_date === today);
 
   const formatXAxis = (tickItem) => {
     const date = new Date(tickItem + "T00:00:00");
     return `${date.getMonth() + 1}/${date.getDate()}`;
   };
+
+  const METRICS = [
+    { key: "mood", label: "Mood", color: "#8b5cf6", bg: "bg-purple-100" },
+    {
+      key: "productivity",
+      label: "Productivity",
+      color: "#3b82f6",
+      bg: "bg-blue-100",
+    },
+    { key: "stress", label: "Stress", color: "#ef4444", bg: "bg-red-100" },
+    { key: "sleep", label: "Sleep", color: "#06b6d4", bg: "bg-cyan-100" },
+  ];
 
   return (
     <div className="bg-white rounded-xl shadow-md border border-gray-100 p-4 sm:p-6">
@@ -72,31 +95,12 @@ function TimeSeriesChart({ data }) {
             <span>📈</span> Trends Over Time
           </h2>
           <p className="text-sm text-gray-500 mt-1">
-            Toggle categories to focus your view
+            Toggle categories to explore correlations
           </p>
         </div>
 
         <div className="flex flex-wrap gap-2">
-          {[
-            {
-              key: "mood",
-              label: "Mood",
-              color: "#8b5cf6",
-              bg: "bg-purple-100",
-            },
-            {
-              key: "productivity",
-              label: "Productivity",
-              color: "#3b82f6",
-              bg: "bg-blue-100",
-            },
-            {
-              key: "stress",
-              label: "Stress",
-              color: "#ef4444",
-              bg: "bg-red-100",
-            },
-          ].map((item) => (
+          {METRICS.map((item) => (
             <button
               key={item.key}
               onClick={() => toggleLine(item.key)}
@@ -128,22 +132,23 @@ function TimeSeriesChart({ data }) {
         <div className="min-w-[600px] h-[300px]">
           <ResponsiveContainer width="100%" height="100%">
             <ComposedChart
-              data={data}
+              data={chartData}
               margin={{ top: 20, right: 30, left: -20, bottom: 0 }}
             >
               <defs>
-                <linearGradient id="colorMood" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.1} />
-                  <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0} />
-                </linearGradient>
-                <linearGradient id="colorProd" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.1} />
-                  <stop offset="95%" stopColor="#3b82f6" stopOpacity={0} />
-                </linearGradient>
-                <linearGradient id="colorStress" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#ef4444" stopOpacity={0.1} />
-                  <stop offset="95%" stopColor="#ef4444" stopOpacity={0} />
-                </linearGradient>
+                {METRICS.map((m) => (
+                  <linearGradient
+                    key={m.key}
+                    id={`color${m.key}`}
+                    x1="0"
+                    y1="0"
+                    x2="0"
+                    y2="1"
+                  >
+                    <stop offset="5%" stopColor={m.color} stopOpacity={0.1} />
+                    <stop offset="95%" stopColor={m.color} stopOpacity={0} />
+                  </linearGradient>
+                ))}
               </defs>
 
               <CartesianGrid
@@ -193,48 +198,25 @@ function TimeSeriesChart({ data }) {
                 />
               )}
 
-              {visibleLines.mood && (
-                <Area
-                  type="monotone"
-                  dataKey="mood"
-                  stroke="#8b5cf6"
-                  strokeWidth={3}
-                  fillOpacity={1}
-                  fill="url(#colorMood)"
-                  activeDot={{ r: 6, strokeWidth: 0 }}
-                />
-              )}
-
-              {visibleLines.productivity && (
-                <Area
-                  type="monotone"
-                  dataKey="productivity"
-                  stroke="#3b82f6"
-                  strokeWidth={3}
-                  fillOpacity={1}
-                  fill="url(#colorProd)"
-                  activeDot={{ r: 6, strokeWidth: 0 }}
-                />
-              )}
-
-              {visibleLines.stress && (
-                <Area
-                  type="monotone"
-                  dataKey="stress"
-                  stroke="#ef4444"
-                  strokeWidth={3}
-                  fillOpacity={1}
-                  fill="url(#colorStress)"
-                  activeDot={{ r: 6, strokeWidth: 0 }}
-                />
+              {METRICS.map(
+                (m) =>
+                  visibleLines[m.key] && (
+                    <Area
+                      key={m.key}
+                      type="monotone"
+                      dataKey={m.key}
+                      name={m.label}
+                      stroke={m.color}
+                      strokeWidth={3}
+                      fillOpacity={1}
+                      fill={`url(#color${m.key})`}
+                      activeDot={{ r: 6, strokeWidth: 0 }}
+                    />
+                  )
               )}
             </ComposedChart>
           </ResponsiveContainer>
         </div>
-      </div>
-
-      <div className="sm:hidden text-center mt-2 text-xs text-gray-400 flex items-center justify-center gap-1">
-        Swipe chart to see history
       </div>
     </div>
   );
