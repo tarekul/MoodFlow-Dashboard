@@ -262,6 +262,17 @@ export const INSIGHT_STYLES = {
     badgeText: "text-slate-700",
     boldText: "text-slate-800",
   },
+  suggestion: {
+    bg: "bg-white",
+    border: "border-gray-200",
+    iconBg: "bg-gray-50",
+    iconColor: "text-gray-500",
+    badgeBg: "bg-gray-100",
+    badgeText: "text-gray-600",
+    boldText: "text-gray-900",
+    icon: "📝",
+    label: "Suggestion",
+  },
   default: {
     bg: "bg-white",
     border: "border-gray-200",

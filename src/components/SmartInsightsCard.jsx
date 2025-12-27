@@ -76,6 +76,8 @@ function SmartInsightsCard({ insights, setShowStory }) {
           if (insight.type === "optimization") styleKey = "optimization";
           else if (insight.type === "prediction") styleKey = "forecast";
           else if (insight.type === "impact") styleKey = "impact";
+          else if (insight.type === "root_cause") styleKey = "root_cause";
+          else if (insight.type === "suggestion") styleKey = "suggestion";
 
           const theme = INSIGHT_STYLES[styleKey];
 
