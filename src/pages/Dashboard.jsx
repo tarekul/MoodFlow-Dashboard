@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ActionPlanCard from "../components/ActionPlanCard.jsx";
+import FeatureGuard from "../components/FeatureGuard.jsx";
 import Footer from "../components/Footer.jsx";
 import Header from "../components/Header.jsx";
 import InsightsTab from "../components/InsightsTab.jsx";
 import OverviewTab from "../components/OverviewTab.jsx";
 import PerfectDayCard from "../components/PerfectDayCard.jsx";
+import StartHere from "../components/StartHere.jsx";
 import StreakMilestone from "../components/StreakMilestone.jsx";
 import TabNavigation from "../components/TabNavigation.jsx";
 import { useAuth } from "../contexts/AuthContext.jsx";
@@ -62,7 +64,6 @@ function Dashboard() {
   useEffect(() => {
     const fetchStory = async () => {
       const story = await analysisAPI.getStory();
-      console.log(story);
       setStoryData(story);
     };
     fetchStory();
@@ -113,6 +114,7 @@ function Dashboard() {
           mood: log.mood,
           productivity: log.productivity,
           stress: log.stress,
+          sleep_hours: log.sleep_hours,
         }))
         .reverse(),
       correlations: [],
@@ -156,45 +158,7 @@ function Dashboard() {
 
   // Empty State - Only show if absolutely NO logs
   if (logs.length === 0) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
-        <div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-6 sm:p-8">
-          <div className="text-center">
-            <div className="text-5xl sm:text-6xl mb-4">📊</div>
-            <h2 className="text-2xl sm:text-3xl font-bold mb-4 text-gray-900">
-              Welcome to MoodFlow!
-            </h2>
-            <p className="text-sm sm:text-base text-gray-600 mb-6">
-              Start tracking your days to unlock personalized insights.
-            </p>
-
-            <div className="bg-indigo-50 border border-indigo-200 rounded-lg p-4 mb-6">
-              <p className="text-xs sm:text-sm text-indigo-800">
-                💡 <strong>Tip:</strong> Log at least 7 days of mood,
-                productivity, sleep, and stress data to get your personalized AI
-                analysis!
-              </p>
-            </div>
-
-            <button
-              onClick={() => navigate("/log-entry")}
-              className="w-full sm:w-auto px-6 py-3 bg-indigo-600 text-white rounded-lg font-semibold hover:bg-indigo-700 transition-all mb-3"
-            >
-              Start Logging
-            </button>
-
-            <div className="mt-4">
-              <button
-                onClick={logout}
-                className="w-full sm:w-auto px-6 py-2 text-gray-600 hover:text-gray-900 font-medium border-2 border-gray-300 rounded-lg hover:border-gray-400 transition-all"
-              >
-                Logout
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
+    return <StartHere navigate={navigate} logout={logout} />;
   }
 
   if (!displayData) {
@@ -277,24 +241,30 @@ function Dashboard() {
           <InsightsTab displayData={displayData} storyData={storyData} />
         )}
 
-        {activeTab === "action-plan" &&
-          (displayData.action_plan.length > 0 ? (
-            <>
-              <PerfectDayCard blueprint={displayData.perfect_day} />
+        {activeTab === "action-plan" && (
+          <div className="space-y-6">
+            <FeatureGuard
+              daysLogged={displayData.days_logged}
+              requiredDays={7}
+              title="Perfect Day"
+            >
+              {displayData.perfect_day ? (
+                <PerfectDayCard blueprint={displayData.perfect_day} />
+              ) : (
+                <div className="p-4 text-center text-gray-500">
+                  Not enough high-performance days yet to generate a blueprint.
+                </div>
+              )}
+            </FeatureGuard>
+            <FeatureGuard
+              daysLogged={displayData.days_logged}
+              requiredDays={7}
+              title="WeeklyAction Plan"
+            >
               <ActionPlanCard action_plan={displayData.action_plan} />
-            </>
-          ) : (
-            <div className="bg-white rounded-lg shadow-md p-12 text-center border border-gray-100">
-              <div className="text-6xl mb-4">📅</div>
-              <h2 className="text-2xl font-bold text-gray-700 mb-2">
-                Action Plan Locked
-              </h2>
-              <p className="text-gray-500 max-w-md mx-auto">
-                We need more data to generate a personalized weekly action plan
-                for you. Keep logging!
-              </p>
-            </div>
-          ))}
+            </FeatureGuard>
+          </div>
+        )}
       </main>
 
       <Footer userData={displayData} />

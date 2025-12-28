@@ -1,4 +1,4 @@
-import { Calendar, TrendingUp } from "lucide-react";
+import { Calendar, Minus, TrendingUp } from "lucide-react";
 import React from "react";
 
 const WeeklyRhythm = ({ data }) => {
@@ -7,9 +7,10 @@ const WeeklyRhythm = ({ data }) => {
   const { chart_data, best_day, insight, percent_diff } = data;
   const MAX_SCALE = 10;
 
+  const isSignificant = percent_diff > 0;
+
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-8 animate-fade-in">
-      {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4">
         <div className="flex items-center gap-3">
           <div className="p-2 bg-indigo-50 rounded-lg">
@@ -23,27 +24,45 @@ const WeeklyRhythm = ({ data }) => {
           </div>
         </div>
 
-        {/* Insight Badge */}
         {best_day && (
-          <div className="flex items-center gap-2 bg-emerald-50 border border-emerald-100 px-3 py-2 rounded-lg">
-            <TrendingUp size={16} className="text-emerald-600" />
-            <span className="text-xs font-medium text-emerald-800">
-              {percent_diff}% boost on{" "}
-              <span className="font-bold">{best_day}s</span>
+          <div
+            className={`flex items-center gap-2 px-3 py-2 rounded-lg border ${
+              isSignificant
+                ? "bg-emerald-50 border-emerald-100"
+                : "bg-gray-50 border-gray-100"
+            }`}
+          >
+            {isSignificant ? (
+              <TrendingUp size={16} className="text-emerald-600" />
+            ) : (
+              <Minus size={16} className="text-gray-400" />
+            )}
+
+            <span
+              className={`text-xs font-medium ${
+                isSignificant ? "text-emerald-800" : "text-gray-500"
+              }`}
+            >
+              {isSignificant ? (
+                <>
+                  {percent_diff}% boost on{" "}
+                  <span className="font-bold">{best_day}s</span>
+                </>
+              ) : (
+                <span>Consistent performance</span>
+              )}
             </span>
           </div>
         )}
       </div>
 
-      {/* The Bar Chart */}
       <div className="flex justify-between h-48 gap-2 sm:gap-4 mt-4">
         {chart_data.map((item) => {
-          const isBest = item.day === best_day;
+          const isBest = item.day === best_day && isSignificant;
           const heightPercent = Math.min((item.score / MAX_SCALE) * 100, 100);
           const shortDay = item.day.substring(0, 3);
 
           return (
-            // Column: Flex col to stack Score -> Bar -> Label
             <div
               key={item.day}
               className="flex flex-col items-center justify-end flex-1 group h-full"
@@ -82,7 +101,11 @@ const WeeklyRhythm = ({ data }) => {
       </div>
 
       <div className="mt-4 pt-4 border-t border-gray-50 text-center sm:text-left">
-        <p className="text-sm text-gray-500 italic">"{insight}"</p>
+        <p className="text-sm text-gray-500 italic">
+          {isSignificant
+            ? `"${insight}"`
+            : `"Your productivity is stable across the week. Keep logging to find peaks!"`}
+        </p>
       </div>
     </div>
   );

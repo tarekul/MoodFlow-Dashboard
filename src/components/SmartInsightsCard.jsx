@@ -17,7 +17,7 @@ const renderBoldText = (text, colorClass) => {
   });
 };
 
-function SmartInsightsCard({ insights, setShowStory }) {
+function SmartInsightsCard({ insights, daysLogged, setShowStory }) {
   if (!insights || insights.length === 0) return null;
 
   return (
@@ -48,10 +48,10 @@ function SmartInsightsCard({ insights, setShowStory }) {
             </p>
           </div>
         </div>
-
-        <button
-          onClick={() => setShowStory(true)}
-          className="
+        {daysLogged >= 7 && (
+          <button
+            onClick={() => setShowStory(true)}
+            className="
             group relative
             flex items-center gap-2
             px-5 py-2.5
@@ -63,11 +63,12 @@ function SmartInsightsCard({ insights, setShowStory }) {
             hover:shadow-lg hover:shadow-purple-300 hover:-translate-y-0.5 active:translate-y-0
             overflow-hidden
           "
-        >
-          <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out" />
-          <Play size={20} />
-          <span>Play Data Story</span>
-        </button>
+          >
+            <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out" />
+            <Play size={20} />
+            <span>Play Data Story</span>
+          </button>
+        )}
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">

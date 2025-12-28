@@ -1,4 +1,5 @@
 import CorrelationChart from "./CorrelationChart";
+import FeatureGuard from "./FeatureGuard";
 import SummaryCard from "./SummaryCard";
 import TimeSeriesChart from "./TimeSeriesChart";
 import TrophyCase from "./TrophyCase";
@@ -54,39 +55,31 @@ const OverviewTab = ({ displayData, keyFactor, getSummaryDescription }) => {
         />
       </div>
 
-      {displayData.weekly_rhythm.chart_data.length > 0 ? (
+      <FeatureGuard
+        daysLogged={displayData.days_logged}
+        requiredDays={3}
+        title="Weekly Rhythm"
+      >
         <WeeklyRhythm data={displayData.weekly_rhythm} />
-      ) : (
-        <div className="bg-white p-8 rounded-lg text-center text-gray-500 border-2 border-dashed border-gray-200 flex flex-col items-center justify-center h-[300px]">
-          <div className="text-4xl mb-2">📊</div>
-          <h3 className="text-lg font-semibold text-gray-700">
-            Weekly Rhythm Locked
-          </h3>
-          <p className="text-gray-500 max-w-md">
-            Keep logging! We need a few more days of data to identify your
-            natural peak days.
-          </p>
-        </div>
-      )}
+      </FeatureGuard>
 
-      <TrophyCase gamification={displayData.gamification} />
+      <FeatureGuard
+        daysLogged={displayData.days_logged}
+        requiredDays={1}
+        title="Badges"
+      >
+        <TrophyCase gamification={displayData.gamification} />
+      </FeatureGuard>
 
       <TimeSeriesChart data={displayData.time_series} />
 
-      {displayData.correlations.length > 0 ? (
+      <FeatureGuard
+        daysLogged={displayData.days_logged}
+        requiredDays={7}
+        title="Correlations"
+      >
         <CorrelationChart correlations={displayData.correlations} />
-      ) : (
-        <div className="bg-white p-8 rounded-lg text-center text-gray-500 border-2 border-dashed border-gray-200 flex flex-col items-center justify-center h-[300px]">
-          <div className="text-4xl mb-2">📊</div>
-          <h3 className="text-lg font-semibold text-gray-700">
-            Correlation Analysis Locked
-          </h3>
-          <p className="text-gray-500 max-w-md">
-            Keep logging! We need a few more days of data to identify what
-            boosts or drains your productivity.
-          </p>
-        </div>
-      )}
+      </FeatureGuard>
     </div>
   );
 };
