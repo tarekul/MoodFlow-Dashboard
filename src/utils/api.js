@@ -92,6 +92,12 @@ export const authAPI = {
     });
     return response.data;
   },
+
+  // Delete user
+  deleteUser: async () => {
+    const response = await api.delete("/me");
+    return response.data;
+  },
 };
 
 // ============================================
