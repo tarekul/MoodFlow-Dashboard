@@ -1,3 +1,4 @@
+import { RefreshCw } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ActionPlanCard from "../components/ActionPlanCard.jsx";
@@ -19,88 +20,107 @@ function Dashboard() {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
   const [activeTab, setActiveTab] = useState("overview");
-  const [userData, setUserData] = useState(null);
+
+  const [logs, setLogs] = useState(() => {
+    const cached = localStorage.getItem("moodflow_logs");
+    return cached ? JSON.parse(cached) : [];
+  });
+
+  const [userData, setUserData] = useState(() => {
+    const cached = localStorage.getItem("moodflow_analysis");
+    return cached ? JSON.parse(cached) : null;
+  });
+
   const [storyData, setStoryData] = useState(null);
-  const [logs, setLogs] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [logsLoading, setLogsLoading] = useState(true);
+
+  const [loading, setLoading] = useState(logs.length === 0);
+
+  const [isSyncing, setIsSyncing] = useState(false);
+
   const [streak, setStreak] = useState(0);
-  const [showMilestone, setShowMilestone] = useState(true);
+  const [showMilestone, setShowMilestone] = useState(false); // Default false to avoid popups on refresh
   const [previousStreak, setPreviousStreak] = useState(null);
 
-  // Fetch analysis from API
-  const fetchAnalysis = async () => {
-    try {
-      setLoading(true);
-      const data = await analysisAPI.getAnalysis();
-      setUserData(data);
-    } catch (err) {
-      if (err.response?.status === 400) {
-        console.log("Analysis not ready yet (expected for new users)");
-      } else {
-        console.error("Analysis error:", err);
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const fetchLogs = async () => {
-    try {
-      setLogsLoading(true);
-      const data = await logsAPI.getMyLogs();
-      setLogs(data);
-    } catch (err) {
-      console.error("Failed to load logs:", err);
-    } finally {
-      setLogsLoading(false);
-    }
-  };
-
   useEffect(() => {
-    Promise.all([fetchAnalysis(), fetchLogs()]);
+    const syncData = async () => {
+      setIsSyncing(true);
+
+      try {
+        const freshLogs = await logsAPI.getMyLogs();
+
+        const hasDataChanged =
+          JSON.stringify(freshLogs) !== localStorage.getItem("moodflow_logs");
+
+        setLogs(freshLogs);
+        localStorage.setItem("moodflow_logs", JSON.stringify(freshLogs));
+
+        if (!userData || hasDataChanged) {
+          console.log("Data changed or missing, fetching fresh analysis...");
+          try {
+            const freshAnalysis = await analysisAPI.getAnalysis();
+            setUserData(freshAnalysis);
+            localStorage.setItem(
+              "moodflow_analysis",
+              JSON.stringify(freshAnalysis)
+            );
+          } catch (err) {
+            if (err.response?.status === 400) {
+              console.log("Analysis not ready (new user)");
+            }
+          }
+        } else {
+          console.log("Data unchanged. Skipping analysis API call.");
+        }
+      } catch (err) {
+        console.error("Background sync failed:", err);
+      } finally {
+        setLoading(false);
+        setIsSyncing(false);
+      }
+    };
+
+    syncData();
   }, []);
 
   useEffect(() => {
     const fetchStory = async () => {
-      const story = await analysisAPI.getStory();
-      setStoryData(story);
+      if (logs.length > 0) {
+        try {
+          const story = await analysisAPI.getStory();
+          setStoryData(story);
+        } catch (e) {
+          console.error(e);
+        }
+      }
     };
     fetchStory();
-  }, []);
+  }, [logs.length]);
 
-  // Calculate streak whenever logs change
   useEffect(() => {
     if (logs.length > 0) {
       const newStreak = calculateStreak(logs);
 
-      // Check if we hit a milestone
-      const milestones = [7, 14, 30, 60, 90, 100];
-      if (
-        previousStreak !== null &&
-        milestones.includes(newStreak) &&
-        newStreak > previousStreak
-      ) {
-        setShowMilestone(true);
+      if (previousStreak !== null && newStreak > previousStreak) {
+        const milestones = [7, 14, 30, 60, 90, 100];
+        if (milestones.includes(newStreak)) {
+          setShowMilestone(true);
+        }
       }
-
       setPreviousStreak(newStreak);
       setStreak(newStreak);
     }
-  }, [logs, previousStreak]);
+  }, [logs]);
 
-  // Calculate temporary user data if backend analysis is not ready
   const getTemporaryUserData = () => {
     if (!logs || logs.length === 0) return null;
-
     const avg = (key) =>
       logs.reduce((sum, log) => sum + (log[key] || 0), 0) / logs.length;
 
     return {
       days_logged: logs.length,
       date_range: {
-        start: logs[logs.length - 1]?.log_date || "N/A",
-        end: logs[0]?.log_date || "N/A",
+        start: logs[0]?.log_date || "N/A",
+        end: logs[logs.length - 1]?.log_date || "N/A",
       },
       summary: {
         avg_productivity: avg("productivity"),
@@ -121,61 +141,31 @@ function Dashboard() {
       boosters: [],
       drainers: [],
       action_plan: [],
-      population_comparison: [],
-      top_recommendation: {
-        factor: "Consistency",
-        correlation: 0,
-        potential_gain: 0,
-      },
-      weekly_rhythm: {
-        chart_data: [],
-        best_day: null,
-        insight: "",
-        percent_diff: 0,
-      },
+      top_recommendation: null,
+      weekly_rhythm: { chart_data: [] },
     };
   };
 
-  // Use real data if available, otherwise use calculated temporary data
   const displayData = userData || getTemporaryUserData();
 
-  // Loading state - wait for both to finish
-  if (loading || logsLoading) {
+  if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 sm:h-16 sm:w-16 border-b-4 border-indigo-600 mx-auto mb-4"></div>
-          <div className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">
-            Loading your analysis...
-          </div>
-          <div className="text-sm sm:text-base text-gray-600">
-            Analyzing your productivity patterns
-          </div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-4 border-indigo-600 mx-auto mb-4"></div>
+          <h2 className="text-xl font-bold text-gray-900">
+            Waking up your AI...
+          </h2>
+          <p className="text-sm text-gray-500 mt-2">This may take up to 60s.</p>
         </div>
       </div>
     );
   }
 
-  // Empty State - Only show if absolutely NO logs
   if (logs.length === 0) {
     return <StartHere navigate={navigate} logout={logout} />;
   }
-
-  if (!displayData) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
-        <div className="text-center">
-          <div className="text-base sm:text-xl text-gray-600">
-            Processing data...
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  // Get key factor for badges (only if real analysis exists)
   const keyFactor = userData?.correlations?.[0]?.factor;
-
   const todayStr = getLocalDateString();
   const todayLog = logs.find((log) => log.log_date === todayStr);
   const isFullyLogged = todayLog && todayLog.productivity !== null;
@@ -183,7 +173,6 @@ function Dashboard() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex flex-col">
-      {/* Streak Milestone Modal */}
       {showMilestone && (
         <StreakMilestone
           streak={streak}
@@ -191,7 +180,6 @@ function Dashboard() {
         />
       )}
 
-      {/* Header */}
       <Header
         isFullyLogged={isFullyLogged}
         isPartiallyLogged={isPartiallyLogged}
@@ -203,32 +191,20 @@ function Dashboard() {
         logout={logout}
       />
 
-      {/* Tab Navigation */}
+      {isSyncing && (
+        <div className="bg-indigo-600 text-white text-xs py-1 px-4 text-center animate-pulse">
+          <div className="flex items-center justify-center gap-2">
+            <RefreshCw size={12} className="animate-spin" />
+            <span>Syncing with server... (You can still browse)</span>
+          </div>
+        </div>
+      )}
+
       <div className="max-w-7xl mx-auto px-3 sm:px-4 mt-4 sm:mt-6">
         <TabNavigation activeTab={activeTab} setActiveTab={setActiveTab} />
       </div>
 
-      {/* Main Content */}
       <main className="max-w-7xl mx-auto px-3 sm:px-4 py-4 sm:py-6 flex-grow w-full">
-        {/* BANNER FOR NEW USERS */}
-        {!userData && logs.length > 0 && (
-          <div
-            className="bg-indigo-50 border-l-4 border-indigo-500 text-indigo-700 p-4 mb-6 rounded shadow-sm flex items-start gap-3"
-            role="alert"
-          >
-            <span className="text-2xl">👋</span>
-            <div>
-              <p className="font-bold">Welcome to your Dashboard!</p>
-              <p className="text-sm sm:text-base">
-                You are seeing your daily stats. Detailed AI analysis
-                (correlations, boosters, and action plans) will unlock after{" "}
-                <strong>7 days of logging</strong>. ({7 - logs.length} days to
-                go!)
-              </p>
-            </div>
-          </div>
-        )}
-
         {activeTab === "overview" && (
           <OverviewTab
             displayData={displayData}
@@ -246,20 +222,20 @@ function Dashboard() {
             <FeatureGuard
               daysLogged={displayData.days_logged}
               requiredDays={7}
-              title="Perfect Day"
+              title="Perfect Day DNA"
             >
               {displayData.perfect_day ? (
                 <PerfectDayCard blueprint={displayData.perfect_day} />
               ) : (
                 <div className="p-4 text-center text-gray-500">
-                  Not enough high-performance days yet to generate a blueprint.
+                  Not enough data for blueprint.
                 </div>
               )}
             </FeatureGuard>
             <FeatureGuard
               daysLogged={displayData.days_logged}
               requiredDays={7}
-              title="WeeklyAction Plan"
+              title="Weekly Action Plan"
             >
               <ActionPlanCard action_plan={displayData.action_plan} />
             </FeatureGuard>
