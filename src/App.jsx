@@ -1,5 +1,6 @@
 import React from "react";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import IdentitySelector from "./components/IdentitySelector";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Dashboard from "./pages/Dashboard";
 import ForgotPassword from "./pages/ForgotPassword";
@@ -56,6 +57,15 @@ function App() {
               element={
                 <ProtectedRoute>
                   <LogEntry />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/identities"
+              element={
+                <ProtectedRoute>
+                  <IdentitySelector />
                 </ProtectedRoute>
               }
             />

@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { tagsAPI } from "../utils/api";
 import { CONTEXT_TAG_OPTIONS } from "../utils/helpers";
 
 const ContextTagsScreen = ({
@@ -8,6 +9,19 @@ const ContextTagsScreen = ({
   isEmbedded = false,
 }) => {
   const [selectedTags, setSelectedTags] = useState(initialTags || []);
+  const [availableTags, setAvailableTags] = useState([]);
+
+  useEffect(() => {
+    const loadTags = async () => {
+      const customTags = await tagsAPI.getUserTags();
+
+      setAvailableTags([
+        ...CONTEXT_TAG_OPTIONS,
+        ...customTags.map((t) => t.tag_name),
+      ]);
+    };
+    loadTags();
+  }, []);
 
   const toggleTag = (tagId) => {
     let newTags;
@@ -29,28 +43,28 @@ const ContextTagsScreen = ({
         !isEmbedded ? "max-w-md mx-auto" : ""
       }`}
     >
-      {CONTEXT_TAG_OPTIONS.map((option) => {
-        const isSelected = selectedTags.includes(option.id);
+      {availableTags.map((option) => {
+        const isSelected = selectedTags.includes(option);
+
         return (
           <button
-            key={option.id}
-            onClick={() => toggleTag(option.id)}
+            key={option}
+            onClick={() => toggleTag(option)}
             className={`
               relative p-3 sm:p-4 rounded-xl border-2 transition-all duration-200 flex items-center gap-2 sm:gap-3 text-left
               ${
                 isSelected
                   ? "border-indigo-500 bg-indigo-50 shadow-sm"
-                  : "border-transparent bg-gray-50/50 hover:bg-gray-100" // Cleaner look for embedded
+                  : "border-transparent bg-gray-50/50 hover:bg-gray-100"
               }
             `}
           >
-            <span className="text-xl sm:text-2xl">{option.icon}</span>
             <span
               className={`text-xs sm:text-sm font-semibold leading-tight ${
                 isSelected ? "text-indigo-700" : "text-gray-600"
               }`}
             >
-              {option.label}
+              {option}
             </span>
           </button>
         );

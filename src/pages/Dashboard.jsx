@@ -5,6 +5,7 @@ import ActionPlanCard from "../components/ActionPlanCard.jsx";
 import FeatureGuard from "../components/FeatureGuard.jsx";
 import Footer from "../components/Footer.jsx";
 import Header from "../components/Header.jsx";
+import OnboardingIdentities from "../components/IdentitySelector.jsx";
 import InsightsTab from "../components/InsightsTab.jsx";
 import OverviewTab from "../components/OverviewTab.jsx";
 import PerfectDayCard from "../components/PerfectDayCard.jsx";
@@ -18,16 +19,16 @@ import { getLocalDateString, getSummaryDescription } from "../utils/helpers.js";
 
 function Dashboard() {
   const navigate = useNavigate();
-  const { user, logout } = useAuth();
+  const { user, logout, onboardIdentities } = useAuth();
   const [activeTab, setActiveTab] = useState("overview");
 
   const [logs, setLogs] = useState(() => {
-    const cached = localStorage.getItem("moodflow_logs");
+    const cached = localStorage.getItem("correlate_logs");
     return cached ? JSON.parse(cached) : [];
   });
 
   const [userData, setUserData] = useState(() => {
-    const cached = localStorage.getItem("moodflow_analysis");
+    const cached = localStorage.getItem("correlate_analysis");
     return cached ? JSON.parse(cached) : null;
   });
 
@@ -38,7 +39,7 @@ function Dashboard() {
   const [isSyncing, setIsSyncing] = useState(false);
 
   const [streak, setStreak] = useState(0);
-  const [showMilestone, setShowMilestone] = useState(false); // Default false to avoid popups on refresh
+  const [showMilestone, setShowMilestone] = useState(false);
   const [previousStreak, setPreviousStreak] = useState(null);
 
   useEffect(() => {
@@ -49,10 +50,10 @@ function Dashboard() {
         const freshLogs = await logsAPI.getMyLogs();
 
         const hasDataChanged =
-          JSON.stringify(freshLogs) !== localStorage.getItem("moodflow_logs");
+          JSON.stringify(freshLogs) !== localStorage.getItem("correlate_logs");
 
         setLogs(freshLogs);
-        localStorage.setItem("moodflow_logs", JSON.stringify(freshLogs));
+        localStorage.setItem("correlate_logs", JSON.stringify(freshLogs));
 
         if (!userData || hasDataChanged) {
           console.log("Data changed or missing, fetching fresh analysis...");
@@ -60,7 +61,7 @@ function Dashboard() {
             const freshAnalysis = await analysisAPI.getAnalysis();
             setUserData(freshAnalysis);
             localStorage.setItem(
-              "moodflow_analysis",
+              "correlate_analysis",
               JSON.stringify(freshAnalysis)
             );
           } catch (err) {
@@ -163,6 +164,18 @@ function Dashboard() {
   }
 
   if (logs.length === 0) {
+    if (!user.has_onboarded) {
+      return (
+        <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+          <OnboardingIdentities
+            onComplete={async () => {
+              onboardIdentities();
+            }}
+          />
+        </div>
+      );
+    }
+
     return <StartHere navigate={navigate} logout={logout} />;
   }
   const keyFactor = userData?.correlations?.[0]?.factor;

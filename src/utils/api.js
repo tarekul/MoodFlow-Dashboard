@@ -101,6 +101,43 @@ export const authAPI = {
 };
 
 // ============================================
+// TAGS ENDPOINTS
+// ============================================
+
+export const tagsAPI = {
+  // Get user tags
+  getUserTags: async () => {
+    const response = await api.get("/custom-tags");
+    return response.data;
+  },
+
+  // Create tag
+  createTag: async (tagName) => {
+    const response = await api.post("/custom-tags", {
+      tag_name: tagName,
+    });
+    return response.data;
+  },
+
+  // Update tag
+  updateTag: async (tagId, tagName) => {
+    const response = await api.put(`/custom-tags`, {
+      tag_id: tagId,
+      tag_name: tagName,
+    });
+    return response.data;
+  },
+
+  // Delete tag
+  deleteTag: async (tagId) => {
+    const response = await api.delete(`/custom-tags`, {
+      data: { tag_id: tagId },
+    });
+    return response.data;
+  },
+};
+
+// ============================================
 // LOGS ENDPOINTS
 // ============================================
 

@@ -108,7 +108,10 @@ const Header = ({
 
             <div className="flex items-center gap-3 pl-4 border-l border-gray-200 ml-2">
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold text-sm border border-indigo-200">
+                <div
+                  className="w-8 h-8 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold text-sm border border-indigo-200"
+                  onClick={() => navigate("/identities")}
+                >
                   {userInitial}
                 </div>
                 <span className="text-xs font-medium text-gray-600 max-w-[80px] truncate">
