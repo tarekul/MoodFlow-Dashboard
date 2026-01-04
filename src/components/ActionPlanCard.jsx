@@ -11,6 +11,7 @@ import {
 import { getStrengthColor } from "../utils/helpers";
 
 function ActionPlanCard({ action_plan }) {
+  console.log(action_plan);
   const iconMap = {
     Smile: Smile,
     Moon: Moon,
@@ -34,7 +35,6 @@ function ActionPlanCard({ action_plan }) {
   return (
     <div className="space-y-6">
       <div className="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100">
-        {/* Header Section */}
         <div className="p-6 bg-gradient-to-r from-indigo-50 to-white border-b border-gray-100">
           <h2 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
             YOUR ACTION PLAN
@@ -44,19 +44,20 @@ function ActionPlanCard({ action_plan }) {
           </p>
         </div>
 
-        {/* List of Action Items */}
         <div className="divide-y divide-gray-100">
           {action_plan.map((item) => {
             const IconComponent = iconMap[item.icon] || HelpCircle;
 
             const colors = colorMap[item.icon] || "bg-gray-100 text-gray-600";
 
+            const correlationVal = item.correlation || 0;
+            const impactVal = item.potential_impact || 0;
+
             return (
               <div
                 key={item.priority}
                 className="p-6 hover:bg-gray-50 transition-colors"
               >
-                {/* Top Row: Info & Impact Score */}
                 <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-6">
                   <div className="flex gap-4">
                     <div
@@ -83,7 +84,7 @@ function ActionPlanCard({ action_plan }) {
                         {item.factor}
                       </h3>
                       <p className="text-sm text-gray-500 mt-1">
-                        Correlation: {item.correlation.toFixed(2)}
+                        Correlation: {correlationVal.toFixed(2)}
                       </p>
                     </div>
                   </div>
@@ -93,7 +94,7 @@ function ActionPlanCard({ action_plan }) {
                       Potential Impact
                     </div>
                     <div className="text-2xl font-black text-indigo-600">
-                      +{item.potential_impact.toFixed(1)}{" "}
+                      +{impactVal.toFixed(1)}{" "}
                       <span className="text-base font-normal text-indigo-400">
                         pts
                       </span>
