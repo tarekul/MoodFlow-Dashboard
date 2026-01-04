@@ -9,7 +9,7 @@ const LogButton = ({
 }) => {
   if (isFullyLogged) {
     return (
-      <div className="flex items-center gap-2 px-4 py-2.5 bg-emerald-50 text-emerald-700 rounded-2xl border border-emerald-100 shadow-sm shadow-emerald-100/50 transition-all">
+      <div className="w-full sm:w-auto justify-center flex items-center gap-2 px-4 py-2.5 bg-emerald-50 text-emerald-700 rounded-2xl border border-emerald-100 shadow-sm shadow-emerald-100/50 transition-all">
         <CheckCircle2 size={18} className="text-emerald-500" />
         <span className="text-sm font-bold tracking-tight">Day Complete</span>
       </div>
