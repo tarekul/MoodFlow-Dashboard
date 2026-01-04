@@ -61,7 +61,7 @@ const StreakMilestone = ({ streak, onClose }) => {
   useEffect(() => {
     if (!milestone) return;
 
-    const storageKey = `moodflow_milestone_seen_${streak}`;
+    const storageKey = `correlate_milestone_seen_${streak}`;
     const hasSeen = localStorage.getItem(storageKey);
 
     if (!hasSeen && hasShownStreak.current === false) {
