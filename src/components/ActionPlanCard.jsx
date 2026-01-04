@@ -11,7 +11,6 @@ import {
 import { getStrengthColor } from "../utils/helpers";
 
 function ActionPlanCard({ action_plan }) {
-  console.log(action_plan);
   const iconMap = {
     Smile: Smile,
     Moon: Moon,
